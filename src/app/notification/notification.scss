@@ -1,0 +1,70 @@
+@use '../../variable.scss' as *;
+.notificationDiv {
+  padding: 35px 30px;
+  height: calc(100vh - 120px);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: calc(100% - 300px);
+  @include mobile() {
+    width: 100%;
+    height: calc(100vh - 51px);
+  }
+  @include tablet() {
+    width: 100%;
+    height: calc(100vh - 57px);
+  }
+  .container-fluid {
+    padding: 10px 15px 10px 25px;
+    margin: 10px 10px 10px 20px;
+    .notifyDiv {
+      width: 268px;
+      height: 180px;
+      background-color: #ffffff;
+      border: 1px solid #c4c4c4;
+      padding: 15px;
+      font-family: poppinsregular;
+      font-size: 17px;
+    }
+    .commonDiv {
+      gap: 50px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .request {
+      background-color: #153b62;
+      color: #ffffff;
+      font-size: 18px;
+      font-family: poppinsregular;
+      display: flex;
+      justify-content: space-between;
+      .notifyCount {
+        font-size: 50px;
+        font-weight: 700;
+      }
+    }
+    .dataMatch {
+      background-color: #153b62;
+      color: #ffffff;
+      font-size: 18px;
+      font-family: poppinsregular;
+    }
+    .btnDiv {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+
+      .arrowBtn {
+        height: 28px;
+        width: 28px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+      }
+    }
+  }
+}

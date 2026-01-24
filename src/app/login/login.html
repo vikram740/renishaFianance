@@ -1,0 +1,59 @@
+<!-- <div class="loading-div" *ngIf="isLoading">
+    <mat-spinner class="custom-spinner"></mat-spinner>
+</div> -->
+<div class="loginPage">
+    <div class="login">
+        <div>
+            <img src="/images/renishaLogo.jpg" alt="" class="img-fluid logo">
+        </div>
+        <form action="" [formGroup]="loginForm" (ngSubmit)="signIn()">
+            <div>
+                <div class="labelInputDiv">
+                    <label for="" class="fieldLabels">User name</label>
+                    <div>
+                        <input type="email" placeholder="Enter Your Username" formControlName="email">
+                        @if (submitted()) {
+                        @if(loginForm.get('email')?.hasError('required')){
+                        <div class="errMsg">*Email is required</div>
+                        }
+                        @if(loginForm.get('email')?.hasError('pattern')){
+                        <div class="errMsg">*Email is invalid</div>
+                        }
+                        }
+                    </div>
+                </div>
+                <div class="labelInputDiv">
+                    <label for="" class="fieldLabels">Password</label>
+                    <div>
+                        <input type="password" placeholder="Enter Your Password" formControlName="password">
+                        @if (submitted()) {
+                        @if(loginForm.get('password')?.hasError('required')){
+                        <div class="errMsg">*Password is required</div>
+                        }
+
+                        @if(loginForm.get('password')?.hasError('minlength')){
+                        <div class="errMsg">*Minimum 6 characters are required</div>
+                        }
+                        }
+                    </div>
+                </div>
+                <div class="forgotPass">
+                    <div class="mobileScreen rememberMeDiv">
+                        <input type="checkbox" class="form-Control rememberme" formControlName="rememberMe"
+                            id="exampleCheck1"><label for="exampleCheck1" value="lsRememberMe"
+                            class="rememberMeLabel">Remember Me</label>
+                    </div>
+                    <div>
+                        <a routerLink="/forgetPassword">Forgot Password?</a>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="signinBtn">Sign In</button>
+                </div>
+                <div class="signupDiv">
+                    <label for="">Create an account ? <a routerLink="/signup">Signup</a></label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

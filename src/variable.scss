@@ -1,0 +1,94 @@
+@font-face {
+    font-family:poppinsRegular;
+    src: url(/fonts/Poppins-Regular.ttf)
+}
+
+$font-regular: 'poppinsRegular', sans-serif;
+
+
+$minbigscreen: 1601px;
+
+$maxdesktop: 1600px;
+$mindesktop: 1401px;
+
+
+$maxlaptop: 1400px;
+$minlaptop: 1200px;
+
+
+$maxipadpro1: 1199px;
+$minipadpro1: 992px;
+
+
+$maxipadpro: 991px;
+$minipadpro: 921px;
+
+
+$maxipad: 920px;
+$minipad: 768px;
+
+
+$maxtablet: 767px;
+$mintablet: 481px;
+
+
+$maxmobile: 480px;
+$minmobile: 320px;
+
+
+
+
+@mixin bigscreen {
+    @media (min-width: #{$minbigscreen}) {
+        @content;
+    }
+}
+
+
+@mixin desktop {
+    @media (max-width: #{$maxdesktop}) and (min-width: #{$mindesktop}) {
+        @content;
+    }
+}
+
+
+@mixin laptop {
+    @media (max-width: #{$maxlaptop}) and (min-width: #{$minlaptop}) {
+        @content;
+    }
+}
+
+
+@mixin ipadpro1 {
+    @media (max-width: #{$maxipadpro1}) and (min-width: #{$minipadpro1}) {
+        @content;
+    }
+}
+
+
+@mixin ipadpro {
+    @media (max-width: #{$maxipadpro}) and (min-width: #{$minipadpro}) {
+        @content;
+    }
+}
+
+
+@mixin ipad {
+    @media (max-width: #{$maxipad}) and (min-width: #{$minipad}) {
+        @content;
+    }
+}
+
+
+@mixin tablet {
+    @media (max-width: #{$maxtablet}) and (min-width: #{$mintablet}) {
+        @content;
+    }
+}
+
+
+@mixin mobile {
+    @media (max-width: #{$maxmobile}) and (min-width: #{$minmobile}) {
+        @content;
+    }
+}

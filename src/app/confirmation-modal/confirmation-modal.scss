@@ -1,0 +1,52 @@
+.confirmationBox {
+  height: 146px;
+  font-family: "Poppins", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+  box-sizing: border-box;
+
+  h2 {
+    margin: 8px 0;
+  }
+  mat-dialog-content {
+    font-size: 18px !important;
+    margin: 8px 0;
+  }
+  mat-dialog-actions {
+    margin-top: auto; /* Push to bottom */
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .confirm-btn {
+    background-color: #0f2e5d;
+    padding: 4px 12px;
+    border-radius: 6px;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .cancel-btn {
+    background-color: #797979;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    &:focus-visible {
+      border: none;
+    }
+  }
+}
+.notify {
+  height: 146px;
+  .matDialog {
+    text-align: start;
+  }
+}

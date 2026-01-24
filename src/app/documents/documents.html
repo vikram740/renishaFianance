@@ -1,0 +1,122 @@
+<div class="documentDiv">
+  <h3>Documents</h3>
+  <div class="container-fluid">
+    <!-- <div class="generate-doc">
+      <label class="gen-title">Generate Document</label>
+      <form>
+        <div class="memberId">
+          <label>MemberId</label>
+        </div>
+        <div class="inputBox mt-3">
+          <label (click)="toggleInput()" *ngIf="isInput">Enter</label>
+          <input type="text " class="form-input" placeholder="Enter" *ngIf="!isInput" />
+        </div>
+        <div class="mt-3">
+          <button>Generate Successfully</button>
+        </div>
+      </form>
+    </div> -->
+    <div class="download-doc">
+      <label class="gen-title">Download Document</label>
+      <form>
+        <div class="memberId">
+          <label>MemberId</label>
+        </div>
+        <div class="inputBox mt-3">
+          <input type="text " class="form-input" placeholder="Enter" name="searchId"  [(ngModel)]="searchId" />
+        </div>
+        <div class="mt-3">
+          <button  (click)="searchDownload()">File Download</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <!-- Hidden deed template -->
+  <div id="deed-template" *ngIf="foundData" class="deed-container position-absolute">
+    <!-- Header -->
+    <div class="deed-header text-center">
+      <h1 class="company-name">RENISHA GROUPS</h1>
+      <h2 class="scheme-name">Renisha Savings Scheme</h2>
+      <p class="company-address">4/780c Renisha Groups, Krishnagiri - 635203</p>
+    </div>
+
+    <!-- Title Row -->
+    <div class="deed-title d-flex align-items-center mt-4 mb-2">
+      <span class="deed-id">{{ foundData.generatedId }}</span>
+      <!--generatedId-->
+      <span class="deed-heading">Investment Deed</span>
+    </div>
+
+    <!-- Content -->
+    <div class="address d-flex justify-content-between">
+      <div class="d-flex gap-3">
+        <img [src]="foundData?.user?.photo" height="100px" width="100px" />
+        <div class="userAddress">
+          <p>{{ foundData.user.name }}</p>
+          <p>aadhar number {{ foundData.user.aadhar }}</p>
+          <p>{{ foundData.user.currentAddress }}</p>
+        </div>
+      </div>
+      <div class="d-flex gap-3">
+        <img [src]="foundData?.nominee?.photo" alt="" height="100px" width="100px" />
+        <div class="nomineeAddress">
+          <p>{{ foundData.nominee.name }}</p>
+          <p>aadhar number {{ foundData.nominee.aadhar }}</p>
+          <p>{{ foundData.nominee.currentAddress }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="deed-content mt-4">
+      <p>
+        This Investment Deed is made and entered into on this
+        <strong>{{ foundData.timestamp | date: 'dd-MM-yyyy' }}</strong
+        >, by and between <strong>{{ foundData.user.name }}</strong
+        >, holding Aadhaar Number <strong>{{ foundData.user.aadhar }}</strong
+        >, residing at <strong>{{ foundData.user.currentAddress }}</strong> (hereinafter referred to
+        as the Investor),and <strong>4/780c,Renisha Groups, Krishnagiri</strong>
+        (hereinafter referred to as the Receiver of Investment)
+      </p>
+
+      <p>
+        The Investor has agreed to invest a sum of &#8377;{{ foundData.intrestDetails.invesment }}/-
+        ({{ foundData.intrestDetails.invesment | numberToWords }}) With the Reciever for a fixed
+        tenure of {{ foundData.weeks }} weeks,commencing on<strong>{{
+          foundData.timestamp | date: 'dd-MM-yyyy'
+        }}</strong>
+        and ending At the completion of the tenure amount &#8377;{{
+          foundData.intrestDetails.maturityAmount
+        }}/- ({{ foundData.intrestDetails.maturityAmount | numberToWords }}), the Receiver agrees to
+        pay the Investor a total return of ₹66,030/- (Rupees Sixty-Six Thousand and Thirty only)..
+      </p>
+
+      <p>
+        The Investor hereby declares
+        <strong>{{ foundData.nominee.name }}</strong
+        >, holding Aadhaar Number <strong>{{ foundData.nominee.aadhar }}</strong
+        >, as the Nominee for this investment.In the event of the Investor's demise during the
+        tenure of the scheme, all rights, claims, and payable amounts under this deed shall be
+        transferred to the above-named nominee.
+      </p>
+      <p>
+        This deed shall automatically terminate upon repayment of the total return by the Receiver
+        to the Investor or, in case of the Investor's demise, to the Nominee. This agreement shall
+        be governed by and construed in accordance with the laws of India.
+      </p>
+
+      <p class="deed-note">
+        Note: This is a computer-generated investment deed and does not require any physical
+        signatures.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="deed-footer text-center">
+      <strong>RENISHA GROUPS</strong><br />
+      <span>RENISHA SAVINGS SCHEME</span>
+      <p class="company-address">4/780c Renisha Groups, Krishnagiri - 635203</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+@use'../../variable.scss' as *;
+.approvalDiv{
+    padding: 35px 30px;
+    height: calc(100vh - 120px);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: calc(100% - 300px);
+     @include mobile() {
+    width: 100%;
+    height: calc(100vh - 51px);
+  }
+  @include tablet() {
+    width: 100%;
+    height: calc(100vh - 57px);
+  }
+ 
+    h3{
+        color: #153B62;
+        font-size: 30px;
+        font-weight: 700;
+         @include mobile(){
+            font-size: 25px;
+        }
+      
+    }
+    .manualCard{
+        background-color: #153B62;
+        padding: 10px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        h4{
+            color: #FFFFFF;
+            font-size: 25px;
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+             @include mobile(){
+                font-size: 20px;
+            }
+        }
+        .content{
+            background-color: #FFFFFF;
+            height: 41px;
+            border-radius: 2px;
+            padding: 10px;
+        }
+        p{
+            font-size: 17px;
+            font-family: poppinsRegular;
+            margin-left: 10px;
+            @include mobile(){
+                font-size: 13px;
+            }
+        }
+        .btnDiv{
+            display: flex;
+            justify-content: flex-end;
+             .arrowBtn{
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFFFFF;
+        }
+        }
+       
+
+    }
+}

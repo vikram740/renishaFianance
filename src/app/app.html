@@ -1,0 +1,16 @@
+<ng-container *ngIf="isBrowser">
+    <ngx-sonner-toaster position="top-right"></ngx-sonner-toaster>
+</ng-container>
+
+
+<!-- <ng-container> -->
+<app-topnav
+    *ngIf="!currentUrl().includes('login') && !currentUrl().includes('signup') && !currentUrl().includes('forgetPassword') && !currentUrl().includes('resetPassword')">
+</app-topnav>
+
+<app-sidenav
+    *ngIf="!currentUrl().includes('login') && !currentUrl().includes('signup') && !currentUrl().includes('forgetPassword') && !currentUrl().includes('resetPassword')">
+</app-sidenav>
+<!-- </ng-container> -->
+
+<router-outlet></router-outlet>

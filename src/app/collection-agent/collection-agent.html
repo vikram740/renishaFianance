@@ -1,0 +1,218 @@
+<div class="collectionDiv">
+  <h3>New Agent</h3>
+  <div class="container mt-3">
+    <form [formGroup]="agentForm" (ngSubmit)="onSubmit()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label>Name</label>
+          <input type="text" formControlName="agentName" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentName'].hasError('required') && submitted"
+          >
+            *Name is required
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Date of Birth</label>
+          <input type="date" formControlName="agentBirth" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentBirth'].hasError('required') && submitted"
+          >
+            *DOB is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Email</label>
+          <input type="email" formControlName="agentEmail" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentEmail'].hasError('required') && submitted"
+          >
+            *Email is required
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentEmail'].hasError('email') && submitted"
+          >
+            *Email is invalid
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Phone Number</label>
+          <input
+            type="text"
+            formControlName="agentPhone"
+            class="form-control"
+            onkeypress="
+              return event.charCode == 8 || event.charCode == 0
+                ? null
+                : event.charCode >= 48 && event.charCode <= 57;
+            "
+            maxlength="10"
+          />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentPhone'].hasError('required') && submitted"
+          >
+            *Phone Number is required
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentPhone'].hasError('minlength') && submitted"
+          >
+            *PhoneNo must be exactly 10 digits
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Aadhar Number</label>
+          <input
+            type="text"
+            formControlName="agentAdhaar"
+            class="form-control"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            maxlength="12"
+          />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentAdhaar'].hasError('required') && submitted"
+          >
+            *Aadhar Number is required
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentAdhaar'].hasError('pattern') && submitted"
+          >
+            *Aadhar must be exactly 12 digits
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>PAN Card</label>
+          <input type="text" formControlName="agentPan" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentPan'].hasError('required') && submitted"
+          >
+            *PAN is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Current Address</label>
+          <input type="text" formControlName="agentCurrentAddress" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentCurrentAddress'].hasError('required') && submitted"
+          >
+            *Current Address is required
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Permanent Address</label>
+          <input type="text" formControlName="agentPermanentAddress" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentPermanentAddress'].hasError('required') && submitted"
+          >
+            *Permanent Address is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Signature</label>
+
+          <input
+            #agentSignatureInput
+            type="file"
+            accept="image/*"
+            hidden
+            (change)="onFileSelected($event, 'agentSignature')"
+          />
+
+          <div class="photoDiv" (click)="agentSignatureInput.click()">
+            <span *ngIf="!agentSignatureName" class="material-symbols-outlined filledIcon">
+              upload
+            </span>
+
+            <div *ngIf="agentSignatureName" class="file-name">
+              {{ agentSignatureName.slice(0, 30) }}
+              <span
+                class="material-symbols-outlined remove-icon"
+                (click)="removeFile('agentSignature'); $event.stopPropagation()"
+                type="button"
+              >
+                cancel
+              </span>
+            </div>
+          </div>
+
+          <div class="text-danger" *ngIf="submitted && agentForm.get('agentSignature')?.invalid">
+            *Signature is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Photo Upload</label>
+
+          <input
+            #agentPhotoInput
+            type="file"
+            accept="image/*"
+            hidden
+            (change)="onFileSelected($event, 'agentPhoto')"
+          />
+
+          <div class="photoDiv" (click)="agentPhotoInput.click()">
+            <span *ngIf="!agentPhotoName" class="material-symbols-outlined filledIcon">
+              upload
+            </span>
+
+            <div *ngIf="agentPhotoName" class="file-name">
+              {{ agentPhotoName.slice(0, 30) }}
+              <span
+                class="material-symbols-outlined remove-icon"
+                (click)="removeFile('agentPhoto'); $event.stopPropagation()"
+                type="button"
+              >
+                cancel
+              </span>
+            </div>
+          </div>
+
+          <div class="text-danger" *ngIf="submitted && agentForm.get('agentPhoto')?.invalid">
+            *Photo is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Username</label>
+          <input type="text" formControlName="agentuserName" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentuserName'].hasError('required') && submitted"
+          >
+            *username is required
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Password</label>
+          <input type="password" formControlName="agentPassword" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="agentForm.controls['agentPassword'].hasError('required') && submitted"
+          >
+            *password is required
+          </div>
+        </div>
+
+        <div class="col-12 mt-3">
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

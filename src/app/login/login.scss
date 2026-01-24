@@ -1,0 +1,105 @@
+@use '../../variable.scss' as *;
+
+.loginPage {
+    .login {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+
+        .logo {
+            width: 150px;
+        }
+
+        .labelInputDiv {
+            margin-top: 20px;
+
+            .fieldLabels {
+                font-family: $font-regular;
+                font-size: 18px;
+                font-weight: 400;
+            }
+
+            input {
+                width: 300px;
+                padding: 15px;
+                border-radius: 4px;
+                border: none;
+                background-color: #D9D9D9;
+                font-weight: 400;
+                font-size: 16px;
+                font-family: $font-regular;
+                margin-bottom: 5px;
+
+                @include mobile() {
+                    width: unset !important;
+                    padding: 30px;
+                    font-size: 14px;
+
+
+                }
+
+                &:focus-visible {
+                    outline: none;
+                }
+
+                &::placeholder {
+                    color: black;
+                }
+            }
+        }
+
+
+        .forgotPass {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+
+            a {
+                text-decoration: none;
+                font-weight: 400;
+                font-size: 14px;
+                font-family: $font-regular;
+                color: black;
+            }
+
+            .rememberMeDiv {
+                cursor: pointer;
+
+                .rememberMeLabel {
+                    vertical-align: text-bottom;
+                    padding: 0 5px;
+                }
+            }
+        }
+
+        .signinBtn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 4px;
+            border: none;
+            background-color: #153B62;
+            font-weight: 400;
+            font-size: 16px;
+            font-family: $font-regular;
+            color: white;
+
+            @include mobile() {
+                width: 100% !important;
+            }
+        }
+
+        .errMsg {
+            font-weight: 400;
+            font-size: 12px;
+            font-family: $font-regular;
+            color: red;
+        }
+
+        .signupDiv {
+            margin-top: 20px;
+        }
+    }
+
+}

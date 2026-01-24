@@ -1,0 +1,64 @@
+<div class="topNav">
+  <div class="logoHeading">
+    <img src="/images/renishaLogo.png" alt="" class="img-fluid logoPng" />
+    <h5>RENISHA FINANCE</h5>
+  </div>
+  <div class="profileSection">
+    <div>
+      <h6>{{ userName | uppercase }}</h6>
+      <label for="">{{ userRole | titlecase }}</label>
+    </div>
+    <div class="avatarSection">
+      <img src="/icons/avatar.png" class="avatar" alt="Profile" />
+    </div>
+  </div>
+</div>
+<div class="mobileTopNav">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary bgcolor">
+    <div class="container-fluid navbarWidth">
+      <div class="logoHeading">
+        <img src="/images/renishaLogo.png" alt="" class="img-fluid logoPng" />
+        <h5>RENISHA FINANCE</h5>
+      </div>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav" #navbarNav>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" *ngFor="let item of isAdminRole ? menuAdminItems : menuMemberItems">
+            <a
+              class="nav-link"
+              [routerLink]="item.link"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+                (click)="closeMobileMenu(navbarNav)"
+            >
+              {{ item.name }}
+            </a>
+            <hr>
+
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="#"
+              (click)="logout(); closeMobileMenu(navbarNav)"
+            >
+              Logout
+            </a>
+
+          </li>
+            
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>

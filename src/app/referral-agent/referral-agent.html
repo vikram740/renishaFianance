@@ -1,0 +1,191 @@
+<div class="referralDiv">
+  <h3>New Agent</h3>
+  <div class="container mt-3">
+    <form [formGroup]="referralForm" (ngSubmit)="onSubmit()">
+      <div class="row g-3">
+      
+           <div class="col-12 col-md-12">
+          <label>Referred Agent Id</label>
+          <input type="text" formControlName="referredAgentId" class="form-control" />
+           <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredAgentId'].hasError('required') && submitted"
+          >
+            *Referred AgentId is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Name</label>
+          <input type="text" formControlName="referredName" class="form-control" />
+           <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredName'].hasError('required') && submitted"
+          >
+            *Name is required
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Date of Birth</label>
+          <input type="date" formControlName="referredBirth" class="form-control" />
+            <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredBirth'].hasError('required') && submitted"
+          >
+            *Date of Birth is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Email</label>
+          <input type="email" formControlName="referredEmail" class="form-control" />
+             <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredEmail'].hasError('required') && submitted"
+          >
+            *Email is required
+          </div>
+           <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredEmail'].hasError('email') && submitted"
+          >
+            *Email is invalid
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Phone No</label>
+          <input type="text" formControlName="referredPhone" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredPhone'].hasError('required') && submitted"
+          >
+            *Phone Number is required
+          </div>
+             <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredPhone'].hasError('minlength') && submitted"
+          >
+            *PhoneNo must be exactly 10 digits
+          </div>
+
+        </div>
+
+        <div class="col-md-6">
+          <label>Current Address</label>
+          <input type="text" formControlName="referredCurrentAddress" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredCurrentAddress'].hasError('required') && submitted"
+          >
+            *Current Addressis required
+          </div>
+          
+        </div>
+        <div class="col-md-6">
+          <label>Permanent Address</label>
+          <input type="text" formControlName="referredPermanentAddress" class="form-control" />
+            <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredPermanentAddress'].hasError('required') && submitted"
+          >
+            *Permanent Address is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Referred Plan</label>
+          <input type="text" formControlName="referredPlan" class="form-control" />
+           <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredPlan'].hasError('required') && submitted"
+          >
+            *Referred Plan is required
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Referred Amount</label>
+          <input type="text" formControlName="referredAmount" class="form-control" />
+           <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredAmount'].hasError('required') && submitted"
+          >
+            *Referred Amount is required
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label>Referred Paid</label>
+          <input type="text" formControlName="referredPaid" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredPaid'].hasError('required') && submitted"
+          >
+            *Referred Paid is required
+          </div>
+          
+        </div>
+        <div class="col-md-6">
+          <label>Referred Pending</label>
+          <input type="text" formControlName="referredPending" class="form-control" />
+          <div
+            class="text-danger"
+            *ngIf="referralForm.controls['referredPending'].hasError('required') && submitted"
+          >
+            *Referred Pending is required
+          </div>
+        </div>
+
+        <div class="col-12 mt-3">
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!-- <div>
+    <div class=" container d-flex justify-content-between">
+      <h3>New Agent</h3>
+       <button class="btn btn-primary add-agent"> Add New Agent</button>
+    </div>
+    <div class="container referred">
+      <form>
+        <div class="row mt-5 ">
+          <div class="col-12 col-md-6 mb-3">
+            <label >
+              Referred Plan
+            </label>
+            <input type="text" name="referredName" class="form-control " />
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label >Referred Amount</label>
+            <input
+              type="text"
+              name="referredContact"
+              class="form-control "
+              maxlength="10"
+            />
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label >
+              Referred Paid
+            </label>
+            <input type="email" name="referredEmail" class="form-control " />
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+            <label >
+              Referred Pending
+            </label>
+            <input type="email" name="referredEmail" class="form-control " />
+          </div>
+          <div>
+            <div class="btn btn-primary submitBtn w-100">Submit</div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div> -->
+</div>

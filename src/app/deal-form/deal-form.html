@@ -1,0 +1,108 @@
+<div class="dealDiv">
+  <h3>New Deal</h3>
+
+  <div class="container mt-3">
+    <form [formGroup]="dealForm" (ngSubmit)="onSubmit()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label>Member ID</label>
+          <input type="text" formControlName="memberId" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label>Member Name</label>
+          <input type="text" formControlName="memberName" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label>Member Aadhar</label>
+          <input type="text" formControlName="memberAadhar" maxlength="12" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label>MemberPan</label>
+          <input type="text" formControlName="memberPan" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label>Date of Birth</label>
+          <input type="date" formControlName="memberBirth" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label>Amount</label>
+          <input
+            type="text"
+            formControlName="tenureAmount"
+            class="form-control"
+            (input)="calculatePlanAndEndDate()"
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label>Percentage</label>
+          <input type="text" formControlName="percentage" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+          <label>Installment</label>
+          <input
+            type="text"
+            formControlName="tenureInstallment"
+            class="form-control"
+            (input)="calculatePlanAndEndDate()"
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label>Tenure Type</label>
+          <select
+            class="form-select"
+            formControlName="tenureType"
+            (change)="calculatePlanAndEndDate()"
+          >
+            <option value="">Select Tenure</option>
+            <option value="days">Days</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label>Plan</label>
+          <input type="text" formControlName="tenurePlan" class="form-control" readonly />
+        </div>
+
+        <div class="col-md-6">
+          <label>From Date</label>
+          <input
+            type="date"
+            formControlName="fromDate"
+            class="form-control"
+            (change)="calculatePlanAndEndDate()"
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label>End Date</label>
+          <input type="date" formControlName="endDate" class="form-control" readonly />
+        </div>
+
+        <div class="col-md-6">
+          <label>AgentId</label>
+          <select class="form-select" formControlName="agentNameId">
+            <option value="">Select AgentId</option>
+            <option *ngFor="let item of agentList" [value]="item.agentIdNo">
+              {{ item.agentName }} - {{ item.agentIdNo }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-12 mt-3">
+          <button type="submit" class="btn btn-primary w-100">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,207 @@
+@use '../../variable.scss' as *;
+.documentDiv {
+  padding: 35px 30px;
+  height: calc(100vh - 120px);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: calc(100% - 300px);
+  @include mobile() {
+    width: 100%;
+    padding: 20px 15px;
+  }
+  @include tablet() {
+    width: 100%;
+    padding: 20px 15px;
+  }
+
+  h3 {
+    color: #153b62;
+    font-size: 30px;
+    font-weight: 700;
+    @include mobile() {
+      font-size: 25px;
+    }
+  }
+  .container-fluid {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 25px;
+    align-items: center;
+    gap: 35px;
+
+    .gen-title {
+      color: #153b62;
+      font-size: 25px;
+      font-weight: 500;
+      font-family: poppinsRegular;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      @include mobile() {
+        font-size: 20px;
+      }
+    }
+    form {
+      padding: 10px 15px;
+      .memberId {
+        height: 44px;
+        width: 255px;
+        border: 1px solid #00000040;
+        border-radius: 5px;
+        text-align: center;
+        padding: 5px;
+        font-size: 16px;
+        font-family: poppinsRegular;
+        font-weight: 500;
+        // box-shadow: 0px 0px 4px 0px #00000040;
+        @include mobile() {
+          width: 200px;
+        }
+      }
+      .inputBox {
+        height: 44px;
+        width: 255px;
+        border: 1px solid #00000040;
+        border-radius: 5px;
+        text-align: center;
+        padding: 5px;
+        font-size: 16px;
+        font-family: poppinsRegular;
+        font-weight: 500;
+        // box-shadow: 0px 0px 4px 0px #00000040;
+        @include mobile() {
+          width: 200px;
+        }
+      }
+      .form-input {
+        border: none;
+        &:focus {
+          outline: none;
+        }
+      }
+      button {
+        background-color: #153b62;
+        color: white;
+        font-family: poppinsRegular;
+        width: 254px;
+        height: 44px;
+        font-weight: 500;
+        font-size: 16px;
+        border-radius: 3px;
+        border: 1px solid #153b62;
+        @include mobile() {
+          width: 200px;
+        }
+      }
+    }
+  }
+
+  .download-section{
+   margin-left: 300px;
+}
+.download-section h2 {
+  font-weight: 600;
+}
+p{
+    font-size: 18px;
+}
+
+
+.deed-container {
+  width: 900px; 
+  padding: 4px;
+  min-height: 1140px;
+  background: #ffffff;
+  font-family: "Times New Roman", serif;
+  position: absolute;
+  left: -9999px; 
+  top: 0;
+
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    object-fit: cover;
+    border: 1px solid #eee;
+    width: 130px;
+    height: 130px;
+  }
+}
+
+.deed-header {
+  background-color: #b8caa3;
+  padding: 15px;
+  border-bottom: 3px solid #6d7f2e;
+}
+
+.company-name {
+  color: #6d7f2e;
+  margin: 0;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.scheme-name {
+  color: #6d7f2e;
+  margin: 0;
+  font-size: 24px;
+}
+
+.company-address {
+  margin: 5px 0;
+  font-size: 14px;
+}
+.address {
+  padding: 20px;
+}
+/* Title row */
+.deed-title {
+  font-size: 22px;
+  padding: 15px;
+}
+
+.deed-id {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.deed-heading {
+  margin-left: 90px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Content */
+.deed-content {
+  text-align: justify;
+  line-height: 1.6;
+  font-size: 16px;
+  padding: 20px;
+}
+
+.deed-content p {
+  margin-bottom: 15px;
+}
+
+/* Note */
+.deed-note {
+  margin-top: 40px;
+  font-style: italic;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+/* Footer */
+.deed-footer {
+  margin-top: 40px;
+  background-color: #b8caa3;
+  padding: 12px;
+  border-top: 3px solid #6d7f2e;
+  font-size: 12px;
+}
+
+.deed-footer strong {
+  color: #6d7f2e;
+}
+}

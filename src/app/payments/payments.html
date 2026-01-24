@@ -1,0 +1,96 @@
+<div class="paymentsDiv">
+  <h3>Payment QRs</h3>
+
+  <!-- ACTIVE QR -->
+  <div *ngIf="activeQR; else noQr" class="qr-list">
+    <div class="qr-item active-qr">
+      <span>{{ activeQR.qrCodeFileName }}</span>
+      <span class="material-symbols-outlined eye-btn" (click)="viewQr(activeQR)"> visibility </span>
+    </div>
+  </div>
+
+  <ng-template #noQr>
+    <p class="text-muted text-center">No Primary QR Available</p>
+  </ng-template>
+
+  <!-- UPLOAD BUTTON -->
+  <button class="upload-btn mt-3" (click)="requestUpload(fileInput)">Upload QR</button>
+  <input type="file" hidden #fileInput accept="image/*" (change)="onFileSelected($event)" />
+
+  <!-- QR LIST BUTTONS -->
+  <div class="btn-group w-100 mt-3" *ngIf="qrList.length">
+    <button
+      *ngFor="let qr of qrList; let i = index"
+      class="btn"
+      [ngClass]="qr.isPrimary ? 'btn-success' : 'btn-danger'"
+      (click)="requestPrimaryChange(qr)"
+    >
+      {{ qr.qrCodeFileName }}
+    </button>
+  </div>
+</div>
+
+<!-- VIEW QR MODAL -->
+<!-- VIEW QR MODAL -->
+<div class="modal fade" id="qrModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ selectedQR?.name }}</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <img *ngIf="selectedQR?.image; else noImage" [src]="selectedQR.image" class="img-fluid" />
+
+        <ng-template #noImage>
+          <p class="text-danger text-center">QR Image not available</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal fade" id="adminModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Admin Verification</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Enter Admin Password"
+          [(ngModel)]="enteredPassword"
+        />
+        <div class="text-danger mt-2" *ngIf="passwordError">Wrong password</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-success" (click)="verifyAdmin()">Verify</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ confirmTitle }}</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-success" (click)="confirmAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>

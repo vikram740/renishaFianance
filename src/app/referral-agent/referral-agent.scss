@@ -1,0 +1,67 @@
+@use'../../variable.scss' as *;
+.referralDiv {
+    padding: 35px 30px;
+    height: calc(100vh - 120px);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: calc(100% - 300px);
+      @include mobile() {
+    width: 100%;
+    height: calc(100vh - 51px);
+  }
+  @include tablet() {
+    width: 100%;
+    height: calc(100vh - 57px);
+  }
+
+   h3{
+        color: #153B62;
+        font-size: 30px;
+        font-weight: 700;
+        @include mobile(){
+          font-size: 18px;
+        }
+      
+    }
+    form{
+      font-family: poppinsRegular;
+      font-size: 17px;
+    }
+    .btn-primary{
+      background-color: #153B62;
+      border: none;
+    }
+    .form-control{
+      // box-shadow: 0px 0px 4px 0px #00000040;
+      height: 44px;
+    }
+    // label{
+    //   color: #00000099;
+    // }
+
+  .add-agent{
+    width: 175px;
+    height: 44px;
+    font-family: poppinsRegular;
+    font-size: 16px;
+    color: #FFFFFF;
+    background-color: #153B62;
+    @include mobile(){
+      font-size: 11px;
+      width: 75px;
+    }
+
+  }
+  .submitBtn{
+    height: 44px;
+    font-family: poppinsRegular;
+    font-size: 16px;  
+    background-color: #153B62;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+}

@@ -1,0 +1,231 @@
+<!-- <div class="loading-div" *ngIf="isLoading">
+    <mat-spinner class="custom-spinner"></mat-spinner>
+</div> -->
+<div class="memberDiv">
+  <div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-md-7 col-lg-5">
+          <div class="searchBar">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search"
+              class="form-input w-100"
+              (input)="onSearch($event)"
+            />
+            <span class="material-symbols-outlined"> search </span>
+          </div>
+        </div>
+        <div class="col-12 col-md-5 col-lg-7">
+          <div class="actionContainer">
+            <div>
+              <button class="actionButtons" (click)="exportToExcel()">Export</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container table-responsive">
+      <table class="table mt-3">
+        <thead>
+          <tr>
+            <th>Deal No</th>
+            <th>Member ID</th>
+            <th>Name</th>
+            <th>Tenure Type</th>
+            <th>Plan</th>
+            <th>Amount</th>
+            <th>Installment</th>
+            <th>%</th>
+            <th>From</th>
+            <th>To</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of dealList">
+            <td>{{ d.dealIdNo }}</td>
+            <td>{{ d.memberIdNo }}</td>
+            <td>{{ d.memberName }}</td>
+            <td>{{ d.tenureType }}</td>
+            <td>{{ d.tenurePlan }}</td>
+            <td>{{ d.tenureAmount }}</td>
+            <td>{{ d.tenureInstallment }}</td>
+            <td>{{ d.percentage }}%</td>
+            <td>{{ d.fromDate | date }}</td>
+            <td>{{ d.endDate | date }}</td>
+
+            <td class="d-flex gap-2">
+              <span class="material-symbols-outlined">visibility</span>
+              <span class="material-symbols-outlined">edit</span>
+              <span class="material-symbols-outlined text-danger">delete</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="limit"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  </div>
+</div>
+<!-- <div
+  class="modal fade"
+  id="editMemberModal"
+  tabindex="-1"
+  aria-labelledby="editMemberModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="dealForm" (ngSubmit)="saveDealEdit()">
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Deal No <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="dealIdNo" class="form-control" readonly />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Tenure Type <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="tenureType" class="form-control" />
+              <div
+                class="text-danger"
+                *ngIf="submitted && dealForm.get('tenureType')?.hasError('required')"
+              >
+                *Tenure Type is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Plan <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="number" formControlName="tenurePlan" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Amount <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="number" formControlName="tenureAmount" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Installment <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="number" formControlName="tenureInstallment" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Percentage <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="number" formControlName="percentage" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> From Date <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="date" formControlName="fromDate" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> End Date <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="date" formControlName="endDate" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Agent ID <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="agentNameId" class="form-control" />
+            </div>
+          </div>
+
+          <div class="buttonDiv">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+              (click)="closeModal()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+     
+    </div>
+  </div>
+</div> -->
+<!-- <div
+  class="modal fade"
+  id="documentViewModal"
+  tabindex="-1"
+  aria-labelledby="documentViewModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Documents</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="onDocumentModalClosed()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="selectedDocs; else noDocs">
+          <div class="mb-3" *ngIf="selectedDocs.photo">
+            <h6>Photo</h6>
+            <img [src]="selectedDocs.photo" class="img-fluid rounded border" />
+          </div>
+
+          <div class="mb-3" *ngIf="selectedDocs.aadhar">
+            <h6>Aadhar</h6>
+            <img [src]="selectedDocs.aadhar" class="img-fluid rounded border" />
+          </div>
+
+          <div class="mb-3" *ngIf="selectedDocs.sign">
+            <h6>Signature</h6>
+            <img [src]="selectedDocs.sign" class="img-fluid rounded border" />
+          </div>
+          <div class="mb-3" *ngIf="selectedDocs.pan">
+            <h6>PAN Card</h6>
+            <img [src]="selectedDocs.pan" class="img-fluid rounded border" />
+          </div>
+        </ng-container>
+
+        <ng-template #noDocs>
+          <p class="text-center text-muted">No documents available</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div> -->

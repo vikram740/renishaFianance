@@ -1,0 +1,79 @@
+<div class="sidenav">
+  <div class="logoHeading">
+    <img src="/images/renishaLogo.png" alt="" class="img-fluid logoPng" />
+    <h5>RENISHA FINANCE</h5>
+  </div>
+  <div class="tabs">
+    <!-- <div
+        class="eachTabsection"
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span class="material-symbols-outlined icons">
+          <mat-icon> dashboard </mat-icon> <label for="">Dashboard</label>
+        </span>
+      </div> -->
+
+    <!-- on role base only showing the sidenav items -->
+    <!-- <div
+        class="eachTabsection"
+        routerLink="/collection"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        *ngIf="role !== 'customer'"
+      >
+        <span class="material-symbols-outlined icons">
+          <mat-icon> wallet </mat-icon> <label for="">Collection</label>
+        </span>
+      </div>
+      <div
+        class="eachTabsection"
+        routerLink="/memberDashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span class="material-symbols-outlined icons">
+          <mat-icon> person_3 </mat-icon> <label for="">Member Login</label>
+        </span>
+      </div>
+    </div>
+    <div class="logoutDiv">
+      <span class="material-symbols-outlined icons" (click)="logout()">
+        <mat-icon> logout </mat-icon> <label for="">Logout</label>
+      </span>
+    </div> -->
+    <div>
+      <div
+        class="eachTabsection"
+        *ngFor="let item of isAdminRole ? menuAdminItems : menuMemberItems"
+        [routerLink]="item.link"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <ng-container *ngIf="item.icon">
+          <img [src]="item.icon" alt="{{ item.name }}" class="custom-icon" />
+        </ng-container>
+        <label>{{ item.name }}</label>
+      </div>
+    </div>
+
+    <div>
+      <!-- <div
+        *ngFor="let item of utlityMenu"
+        class="eachTabsection"
+        [routerLink]="item.link"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <img [src]="item.icon" class="custom-icon" />
+        <label>{{ item.name }}</label>
+      </div> -->
+      <div (click)="logout() " class="eachTabsection">
+        <img src="/icons/Logout.png" class="custom-icon" />
+        <label>Log Out</label>
+
+      </div>
+    </div>
+  </div>
+</div>

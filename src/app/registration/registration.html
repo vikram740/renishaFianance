@@ -1,0 +1,519 @@
+<!-- <div class="loading-div" *ngIf="isLoading">
+    <mat-spinner class="custom-spinner"></mat-spinner>
+</div> -->
+<div class="registrationDiv">
+  <div class="container-fluid">
+    <form [formGroup]="generateID" (ngSubmit)="generateId()">
+      <div class="row">
+        <div class="col-12 col-md-12 col-lg-6">
+          <div class="yourDetails">
+            <h3>Your Details</h3>
+            <div formGroupName="member">
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Name <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="text" formControlName="memberName" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberName')?.hasError('required')"
+                  >
+                    *Name is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Date Of Birth <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="date" formControlName="memberBirth" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberBirth')?.hasError('required')"
+                  >
+                    *Date of Birth is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Aadhar <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="memberAdhaar"
+                    class="form-control"
+                    inputmode="numeric"
+                    maxlength="12"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberAdhaar')?.hasError('required')"
+                  >
+                    *Aadhar is required
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="generateID.get('member.memberAdhaar')?.hasError('minlength')"
+                  >
+                    *Aadhar must be exactly 12 digits
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title">PAN Number <span>:</span></label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="memberPan"
+                    class="form-control"
+                    maxlength="10"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberPan')?.invalid"
+                  >
+                    *PAN is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Contact No <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="memberPhone"
+                    class="form-control"
+                    inputmode="numeric"
+                    maxlength="10"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberPhone')?.hasError('required')"
+                  >
+                    *Contact No is required
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="generateID.get('member.memberPhone')?.hasError('minlength')"
+                  >
+                    *Phone No must be exactly 10 digits
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Email <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="email" formControlName="memberEmail" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberEmail')?.hasError('required')"
+                  >
+                    *Email is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title">Joining Date <span>:</span></label>
+                <div class="col-12 col-md-7">
+                  <input type="date" class="form-control" formControlName="memberJoiningDate" />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Current Address <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="text" formControlName="memberCurrentAddress" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted &&
+                      generateID.get('member.memberCurrentAddress')?.hasError('required')
+                    "
+                  >
+                    *Current Address is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Permanent Address <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="memberPermanentAddress"
+                    class="form-control"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted &&
+                      generateID.get('member.memberPermanentAddress')?.hasError('required')
+                    "
+                  >
+                    *Permanent Address is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title">Signature <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    #memberSignatureInput
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onFileSelected($event, 'memberSignature')"
+                  />
+
+                  <div class="photoDiv" (click)="memberSignatureInput.click()">
+                    <span *ngIf="!memberSignatureName" class="material-symbols-outlined filledIcon"
+                      >upload</span
+                    >
+                    <div *ngIf="memberSignatureName" class="file-name">
+                      {{ memberSignatureName.slice(0, 30) }}
+                      <span
+                        class="material-symbols-outlined remove-icon"
+                        (click)="removeFile('memberSignature'); $event.stopPropagation()"
+                        type="button"
+                        >cancel</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberSignature')?.invalid"
+                  >
+                    *Signature is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Photo <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    #memberPhotoInput
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onFileSelected($event, 'memberPhoto')"
+                  />
+
+                  <div class="photoDiv" (click)="memberPhotoInput.click()">
+                    <span *ngIf="!memberPhotoName" class="material-symbols-outlined filledIcon"
+                      >upload</span
+                    >
+                    <div *ngIf="memberPhotoName" class="file-name">
+                      {{ memberPhotoName.slice(0, 30) }}
+                      <span
+                        class="material-symbols-outlined remove-icon"
+                        (click)="removeFile('memberPhoto'); $event.stopPropagation()"
+                        type="button"
+                        >cancel</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.memberPhoto')?.invalid"
+                  >
+                    *Photo is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title">Aadhar Upload<span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    #memberAadharInput
+                    type="file"
+                    accept="image/*,.pdf"
+                    hidden
+                    (change)="onFileSelected($event, 'uploadMemberAdhaar')"
+                  />
+
+                  <div class="photoDiv" (click)="memberAadharInput.click()">
+                    <span *ngIf="!memberAdhaarName" class="material-symbols-outlined filledIcon">
+                      upload
+                    </span>
+
+                    <div *ngIf="memberAdhaarName" class="file-name">
+                      {{ memberAdhaarName.slice(0, 30) }}
+                      <span
+                        class="material-symbols-outlined remove-icon"
+                        (click)="removeFile('uploadMemberAdhaar'); $event.stopPropagation()"
+                      >
+                        cancel
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title">PAN Upload<span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    #memberPanInput
+                    type="file"
+                    accept="image/*,.pdf"
+                    hidden
+                    (change)="onFileSelected($event, 'uploadMemberPan')"
+                  />
+
+                  <div class="photoDiv" (click)="memberPanInput.click()">
+                    <span *ngIf="!memberPanName" class="material-symbols-outlined filledIcon"
+                      >upload</span
+                    >
+                    <div *ngIf="memberPanName" class="file-name">
+                      {{ memberPanName.slice(0, 30) }}
+                      <span
+                        class="material-symbols-outlined remove-icon"
+                        (click)="removeFile('uploadMemberPan'); $event.stopPropagation()"
+                        >cancel</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-6">
+          <div class="NomineeDetails">
+            <h3>Nominee Details</h3>
+            <div formGroupName="nominee">
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Name <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="text" formControlName="nomineeName" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('nominee.nomineeName')?.hasError('required')"
+                  >
+                    *Name is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Date Of Birth <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="date" formControlName="nomineeBirth" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted && generateID.get('nominee.nomineeBirth')?.hasError('required')
+                    "
+                  >
+                    *Date of Birth is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Aadhar <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="nomineeAdhaar"
+                    class="form-control"
+                    inputmode="numeric"
+                    maxlength="12"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted && generateID.get('nominee.nomineeAdhaar')?.hasError('required')
+                    "
+                  >
+                    *Aadhar is required
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="generateID.get('nominee.nomineeAdhaar')?.hasError('minlength')"
+                  >
+                    *Aadhar must be exactly 12 digits
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Contact No <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="nomineePhone"
+                    class="form-control"
+                    inputmode="numeric"
+                    maxlength="10"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted && generateID.get('nominee.nomineePhone')?.hasError('required')
+                    "
+                  >
+                    *Contact No is required
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="generateID.get('nominee.nomineePhone')?.hasError('minlength')"
+                  >
+                    *ContactNo must be exactly 10 digits
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Email <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="email" formControlName="nomineeEmail" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted && generateID.get('nominee.nomineeEmail')?.hasError('required')
+                    "
+                  >
+                    *Email is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Relation <span>:</span> </label>
+
+                <div class="col-12 col-md-7">
+                  <select class="form-control" formControlName="nomineeRelationship">
+                    <option value="">Select Relation</option>
+                    <option value="Father">Father</option>
+                    <option value="Mother">Mother</option>
+                    <option value="Husband">Husband</option>
+                    <option value="Wife">Wife</option>
+                    <option value="Son">Son</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Brother">Brother</option>
+                    <option value="Sister">Sister</option>
+                    <option value="Other">Other</option>
+                  </select>
+
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('nominee.nomineeRelation')?.invalid"
+                  >
+                    *Relation is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Current Address <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input type="text" formControlName="nomineeCurrentAddress" class="form-control" />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted &&
+                      generateID.get('nominee.nomineeCurrentAddress')?.hasError('required')
+                    "
+                  >
+                    *Current Address is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Permanent Address <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    type="text"
+                    formControlName="nomineePermanentAddress"
+                    class="form-control"
+                  />
+                  <div
+                    class="text-danger"
+                    *ngIf="
+                      submitted &&
+                      generateID.get('nominee.nomineePermanentAddress')?.hasError('required')
+                    "
+                  >
+                    *Permanent Address is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title">Signature <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    #nomineeSignatureInput
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onFileSelected($event, 'nomineeSignature')"
+                  />
+
+                  <div class="photoDiv" (click)="nomineeSignatureInput.click()">
+                    <span *ngIf="!nomineeSignatureName" class="material-symbols-outlined filledIcon"
+                      >upload</span
+                    >
+                    <div *ngIf="nomineeSignatureName" class="file-name">
+                      {{ nomineeSignatureName.slice(0, 30) }}
+                      <span
+                        class="material-symbols-outlined remove-icon"
+                        (click)="removeFile('nomineeSignature'); $event.stopPropagation()"
+                        type="button"
+                        >cancel</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('nominee.nomineeSignature')?.invalid"
+                  >
+                    *Signature is required
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-12 col-md-5 title"> Photo <span>:</span> </label>
+                <div class="col-12 col-md-7">
+                  <input
+                    #nomineePhotoInput
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onFileSelected($event, 'nomineePhoto')"
+                  />
+
+                  <div class="photoDiv" (click)="nomineePhotoInput.click()">
+                    <span *ngIf="!nomineePhotoName" class="material-symbols-outlined filledIcon"
+                      >upload</span
+                    >
+                    <div *ngIf="nomineePhotoName" class="file-name">
+                      {{ nomineePhotoName.slice(0, 30) }}
+                      <span
+                        class="material-symbols-outlined remove-icon"
+                        (click)="removeFile('nomineePhoto'); $event.stopPropagation()"
+                        type="button"
+                        >cancel</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('nominee.nomineePhoto')?.invalid"
+                  >
+                    *Photo is required
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center mt-4">
+        <button type="submit" class="btn">Generate ID</button>
+      </div>
+    </form>
+  </div>
+</div>

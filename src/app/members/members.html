@@ -1,0 +1,302 @@
+<!-- <div class="loading-div" *ngIf="isLoading">
+    <mat-spinner class="custom-spinner"></mat-spinner>
+</div> -->
+<div class="memberDiv">
+  <div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-md-7 col-lg-5">
+          <div class="searchBar">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search"
+              class="form-input w-100"
+              (input)="onSearch($event)"
+            />
+            <span class="material-symbols-outlined"> search </span>
+          </div>
+        </div>
+        <div class="col-12 col-md-5 col-lg-7">
+          <div class="actionContainer">
+            <div>
+              <button class="actionButtons">Edit Columns</button>
+            </div>
+            <div>
+              <button class="actionButtons" (click)="exportToExcel()">Export</button>
+            </div>
+
+            <div>
+              <button class="actionButtons">Add Member</button>
+            </div>
+
+            <div>
+              <button class="actionButtons d-flex align-items-center gap-2 text-center">
+                <img src="\icons\filter.png" class="filterIcon" />
+                Filter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-4">
+      <div class="filter">
+        <label>
+          Contact Owner <span class="material-symbols-outlined arrowIcon"> arrow_drop_down </span>
+        </label>
+        <label>
+          Create date <span class="material-symbols-outlined arrowIcon"> arrow_drop_down </span>
+        </label>
+        <label>
+          Last activity date
+          <span class="material-symbols-outlined arrowIcon"> arrow_drop_down </span>
+        </label>
+        <label> More+ </label>
+        <label>
+          Advanced Filters
+          <img src="\icons\filter.png" class="filterIcon" />
+        </label>
+      </div>
+    </div>
+    <div class="container table-responsive">
+      <table class="table mt-3">
+        <thead>
+          <tr>
+            <th>MemberId</th>
+            <th class="d-flex"><input type="checkbox" />Name</th>
+            <th>Phone No</th>
+            <th>Total Amount</th>
+            <th>Last Collection Date</th>
+            <th>Location</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of membersList">
+            <td>{{ member.memberIdNo }}</td>
+            <td class="d-flex"><input type="checkbox" />{{ member.memberName }}</td>
+            <td>{{ member.memberPhone }}</td>
+            <td>-</td>
+            <td>-</td>
+            <td>{{ member.memberPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
+            <td class="d-flex gap-2">
+              <span
+                class="material-symbols-outlined"
+                data-bs-toggle="modal"
+                data-bs-target="#documentViewModal"
+                (click)="viewDocuments(member)"
+              >
+                visibility
+              </span>
+              <span class="material-symbols-outlined" > person </span>
+              <span
+                class="material-symbols-outlined"
+                data-bs-toggle="modal"
+                data-bs-target="#editMemberModal"
+                (click)="editMember(member)"
+              >
+                edit
+              </span>
+              <span class="material-symbols-outlined text-danger" (click)="openDialog(member._id)">
+                delete
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="limit"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      (page)="onPageChange($event)"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="editMemberModal"
+  tabindex="-1"
+  aria-labelledby="editMemberModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Member</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="generateID" (ngSubmit)="saveEdit()">
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Name <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="memberName" class="form-control" />
+              <div
+                class="text-danger"
+                *ngIf="submitted && generateID.get('memberName')?.hasError('required')"
+              >
+                *Name is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Date Of Birth <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="date" formControlName="memberBirth" class="form-control" />
+              <div
+                class="text-danger"
+                *ngIf="submitted && generateID.get('memberBirth')?.hasError('required')"
+              >
+                *Date of Birth is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Aadhar <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="memberAdhaar" class="form-control" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Contact No <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input
+                type="text"
+                formControlName="memberPhone"
+                class="form-control"
+                inputmode="numeric"
+                maxlength="10"
+              />
+              <div
+                class="text-danger"
+                *ngIf="submitted && generateID.get('memberPhone')?.hasError('required')"
+              >
+                *Contact No is required
+              </div>
+              <div class="text-danger" *ngIf="generateID.get('memberPhone')?.hasError('minlength')">
+                *Phone No must be exactly 10 digits
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Email <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="email" formControlName="memberEmail" class="form-control" />
+              <div
+                class="text-danger"
+                *ngIf="submitted && generateID.get('memberEmail')?.hasError('required')"
+              >
+                *Email is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Current Address <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="memberCurrentAddress" class="form-control" />
+              <div
+                class="text-danger"
+                *ngIf="submitted && generateID.get('memberCurrentAddress')?.hasError('required')"
+              >
+                *Current Address is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-12 col-md-5 title"> Permanent Address <span>:</span> </label>
+            <div class="col-12 col-md-7">
+              <input type="text" formControlName="memberPermanentAddress" class="form-control" />
+              <div
+                class="text-danger"
+                *ngIf="submitted && generateID.get('memberPermanentAddress')?.hasError('required')"
+              >
+                *Permanent Address is required
+              </div>
+            </div>
+          </div>
+          <div class="buttonDiv">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+              (click)="closeModal()"
+            >
+              cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+      <!-- <div class="modal-footer">
+       
+      </div> -->
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="documentViewModal"
+  tabindex="-1"
+  aria-labelledby="documentViewModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Documents</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="onDocumentModalClosed()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="selectedDocs; else noDocs">
+          <div class="mb-3" *ngIf="selectedDocs.photo">
+            <h6>Photo</h6>
+            <img [src]="selectedDocs.photo" class="img-fluid rounded border" />
+          </div>
+
+          <div class="mb-3" *ngIf="selectedDocs.aadhar">
+            <h6>Aadhar</h6>
+            <img [src]="selectedDocs.aadhar" class="img-fluid rounded border" />
+          </div>
+
+          <div class="mb-3" *ngIf="selectedDocs.sign">
+            <h6>Signature</h6>
+            <img [src]="selectedDocs.sign" class="img-fluid rounded border" />
+          </div>
+          <div class="mb-3" *ngIf="selectedDocs.pan">
+            <h6>PAN Card</h6>
+            <img [src]="selectedDocs.pan" class="img-fluid rounded border" />
+          </div>
+        </ng-container>
+
+        <ng-template #noDocs>
+          <p class="text-center text-muted">No documents available</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+

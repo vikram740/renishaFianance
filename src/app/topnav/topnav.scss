@@ -1,0 +1,156 @@
+@use '../../variable.scss' as *;
+
+.topNav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+  height: 120px;
+  background: #000;
+  float: right;
+  width: calc(100% - 300px);
+  @include mobile() {
+    width: 100%;
+    padding: 5px;
+    height: 64px;
+    z-index: 999;
+    position: fixed;
+    display: none;
+  }
+  @include tablet() {
+    width: 100%;
+    padding: 5px;
+     display: none;
+  }
+
+  .logoHeading {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    width: 300px;
+    justify-content: center;
+    color: white;
+    letter-spacing: 4px;
+    font-weight: 500;
+
+    .logoPng {
+      // width: 50px;
+      height: 50px;
+      padding: 0 30px;
+      @include mobile() {
+        height: 36px;
+        padding: 0 2px;
+      }
+    }
+
+    h5 {
+      margin: 0;
+      @include mobile() {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .profileSection {
+    display: flex;
+    // padding: 0 30px;
+    align-items: center;
+    @include mobile() {
+      display: none;
+    }
+    @include tablet() {
+      display: none;
+    }
+
+    h6,
+    label {
+      color: white;
+      font-family: $font-regular;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .avatarSection {
+      display: flex;
+      align-items: center;
+      margin: 0 30px;
+
+      .avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid #ddd;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.logoPng {
+  // width: 50px;
+  height: 50px;
+  padding: 0 30px;
+  @include mobile() {
+    padding: 0;
+  }
+}
+
+.mobileTopNav {
+  display: none;
+  @include mobile() {
+    display: block;
+    height: 64px;
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 9; // higher than desktop
+    color: #fff;
+  }
+  @include tablet() {
+    display: block;
+    height: 80px;
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 9; // higher than desktop
+    color: #fff;
+  }
+  .logoHeading {
+    display: flex;
+    align-items: center;
+    height: 59px;
+    width: 157px;
+    justify-content: center;
+    color: white;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+  .bgcolor {
+    background-color: #000000 !important;
+  }
+  .navbar-toggler-icon {
+    filter: invert(98%) sepia(2%) saturate(30%) hue-rotate(190deg) brightness(110%) contrast(97%);
+  }
+  .navbar-collapse{
+    margin-top: 6px;
+  }
+  .nav-item {
+    font-family: poppinsRegular;
+    .nav-link {
+      color: white !important;
+    }
+    hr {
+      margin: 0 !important;
+    }
+  }
+}
