@@ -1,70 +1,42 @@
 <div class="dashboardPage">
-    <div class="collectionLabel">
-        <h3>Monthly Overall Collection</h3>
-    </div>
-    <div class="datePickersDiv">
-        <div class="eachDatePicker">
-            <!-- <label for="">From Date</label> -->
-            <div>
-                <mat-form-field>
-                    <mat-label>From</mat-label>
-                    <input matInput [matDatepicker]="picker1">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
+  <div class="collectionLabel">
+    <h3>Wallet Summary</h3>
+  </div>
 
-            </div>
-        </div>
-        <div class="eachDatePicker">
-            <!-- <label for="">To Date</label> -->
-            <div>
-                <mat-form-field>
-                    <mat-label>To</mat-label>
-                    <input matInput [matDatepicker]="picker2">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2></mat-datepicker>
-                </mat-form-field>
-            </div>
-        </div>
-    </div>
-    <div class="collectionDiv">
-        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
-            <div class="collectionBlocks">
-                <div class="todayCollection">
-                    <label for="">Today Collection Amount</label>
-                    <h2>30,000</h2>
-                </div>
-                <div class="todayCollection">
-                    <label for="">Today Pending Amount</label>
-                    <h2>10,000</h2>
-                </div>
-            </div>
-            <div class="collectionBlocks">
-                <div class="todayCollection">
-                    <label for="">Total Cash</label>
-                    <h2>30,000</h2>
-                </div>
-                <div class="todayCollection">
-                    <label for="">Account Transfer</label>
-                    <h2>10,000</h2>
-                </div>
-            </div>
-           
-        </div>
-        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
-            <div class="monthlyCollection">
-                <label for="">Monthly Collection</label>
-                <div class="piechartDiv">
-                    <img src="/images/pieChart.png" alt="" class="img-fluid pieChart">
-                </div>
-                <h2>10,00,000</h2>
-            </div>
-        </div>
-        
-    </div>
-     <div class="addColeectBtn">
-                <button type="button" class="addCollection">Add Collection</button>
-        </div>
+  <!-- DATE FILTER -->
+  <!-- <form [formGroup]="dateForm" class="datePickersDiv d-flex gap-2">
+    <mat-form-field>
+      <mat-label>From</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker1"
+        formControlName="fromDate"
+        (dateChange)="calculateWallet()"
+      />
+      <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>To</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker2"
+        formControlName="toDate"
+        (dateChange)="calculateWallet()"
+      />
+      <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+  </form> -->
+
+  <!-- WALLET -->
+  <div class="walletBox">
+    <label>Total Wallet Amount</label>
+    <h2>₹ {{ walletAmount  }}</h2>
+  </div>
+
+  <div class="addColeectBtn">
+    <button type="button" class="addCollection">Add Collection</button>
+  </div>
 </div>
