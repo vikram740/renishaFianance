@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { MaterialModule } from '../../materialModule/material.module';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Auth } from '../service/auth';
+import { Common } from '../service/common';
+import { environment, renishaFinance } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-sidenav',
@@ -31,6 +33,10 @@ export class Sidenav {
   trash: string = '/icons/Trash.png';
   logoff: string = '/icons/Logout.png';
   help: string = '/icons/Help.png';
+  agentEmail :any;
+  common = inject(Common);
+  agentList :any;
+  agentPhoto:any
   menuAdminItems = [
     { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
     { name: 'Collection', icon: this.collection, link: '/collection' },
@@ -57,15 +63,42 @@ export class Sidenav {
     // { name: 'Help', icon: this.help, link: '/help' },
   ];
 
+    constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    ){}
+
 
   ngOnInit() {
     this.role = this.authService.getRole();
+    
+        if (isPlatformBrowser(this.platformId)) {
+          this.agentEmail = localStorage.getItem('agentEmail');
+        }
+        this.getAllAgent()
   }
   
   get isAdminRole(){
       this.role = this.authService.getRole();
       return this.role ==='agent'|| this.role ==='admin'
 
+  }
+
+   getAllAgent() {
+    this.common.getAllAgents().subscribe((res: any) => {
+      this.agentList = res.list || [];
+      console.log('this.agentList', this.agentList)
+      const agentEmail = this.agentEmail;
+      if (!agentEmail) return;
+
+      const selectedAgent = this.agentList.find((agent: any) => agent.agentEmail === agentEmail);
+      if (selectedAgent) {
+        const bsaeUrl = environment.uploadUrl + renishaFinance.uploads + '/';
+        this.agentPhoto = {
+          agentPhoto:selectedAgent.agentPhoto? bsaeUrl +selectedAgent.agentPhoto:null 
+        }
+        console.log('this.agentPhoto', this.agentPhoto)
+      }
+    });
   }
 
   logout() {

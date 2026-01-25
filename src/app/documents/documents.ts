@@ -50,14 +50,17 @@ export class Documents {
           const member = memberRes.user;
 
 
-          this.common.getSingleNominee(memberId).subscribe((nomineeRes: any) => {
-            const nominee = nomineeRes.user;
+          this.common.getAllNominees().subscribe((nomineeRes: any) => {
+            const allAllNominee = nomineeRes.list
+            console.log('allAllNominee', allAllNominee)
+            const nominee = allAllNominee.find((n:any)=>n.memberId === memberId)
+            const detailNominee = nominee
 
             this.foundData = {
              
               deal,
               member,
-              nominee,
+              detailNominee,
             };
              console.log('this.foundData', this.foundData)
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,8 +19,9 @@ export class Dashboard {
 
   collections: any[] = [];
   walletAmount = 0;
+   
 
-  constructor(private common: Common) {}
+  constructor(private common: Common,private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadCollections();
@@ -49,6 +50,7 @@ export class Dashboard {
       (total: number, item: any) => total + Number(item.amount || 0),
       0
     );
+    this.cdr.detectChanges();
 
     console.log('Total Wallet Amount:', this.walletAmount);
   }

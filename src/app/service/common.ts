@@ -54,9 +54,9 @@ export class Common {
   //    return this.http.post(environment.baseUrl + renishaFinance.createMember,body)
 
   // }
-  // getAllNominees(){
-  //    return this.http.get(environment.baseUrl+renishaFinance.getAllNominees)
-  // }
+  getAllNominees(){
+     return this.http.get(environment.baseUrl+renishaFinance.getAllNominees)
+  }
   getSingleNominee(id:any){
      return this.http.get(environment.baseUrl+renishaFinance.getSingleNominee + '/' + id )
   }

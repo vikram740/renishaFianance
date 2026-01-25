@@ -41,6 +41,7 @@ export class MemberAddCollection implements OnInit {
   isMemberLoaded = false;
   isQrLoaded = false;
   qrId: any;
+  agentById:any
 
   authService = inject(Auth);
   route = inject(ActivatedRoute);
@@ -147,28 +148,7 @@ export class MemberAddCollection implements OnInit {
     }
   }
 
-  // Auto-create collection on page load
-  // autoCreateCollection() {
-  //   if (!this.isMemberLoaded || !this.memberId) return;
-
-  //   const payload = {
-  //     memberId: this.memberId,
-  //     paymentType: 'cash', // default to cash, backend requires it
-  //     upiTransactionId: 'CASH', // default value for cash
-  //   };
-
-  //   console.log('Auto creating collection with payload:', payload);
-
-  //   this.common.createDealCollection(payload).subscribe({
-  //     next: (res) => {
-  //       toast.success('Collection automatically created ✅');
-  //       this.getCollections(); // refresh table
-  //     },
-  //     error: (err) => {
-  //       toast.error(err?.message || 'Failed to create collection automatically ❌');
-  //     }
-  //   });
-  // }
+  
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({
@@ -238,6 +218,7 @@ export class MemberAddCollection implements OnInit {
             ...item,
             qrId,
           }));
+
           this.cdr.markForCheck();
           return;
         }
@@ -251,6 +232,8 @@ export class MemberAddCollection implements OnInit {
             qrId,
           }));
 
+          console.log('', this.collectionData )
+
           this.cdr.markForCheck();
         });
       },
@@ -259,11 +242,6 @@ export class MemberAddCollection implements OnInit {
         this.cdr.markForCheck();
       },
     });
-  }
-
-  get isAdminRole() {
-    this.role = this.authService.getRole();
-    return this.role === 'agent' || this.role === 'admin';
   }
 
   getAllAgent() {
@@ -276,6 +254,7 @@ export class MemberAddCollection implements OnInit {
       if (selectedAgent) {
         this.logedAgentId = selectedAgent.agentIdNo;
         this.agentName = selectedAgent.agentName;
+        this.agentById = selectedAgent._id
       }
     });
   }
@@ -332,8 +311,4 @@ export class MemberAddCollection implements OnInit {
       },
     });
   }
-
-  // ngAfterViewInit() {
-  //   this.getCollections();
-  // }
 }

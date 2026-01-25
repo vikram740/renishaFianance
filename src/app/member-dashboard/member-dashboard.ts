@@ -25,6 +25,8 @@ export class MemberDashboard {
   memberId!: string;
   memeberData: any;
   common = inject(Common);
+  collectionData:any
+  walletAmount = 0;
 
   platformId = inject(PLATFORM_ID);
 
@@ -39,13 +41,13 @@ export class MemberDashboard {
       return;
     }
     this.getMemberDetails();
+  
   }
 
  getMemberDetails() {
   const email = (localStorage.getItem('memberEmail') || '').trim().toLowerCase();
 
   if (!email) {
-    console.warn('No memberEmail in localStorage');
     this.logout();
     return;
   }
@@ -53,30 +55,42 @@ export class MemberDashboard {
   this.common.getAllMember().subscribe({
     next: (res: any) => {
       const members = res?.list || [];
-      console.log('members', members)
-
-      if (!Array.isArray(members)) {
-        console.error('Invalid members response', res);
-        return;
-      }
 
       const member = members.find(
         (m: any) => (m.memberEmail || '').trim().toLowerCase() === email
       );
 
       if (!member) {
-        console.warn('Member not found for email:', email);
+        console.warn('Member not found');
         return;
       }
 
       this.memberId = member._id;
       this.memeberData = member;
 
-      console.log('Member ID:', this.memberId);
-      console.log('Member Data:', this.memeberData);
+      this.getDealCollection();
     },
     error: () => this.logout(),
   });
+}
+
+
+getDealCollection(){
+  this.common.getDealCollections().subscribe((res:any)=>{
+    const all = res?.list|| [];
+    this.collectionData = all.filter(
+      (c: any) => String(c.memberId) === String(this.memberId)
+    );
+
+     this.walletAmount = this.collectionData.reduce(
+      (sum: number, c: any) => sum + Number(c.amount || 0),
+      0
+    );
+
+    console.log('this.collectionData', this.collectionData);
+     console.log('this.walletAmount', this.walletAmount)
+  })
+
 }
 
 

@@ -67,8 +67,7 @@
             <th>MemberId</th>
             <th class="d-flex"><input type="checkbox" />Name</th>
             <th>Phone No</th>
-            <th>Total Amount</th>
-            <th>Last Collection Date</th>
+            <th>Email</th>
             <th>Location</th>
             <th></th>
           </tr>
@@ -78,8 +77,7 @@
             <td>{{ member.memberIdNo }}</td>
             <td class="d-flex"><input type="checkbox" />{{ member.memberName }}</td>
             <td>{{ member.memberPhone }}</td>
-            <td>-</td>
-            <td>-</td>
+            <td>{{member.memberEmail}}</td>
             <td>{{ member.memberPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
             <td class="d-flex gap-2">
               <span
@@ -90,7 +88,7 @@
               >
                 visibility
               </span>
-              <span class="material-symbols-outlined" > person </span>
+              <span class="material-symbols-outlined" (click)="openSignupComponent()" > person </span>
               <span
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
@@ -265,7 +263,7 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          (click)="onDocumentModalClosed()"
+        (click)="closeModal()"
         ></button>
       </div>
 
@@ -298,5 +296,29 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Signup</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+         (click)="closeModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <app-signup
+          *ngIf="openSignup"
+          (close)="closeModal()"
+        ></app-signup>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 

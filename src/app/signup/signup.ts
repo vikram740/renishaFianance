@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../service/auth';
@@ -7,7 +7,7 @@ import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
 })
@@ -17,6 +17,7 @@ export class Signup {
   submitted = false
   router = inject(Router)
   authService = inject(Auth)
+  @Output() close = new EventEmitter<void>();
 
   ngOnInit() {
     this.signupForm = this.fb.group({
@@ -38,8 +39,9 @@ export class Signup {
     } else {
       this.authService.signup(this.signupForm.value).subscribe((res: any) => {
         console.log('signup', res)
-        this.router.navigate(['/login'])
         toast.success('Signup Successfully', { class: 'toast-success' })
+         document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
+        document.body.classList.remove('modal-open');
       })
     }
   }

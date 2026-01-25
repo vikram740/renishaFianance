@@ -25,6 +25,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment, renishaFinance } from '../../environments/environment.development';
+import { Signup } from '../signup/signup';
 
 @Component({
   selector: 'app-members',
@@ -34,6 +35,7 @@ import { environment, renishaFinance } from '../../environments/environment.deve
     ReactiveFormsModule,
     FormsModule,
     MatProgressSpinnerModule,
+    Signup,
   ],
   templateUrl: './members.html',
   styleUrl: './members.scss',
@@ -55,6 +57,7 @@ export class Members implements OnInit {
   searchText: string = '';
   allMembersList: any[] = [];
   selectedDocs: any;
+  openSignup = false;
   // isLoading: boolean = false;
 
   @ViewChild('editModal') editModal!: ElementRef;
@@ -144,10 +147,24 @@ export class Members implements OnInit {
       });
     }
   }
-  closeModal() {
-    this.editModalInstance.hide();
-    document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
-    document.body.classList.remove('modal-open');
+  openSignupComponent() {
+    this.openSignup = true;
+
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        import('bootstrap').then((bootstrap) => {
+          const modalEl = document.getElementById('signupModal');
+          if (!modalEl) return;
+
+          const modal = new bootstrap.Modal(modalEl, {
+            backdrop: 'static',
+            keyboard: false,
+          });
+
+          modal.show();
+        });
+      });
+    }
   }
 
   openDialog(memberId: string): void {
@@ -162,12 +179,6 @@ export class Members implements OnInit {
         console.log('Dialog was closed without confirmation');
       }
     });
-  }
-
-  // Remove any leftover backdrops
-  onDocumentModalClosed() {
-    document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
-    document.body.classList.remove('modal-open');
   }
 
   deleteMember(id: string) {
@@ -269,5 +280,24 @@ export class Members implements OnInit {
       this.cdr.detectChanges();
       console.log('this.membersList', this.membersList);
     });
+  }
+
+  closeModal() {
+    this.openSignup = false;
+
+    if (isPlatformBrowser(this.platformId)) {
+      import('bootstrap').then((bootstrap) => {
+        document.querySelectorAll('.modal.show').forEach((modalEl: any) => {
+          const instance = bootstrap.Modal.getInstance(modalEl);
+          if (instance) {
+            instance.hide();
+          }
+        });
+
+        // Cleanup
+        document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
+        document.body.classList.remove('modal-open');
+      });
+    }
   }
 }

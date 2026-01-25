@@ -1,8 +1,19 @@
 <div class="memberDashboardPage">
-    <div class="collectionLabel">
+    <!-- <div class="collectionLabel">
         <h3>Member's Collection</h3>
-    </div>
-    <div class="datePickersDiv">
+    </div> -->
+      <div class="collectionLabel">
+    <h3>Wallet Summary</h3>
+  </div>
+    <div class="walletBox">
+    <label>Total Wallet Amount</label>
+    <h2>₹{{walletAmount}} </h2>
+  </div>
+
+  <div class="addColeectBtn">
+    <button type="button" class="addCollection" routerLink="/memberLogin">Add Collection</button>
+  </div>
+    <!-- <div class="datePickersDiv">
         <div class="eachDatePicker">
             <div>
                 <mat-form-field>
@@ -60,8 +71,8 @@
                 <h2>10,00,000</h2>
             </div>
         </div>
-    </div>
-     <div class="addColeectBtn">
+    </div> -->
+     <!-- <div class="addColeectBtn">
                 <button type="button" class="addCollection" routerLink="/memberLogin">Add Collection</button>
-            </div>
+            </div> -->
 </div>
