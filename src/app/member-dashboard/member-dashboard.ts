@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +27,7 @@ export class MemberDashboard {
   common = inject(Common);
   collectionData:any
   walletAmount = 0;
+    cdr = inject(ChangeDetectorRef);
 
   platformId = inject(PLATFORM_ID);
 
@@ -86,6 +87,7 @@ getDealCollection(){
       (sum: number, c: any) => sum + Number(c.amount || 0),
       0
     );
+    this.cdr.detectChanges()
 
     console.log('this.collectionData', this.collectionData);
      console.log('this.walletAmount', this.walletAmount)

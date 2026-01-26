@@ -132,6 +132,7 @@ export class MemberAddCollection implements OnInit {
         const member = members.find((m: any) => m.memberIdNo === memberIdNo);
         if (member) {
           this.memberId = member._id;
+          console.log('this.memberId', this.memberId)
           this.isMemberLoaded = true;
           this.tryLoadCollections();
         } else {
@@ -203,12 +204,15 @@ export class MemberAddCollection implements OnInit {
     this.common.getDealCollections().subscribe({
       next: (res: any) => {
         const list = Array.isArray(res.list) ? res.list : [];
+        console.log('list', list)
 
         const data = list.filter(
+        
           (item: any) =>
             String(item.memberId) === String(this.memberId) &&
             String(item.dealIdNo) === String(this.dealData?.dealIdNo),
         );
+          console.log('data', data)
 
         const qrId = this.primaryQR?.qrId;
         const agentId = data[0]?.agentNameId;
@@ -223,13 +227,16 @@ export class MemberAddCollection implements OnInit {
           return;
         }
 
-        this.common.getAgentById(agentId).subscribe((res: any) => {
-          const agent = res.user;
+        this.common.getAllAgents().subscribe((res: any) => {
+          const agent = res.list || [];
+          // console.log('agent', agent)
+          const agentData = agent.find((i:any)=> i.agentIdNo === agentId )
+          // console.log('agentData', agentData)
+
 
           this.collectionData = data.map((item: any) => ({
             ...item,
-            agent,
-            qrId,
+            agentData,
           }));
 
           console.log('', this.collectionData )
@@ -291,6 +298,7 @@ export class MemberAddCollection implements OnInit {
       upiTransactionId: formData.paymentMode === 'online' ? formData.transactionId : 'CASH',
       installmentNumber: Number(formData.installment),
       amount: Number(formData.collectionAmount),
+      primaryQRCode: this.primaryQR?.qrId
     };
 
     this.common.createDealCollection(payload).subscribe({

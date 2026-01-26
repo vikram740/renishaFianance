@@ -119,7 +119,7 @@ export class Login {
         this.authService.getCredentials();
 
         if (res.role === 'admin') {
-          localStorage.setItem('adminPassword', res.password);
+          localStorage.setItem('adminPassword',res.password);
         }
         if (res.role === 'agent') {
           localStorage.setItem('agentEmail', res.email);

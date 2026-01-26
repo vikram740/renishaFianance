@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { FormsModule } from '@angular/forms';
 import { NumberToWordsPipe } from '../../number-to-words-pipe';
+import { environment, renishaFinance } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-documents',
@@ -24,11 +25,8 @@ export class Documents {
       return;
     }
 
-    // Step 1: Get all deals
     this.common.getDeals(1, 1000).subscribe((res: any) => {
       const list = res.list || [];
-
-      // Match with entered ID (example: dealIdNo)
       const found = list.find((d: any) => d.dealIdNo?.toString() === this.searchId.trim());
 
       if (!found) {
@@ -37,39 +35,75 @@ export class Documents {
       }
 
       const mongoId = found._id;
-      console.log('Found Mongo ID:', mongoId);
 
-      // Step 2: Call single deal API using Mongo _id
       this.common.getSingleDeal(mongoId).subscribe((dealRes: any) => {
         const deal = dealRes.data;
-
         const memberId = deal.memberId;
-        console.log('memberId', memberId)
 
         this.common.getsingleMember(memberId).subscribe((memberRes: any) => {
           const member = memberRes.user;
 
-
           this.common.getAllNominees().subscribe((nomineeRes: any) => {
-            const allAllNominee = nomineeRes.list
-            console.log('allAllNominee', allAllNominee)
-            const nominee = allAllNominee.find((n:any)=>n.memberId === memberId)
-            const detailNominee = nominee
+            const allNominees = nomineeRes.list || [];
+            const detailNominee = allNominees.find((n: any) => n.memberId === memberId);
 
             this.foundData = {
-             
               deal,
               member,
               detailNominee,
             };
-             console.log('this.foundData', this.foundData)
 
-            setTimeout(() => this.generatePDF(), 300);
+            console.log('this.foundData', this.foundData);
+
+            setTimeout(() => this.generatePDF(), 300); // or increase timeout if needed
           });
         });
       });
     });
   }
+
+  getTenureInYears(): number {
+    if (!this.foundData?.deal) return 0;
+
+    const tenure = Number(this.foundData.deal.tenurePlan || 0);
+    const type = this.foundData.deal.tenureType;
+
+    // convert months to years
+    if (type === 'Months') {
+      return tenure / 12;
+    }
+
+    return tenure; // Years
+  }
+
+  getCompoundAmount(): number {
+    if (!this.foundData?.deal) return 0;
+
+    const P = Number(this.foundData.deal.tenureInstallment || 0); // Principal
+    const R = Number(this.foundData.deal.percentage || 0) / 100; // Rate
+    const T = this.getTenureInYears(); // Time in years
+    const N = 12; // compounding monthly
+
+    const A = P * Math.pow(1 + R / N, N * T);
+    return Math.round(A);
+  }
+
+  getCompoundInterest(): number {
+    const P = Number(this.foundData?.deal?.tenureInstallment || 0);
+    const A = this.getCompoundAmount();
+    return A - P;
+  }
+  getAllAmount(){
+    const p = Number(this.foundData?.deal?.tenureAmount|| 0)
+    const intrestAmount = this.getCompoundAmount();
+    return p + intrestAmount
+  }
+ getImageUrl(fileName: string | null | undefined): string {
+  return fileName
+    ? `${environment.uploadUrl}${renishaFinance.uploads}/${fileName}`
+    : 'assets/no-image.png';
+}
+
 
   async generatePDF() {
     const element = document.getElementById('deed-template');

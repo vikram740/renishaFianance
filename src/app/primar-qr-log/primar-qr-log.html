@@ -1,0 +1,54 @@
+<div class="qr-log-container">
+  <h2>QR Transaction Log</h2>
+
+  <div *ngIf="qrList.length > 0" class="qr-dropdown">
+    <label>Select QR:</label>
+    <select [(ngModel)]="selectedQr" (change)="selectQr(selectedQr)" class="form-control">
+  <option *ngFor="let qr of qrList" [ngValue]="qr">{{ qr }}</option>
+</select>
+  </div>
+
+  <div *ngIf="filteredCollections.length > 0" class="qr-transactions">
+    <h3>Transactions for QR: {{ selectedQr }}</h3>
+    <p>Total Transactions: {{ filteredCollections.length }}</p>
+    <p>Total Amount: {{ getTotalAmount() }}</p>
+
+
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Member Name</th>
+          <th>Deal ID</th>
+          <th>Agent ID</th>
+          <th>Member ID</th>
+          <th>Amount</th>
+          <th>Transaction ID</th>
+          <th>Payment Mode</th>
+          <th>Installment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of filteredCollections">
+          <td>{{ t.memberName }}</td>
+          <td>{{ t.dealIdNo }}</td>
+          <td>{{t.agentNameId}}</td>
+          <td>{{t.memberIdNo}}</td>
+          <td>{{ t.amount }}</td>
+          <td>{{ t.transactionId }}</td>
+          <td>{{ t.paymentMode }}</td>
+          <td>{{ t.installmentNumber }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+    
+  </div>
+
+  <div *ngIf="filteredCollections.length === 0">
+    <p>No transactions found for this QR.</p>
+  </div>
+</div>

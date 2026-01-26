@@ -1,0 +1,116 @@
+<div class="user-management">
+
+  <h2>User Management</h2>
+
+  <div  class="table-responsive">
+     <table class="table ">
+    <thead>
+      <tr>
+        <th>S.NO</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Created At</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let user of users; let i = index">
+        <td>{{ (page - 1) * limit + i + 1 }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span class="role-badge">{{ user.role }}</span>
+        </td>
+        <td>{{ user.createdAt | date:'dd-MM-yyyy' }}</td>
+        <td>  <span
+                class="material-symbols-outlined"
+                data-bs-toggle="modal"
+                data-bs-target="#editMemberModal"
+                (click)="editUser(user)"
+              >
+                edit
+              </span>
+              <span class="material-symbols-outlined text-danger" (click)="openDialog(user._id)">
+                delete
+              </span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+ 
+
+  <div *ngIf="users.length === 0 && !isLoading">
+    No users found
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator
+  [length]="totalCount"
+  [pageSize]="limit"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  (page)="onPageChange($event)"
+  aria-label="Select page">
+</mat-paginator>
+
+</div>
+<div class="modal fade" id="editUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Edit User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="userForm" (ngSubmit)="saveEdit()">
+
+          <!-- First Name -->
+          <div class="mb-3">
+            <label>First Name</label>
+            <input class="form-control" formControlName="firstName" />
+          </div>
+
+          <!-- Last Name -->
+          <div class="mb-3">
+            <label>Last Name</label>
+            <input class="form-control" formControlName="lastName" />
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label>Email</label>
+            <input class="form-control" formControlName="email" />
+          </div>
+
+          <!-- Role -->
+          <div class="mb-3">
+            <label>Role</label>
+            <select class="form-control" formControlName="role">
+              <option value="admin">Admin</option>
+              <option value="agent">Agent</option>
+              <option value="member">Member</option>
+            </select>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Save Changes
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

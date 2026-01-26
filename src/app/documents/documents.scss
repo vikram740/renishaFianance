@@ -95,6 +95,13 @@
           width: 200px;
         }
       }
+      .form-control{
+        border: none;
+        &:focus{
+          outline: none;
+          box-shadow: none;
+        }
+      }
     }
   }
 
@@ -204,4 +211,5 @@ p{
 .deed-footer strong {
   color: #6d7f2e;
 }
+
 }

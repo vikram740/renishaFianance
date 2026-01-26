@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { Common } from '../service/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -27,6 +27,7 @@ export class DealList {
   editModalInstance: any;
   searchText:string='';
   allDealList:any[]=[];
+  cdr = inject(ChangeDetectorRef);
 page = 1;
 limit = 10;
 totalCount = 0;
@@ -58,6 +59,7 @@ getDeals() {
     this.allDealList = res.list;
     this.dealList = res.list;
     this.totalCount = res.count;
+    this.cdr.detectChanges()
   });
 
 }

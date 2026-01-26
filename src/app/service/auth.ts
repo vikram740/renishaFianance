@@ -148,4 +148,17 @@ export class Auth {
   signup(body: any) {
     return this.http.post(environment.baseUrl + renishaFinance.signup, body)
   }
+  userList(page: number, limit: number){
+   return this.http.get(environment.baseUrl + renishaFinance.userList + '?page=' + page + '&limit=' + limit)
+  }
+  updateUser(data: any) {
+  return this.http.put(
+    environment.baseUrl + renishaFinance.updateUser, data);
+}
+
+deleteUser(userId: string) {
+  return this.http.delete(
+    environment.baseUrl + renishaFinance.deleteUser,{ body: { _id: userId } });
+}
+
 }

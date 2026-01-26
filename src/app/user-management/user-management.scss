@@ -1,0 +1,50 @@
+@use '../../variable.scss' as *;
+.user-management{
+margin: auto;
+  padding: 35px 30px;
+  height: calc(100vh - 120px);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: calc(100% - 300px);
+  @include mobile() {
+    width: 100%;
+    height: calc(100vh - 51px);
+  }
+  @include tablet() {
+    width: 100%;
+    height: calc(100vh - 57px);
+  }
+
+  .table-responsive {
+
+            thead {
+                tr {
+                    th {
+                        background-color: #153B62;
+                        padding: 15px;
+                        color: white;
+                        font-weight: normal;
+                        font-family: $font-regular;
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    td {
+                        padding: 15px;
+                        font-family: $font-regular;
+                        background-color: #D9D9D9;
+                        font-size: 16px;
+                        border-bottom: 1px solid white !important;
+                    }
+                    .material-symbols-outlined {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+}

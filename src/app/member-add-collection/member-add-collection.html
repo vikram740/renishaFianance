@@ -120,7 +120,7 @@
             <th scope="col">Amount</th>
             <th scope="col">Member Id</th>
             <th scope="col">Agent Id</th>
-            <th scope="col">Collection Date</th>
+            <!-- <th scope="col">Collection Date</th> -->
             <th scope="col">Qr Id</th>
             <th scope="col">Payment Mode</th>
             <th scope="col">UPI Transaction ID</th>
@@ -131,12 +131,11 @@
             <td>{{ i + 1 }}</td>
             <td>{{ item.dealIdNo }}</td>
             <td>{{ item.transactionId }}</td>
-
             <td>{{ item.amount }}</td>
             <td>{{ item.memberIdNo }}</td>
-            <td>{{ item.agent?.agentIdNo }}</td>
-            <td>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
-            <td>{{item.qrId}}</td>
+            <td>{{ item.agentData?.agentIdNo }}</td>
+            <!-- <td>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td> -->
+            <td>{{item.primaryQRCode}}</td>
             <td>{{ item.paymentMode }}</td>
             <td>{{ item.upiTransactionId }}</td>
           </tr>

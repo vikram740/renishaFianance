@@ -22,6 +22,8 @@ export const routes: Routes = [
     { path: 'request', canActivate: [authGuard], loadComponent: () => import('./request/request').then(m => m.Request) },
     { path: 'dealForm', canActivate: [authGuard], loadComponent: () => import('./deal-form/deal-form').then(m => m.DealForm) },
     { path: 'dealList', canActivate: [], loadComponent: () => import('./deal-list/deal-list').then(m => m.DealList) },
+    { path: 'userManagement', canActivate: [], loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement) },
+    { path: 'primaryQrLog', canActivate: [], loadComponent: () => import('./primar-qr-log/primar-qr-log').then(m => m.PrimarQrLog) },
     { path: 'payments', canActivate: [authGuard], loadComponent: () => import('./payments/payments').then(m => m.Payments) },
     { path: 'notification', canActivate: [authGuard], loadComponent: () => import('./notification/notification').then(m => m.Notification) },
     { path: '**', redirectTo: 'login' }

@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import * as CryptoJS from 'crypto-js';
 import { Common } from '../service/common';
@@ -30,6 +30,7 @@ export class Payments {
 
   confirmTitle = '';
   confirmMessage = '';
+  cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
     this.getAllQr();
@@ -53,6 +54,7 @@ export class Payments {
       this.qrList = (res.list || []).map((q: any) => this.mapQr(q));
       // Set activeQR: first primary or first item
       this.activeQR = this.qrList.find((q) => q.isPrimary) || this.qrList[0] || null;
+      this.cdr.detectChanges()
       console.log('QR List', this.qrList);
     });
   }

@@ -38,6 +38,10 @@ export const renishaFinance = {
     setPrimary:'/qrcodes/UpdateQrCodePrimary',
     createDealCollection:'/dealsCollection/createDealsCollection',
     getDealCollection:'/dealsCollection/getDealsCollectionList',
+    userList:'/user/usersList',
+    updateUser:'/user/updateUser',
+    deleteUser:'/user/deleteUserById',
+    userDetailsById:'/user/userDetailsById',
     uploads:'uploads',
 
 

@@ -105,6 +105,8 @@ export class Sidenav {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+       localStorage.removeItem('adminPassword');
+         localStorage.removeItem('agentEmail');
       localStorage.removeItem('memberEmail');
       localStorage.removeItem('userName');
       this.route.navigate(['/login']);
