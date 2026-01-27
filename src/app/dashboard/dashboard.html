@@ -2,41 +2,43 @@
   <div class="collectionLabel">
     <h3>Wallet Summary</h3>
   </div>
-
-  <!-- DATE FILTER -->
-  <!-- <form [formGroup]="dateForm" class="datePickersDiv d-flex gap-2">
-    <mat-form-field>
-      <mat-label>From</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker1"
-        formControlName="fromDate"
-        (dateChange)="calculateWallet()"
-      />
-      <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-      <mat-datepicker #picker1></mat-datepicker>
+  <form [formGroup]="dateForm" class="dateFilter">
+    <mat-form-field appearance="outline">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" />
+      <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>To</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker2"
-        formControlName="toDate"
-        (dateChange)="calculateWallet()"
-      />
-      <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-      <mat-datepicker #picker2></mat-datepicker>
+    <mat-form-field appearance="outline">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toPicker" formControlName="toDate" />
+      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
     </mat-form-field>
-  </form> -->
+  </form>
 
-  <!-- WALLET -->
-  <div class="walletBox">
-    <label>Total Wallet Amount</label>
-    <h2>₹ {{ walletAmount  }}</h2>
+  <!-- WALLET SUMMARY -->
+  <div class="walletBox summary">
+    <div class="walletItem invested">
+      <label>Invested Amount</label>
+      <h2>₹ {{ investedAmount }}</h2>
+    </div>
+
+    <div class="walletItem interest">
+      <label>Interest Amount</label>
+      <h2>₹ {{ interestAmount | number: '1.0-0' }}</h2>
+    </div>
+
+    <div class="walletItem total">
+      <label>Total Amount</label>
+      <h2>₹ {{ totalAmount | number: '1.0-0' }}</h2>
+    </div>
   </div>
 
-  <div class="addColeectBtn">
-    <button type="button" class="addCollection">Add Collection</button>
-  </div>
+  <!-- <div class="addColeectBtn">
+    <button type="button" class="addCollection">
+      Add Collection
+    </button>
+  </div> -->
 </div>

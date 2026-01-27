@@ -11,7 +11,6 @@ import { isPlatformBrowser } from '@angular/common';
   selector: 'app-member-dashboard',
   imports: [
     MatFormFieldModule,
-    RouterLink,
     MatInputModule,
     MatDatepickerModule,
     FormsModule,

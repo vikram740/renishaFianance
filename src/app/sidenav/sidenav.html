@@ -45,17 +45,18 @@
     </div> -->
     <div>
       <div
-        class="eachTabsection"
-        *ngFor="let item of isAdminRole ? menuAdminItems : menuMemberItems"
-        [routerLink]="item.link"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <ng-container *ngIf="item.icon">
-          <img [src]="item.icon" alt="{{ item.name }}" class="custom-icon" />
-        </ng-container>
-        <label>{{ item.name }}</label>
-      </div>
+  class="eachTabsection"
+  *ngFor="let item of menuItems"
+  [routerLink]="item.link"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+>
+  <ng-container *ngIf="item.icon">
+    <img [src]="item.icon" alt="{{ item.name }}" class="custom-icon" />
+  </ng-container>
+  <label>{{ item.name }}</label>
+</div>
+
     </div>
 
     <div>

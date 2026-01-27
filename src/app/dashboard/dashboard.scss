@@ -162,23 +162,42 @@
       }
     }
   }
-  .walletBox {
-  background: #f5f7fb;
-  padding: 25px;
-  border-radius: 12px;
+
+ .walletBox.summary {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.walletItem {
+  background: #fff;
+  padding: 16px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   text-align: center;
-  margin-top: 20px;
+  width: 100%;
+}
 
-  label {
-    font-size: 14px;
-    color: #666;
-  }
+.walletItem label {
+  font-size: 14px;
+  color: #666;
+}
 
-  h2 {
-    font-size: 32px;
-    font-weight: bold;
-    color: #2c3e50;
-  }
+.walletItem h2 {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.walletItem.invested h2 {
+  color: #1976d2;
+}
+
+.walletItem.interest h2 {
+  color: #2e7d32;
+}
+
+.walletItem.total h2 {
+  color: #d84315;
 }
 }
 

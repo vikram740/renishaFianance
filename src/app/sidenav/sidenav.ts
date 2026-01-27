@@ -54,7 +54,18 @@ export class Sidenav {
     { name: 'Collection Agent management', icon: this.collectionAgent, link: '/collectionAgent' },
     { name: 'Referral Agent management', icon: this.refferals, link: '/referralAgent' },
   ];
-  menuMemberItems =[
+ 
+
+  menuAgentItems = [
+  { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
+  { name: 'Collection', icon: this.collection, link: '/collection' },
+  { name: 'Members', icon: this.members, link: '/members' },
+  { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
+  // { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
+  { name: 'Deal List', icon: this.members, link: '/dealList' },
+];
+
+ menuMemberItems =[
       { name: 'Member Dashboard', icon: this.memberLogin, link: '/memberDashboard' },
   ]
   utlityMenu = [
@@ -77,11 +88,20 @@ export class Sidenav {
         this.getAllAgent()
   }
   
-  get isAdminRole(){
-      this.role = this.authService.getRole();
-      return this.role ==='agent'|| this.role ==='admin'
+ get menuItems() {
+  this.role = this.authService.getRole();
 
+  if (this.role === 'admin') {
+    return this.menuAdminItems;
   }
+
+  if (this.role === 'agent') {
+    return this.menuAgentItems;
+  }
+
+  // member
+  return this.menuMemberItems;
+}
 
    getAllAgent() {
     this.common.getAllAgents().subscribe((res: any) => {

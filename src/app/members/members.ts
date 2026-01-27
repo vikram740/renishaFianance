@@ -26,6 +26,7 @@ import { saveAs } from 'file-saver';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment, renishaFinance } from '../../environments/environment.development';
 import { Signup } from '../signup/signup';
+import { Auth } from '../service/auth';
 
 @Component({
   selector: 'app-members',
@@ -58,6 +59,8 @@ export class Members implements OnInit {
   allMembersList: any[] = [];
   selectedDocs: any;
   openSignup = false;
+  role:any;
+  auth=inject(Auth)
   // isLoading: boolean = false;
 
   @ViewChild('editModal') editModal!: ElementRef;
@@ -66,12 +69,14 @@ export class Members implements OnInit {
     this.generateID = new FormGroup({
       memberName: new FormControl('', Validators.required),
       memberBirth: new FormControl('', Validators.required),
-      memberAdhaar: new FormControl('', [Validators.required]),
+      memberAdhaar: new FormControl('',[Validators.required]),
       memberPhone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       memberEmail: new FormControl('', [Validators.required]),
       memberCurrentAddress: new FormControl('', Validators.required),
       memberPermanentAddress: new FormControl('', Validators.required),
     });
+    
+    this.role = this.auth.getRole();
 
     this.getMembersList();
   }

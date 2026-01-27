@@ -41,7 +41,7 @@ export class MemberAddCollection implements OnInit {
   isMemberLoaded = false;
   isQrLoaded = false;
   qrId: any;
-  agentById:any
+  agentById: any;
 
   authService = inject(Auth);
   route = inject(ActivatedRoute);
@@ -114,13 +114,6 @@ export class MemberAddCollection implements OnInit {
         collectionAmount: perInstallment,
         collectionPercentage: this.dealData.percentage,
       });
-
-      // Auto-calculate amount based on installment
-      this.paymentForm.get('installment')?.valueChanges.subscribe((val) => {
-        const count = Number(val) || 0;
-        const total = count * perInstallment;
-        this.paymentForm.patchValue({ collectionAmount: total }, { emitEvent: false });
-      });
     });
   }
 
@@ -132,7 +125,7 @@ export class MemberAddCollection implements OnInit {
         const member = members.find((m: any) => m.memberIdNo === memberIdNo);
         if (member) {
           this.memberId = member._id;
-          console.log('this.memberId', this.memberId)
+          console.log('this.memberId', this.memberId);
           this.isMemberLoaded = true;
           this.tryLoadCollections();
         } else {
@@ -148,8 +141,6 @@ export class MemberAddCollection implements OnInit {
       this.getCollections();
     }
   }
-
-  
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({
@@ -204,15 +195,14 @@ export class MemberAddCollection implements OnInit {
     this.common.getDealCollections().subscribe({
       next: (res: any) => {
         const list = Array.isArray(res.list) ? res.list : [];
-        console.log('list', list)
+        console.log('list', list);
 
         const data = list.filter(
-        
           (item: any) =>
             String(item.memberId) === String(this.memberId) &&
             String(item.dealIdNo) === String(this.dealData?.dealIdNo),
         );
-          console.log('data', data)
+        console.log('data', data);
 
         const qrId = this.primaryQR?.qrId;
         const agentId = data[0]?.agentNameId;
@@ -230,16 +220,23 @@ export class MemberAddCollection implements OnInit {
         this.common.getAllAgents().subscribe((res: any) => {
           const agent = res.list || [];
           // console.log('agent', agent)
-          const agentData = agent.find((i:any)=> i.agentIdNo === agentId )
+          const agentData = agent.find((i: any) => i.agentIdNo === agentId);
           // console.log('agentData', agentData)
-
 
           this.collectionData = data.map((item: any) => ({
             ...item,
             agentData,
           }));
+          const nextInstallment = this.getNextInstallmentNumber();
+          const perInstallment = Number(this.dealData?.tenureInstallment || 0);
+          const walletDue = this.calculateWalletWithRollingInterest();
 
-          console.log('', this.collectionData )
+          this.paymentForm.patchValue({
+            installment: nextInstallment,
+            collectionAmount: perInstallment,
+          });
+
+          console.log('', this.collectionData);
 
           this.cdr.markForCheck();
         });
@@ -261,7 +258,7 @@ export class MemberAddCollection implements OnInit {
       if (selectedAgent) {
         this.logedAgentId = selectedAgent.agentIdNo;
         this.agentName = selectedAgent.agentName;
-        this.agentById = selectedAgent._id
+        this.agentById = selectedAgent._id;
       }
     });
   }
@@ -279,44 +276,145 @@ export class MemberAddCollection implements OnInit {
     return `${day}-${month}-${year}`;
   }
 
-  // Manual save collection
-  save() {
-    if (!this.isMemberLoaded) {
-      toast.error('Member data not loaded yet ❌');
-      return;
+  getNextInstallmentNumber(): number {
+    if (!this.collectionData || this.collectionData.length === 0) {
+      return 1;
     }
 
-    if (this.paymentForm.invalid) {
-      this.paymentForm.markAllAsTouched();
-      return;
-    }
+    const last = this.collectionData.reduce((a, b) =>
+      a.installmentNumber > b.installmentNumber ? a : b,
+    );
 
-    const formData = this.paymentForm.getRawValue();
-    const payload = {
-      memberId: this.memberId,
-      paymentMode: formData.paymentMode,
-      upiTransactionId: formData.paymentMode === 'online' ? formData.transactionId : 'CASH',
-      installmentNumber: Number(formData.installment),
-      amount: Number(formData.collectionAmount),
-      primaryQRCode: this.primaryQR?.qrId
-    };
-
-    this.common.createDealCollection(payload).subscribe({
-      next: () => {
-        toast.success('Collection created successfully ✅');
-
-        this.paymentForm.reset({
-          paymentMode: 'online',
-          installment: 1,
-          transactionId: '',
-          collectionAmount: formData.collectionAmount,
-        });
-
-        this.getCollections();
-      },
-      error: (err) => {
-        toast.error(err?.message || 'Failed to create collection ❌');
-      },
-    });
+    return Number(last.installmentNumber || 0) + 1;
   }
+
+   getCycleDays(type: string): number {
+    switch ((type || '').toLowerCase()) {
+      case 'daily': return 1;
+      case 'weekly': return 7;
+      case 'monthly': return 30;
+      case 'yearly': return 365;
+      default: return 1;
+    }
+  }
+
+  getCyclesPassed(fromDate: string, tenureType: string): number {
+    const start = new Date(fromDate).getTime();
+    const now = Date.now();
+    const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+    return Math.floor(days / this.getCycleDays(tenureType));
+  }
+
+  // ✅ CORRECT COMPOUND INTEREST
+  calculateCompoundInterest(amount: number, rate: number, cycles: number): number {
+    return +(amount * (Math.pow(1 + rate / 100, cycles) - 1)).toFixed(2);
+  }
+
+   getPlanDays(type: string): number {
+    switch ((type || '').toLowerCase()) {
+      case 'daily': return 1;
+      case 'weekly': return 7;
+      case 'monthly': return 30;
+      case 'quarterly': return 90;
+      case 'half yearly':
+      case 'half-yearly':
+      case 'halfyearly': return 180;
+      case 'yearly': return 365;
+      default: return 1;
+    }
+  }
+
+  calculateWalletWithRollingInterest(): number {
+    const rate = Number(this.dealData?.percentage || 0);
+    const cycleDays = this.getPlanDays(this.dealData?.tenureType);
+    const dayMs = 24 * 60 * 60 * 1000;
+
+    const payments = [...this.collectionData].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+
+    let wallet = 0;
+    let lastTime = new Date(this.dealData?.fromDate).getTime();
+
+    for (const p of payments) {
+      const payTime = new Date(p.createdAt).getTime();
+      const daysPassed = Math.floor((payTime - lastTime) / dayMs);
+      const cycles = Math.floor(daysPassed / cycleDays);
+
+      if (cycles > 0 && wallet > 0) {
+        wallet = wallet * Math.pow(1 + rate / 100, cycles);
+      }
+
+      wallet += Number(p.amount || 0);
+      lastTime = payTime;
+    }
+
+    const daysTillNow = Math.floor((Date.now() - lastTime) / dayMs);
+    const cyclesTillNow = Math.floor(daysTillNow / cycleDays);
+
+    if (cyclesTillNow > 0 && wallet > 0) {
+      wallet = wallet * Math.pow(1 + rate / 100, cyclesTillNow);
+    }
+
+    return +wallet.toFixed(2);
+  }
+
+  /* -------------------- SAVE -------------------- */
+
+  save() {
+  if (this.paymentForm.invalid || !this.isMemberLoaded) {
+    this.paymentForm.markAllAsTouched();
+    return;
+  }
+
+  const formData = this.paymentForm.getRawValue();
+  const amount = Number(formData.collectionAmount);
+  const rate = Number(this.dealData?.percentage || 0);
+  const installmentNumber = Number(formData.installment);
+
+  // 🔹 WALLET BEFORE (principal + interest)
+  const walletBefore = this.collectionData.reduce(
+    (sum, i) =>
+      sum + Number(i.amount || 0) + Number(i.compoundInterest || 0),
+    0
+  );
+
+  // 🔹 INTEREST (starts from 2nd payment)
+  const compoundInterest =
+    installmentNumber === 1
+      ? 0
+      : +(walletBefore * (rate / 100)).toFixed(2);
+
+  // 🔹 UNIQUE TRANSACTION ID
+  const uniqueId = Date.now();
+  const transactionId =
+    formData.paymentMode === 'online'
+      ? `${formData.transactionId}_${uniqueId}`
+      : `CASH_${uniqueId}`;
+
+  // 🔹 PAYLOAD
+  const payload = {
+    memberId: this.memberId,
+    paymentMode: formData.paymentMode,
+    upiTransactionId: transactionId,
+    installmentNumber,
+    amount,
+    compoundInterest, // ✅ ONLY THIS MONTH’S INTEREST
+    primaryQRCode: this.primaryQR?.qrId,
+  };
+
+  this.common.createDealCollection(payload).subscribe({
+    next: () => {
+      toast.success('Collection created successfully ✅');
+      this.paymentForm.reset({
+        paymentMode: 'online',
+        transactionId: '',
+        collectionAmount: amount,
+      });
+      this.getCollections();
+    },
+    error: (err) => toast.error(err?.message || 'Failed ❌'),
+  });
+}
+
 }
