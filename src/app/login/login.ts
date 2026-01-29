@@ -113,6 +113,7 @@ export class Login {
         // calling user name from the service file
         this.fullName = res.firstName + ' ' + res.lastName;
         this.authService.setName(this.fullName);
+        localStorage.setItem('Id',res._id)
 
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);

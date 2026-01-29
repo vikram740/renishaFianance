@@ -1,156 +1,96 @@
-<div class="memberAddCollectionPage">
+<div class="memberAddCollectionPage" *ngIf="dealData">
   <div class="section1">
-    <div class="col-12 col-md-3 col-lg-3 col-xl-3 memberProfile">
-      <div class="eachField">
-        <label class="labels">Member ID :</label>
-        <label>{{ dealData?.memberIdNo }}</label>
+    <div class="col-12 col-md-3 memberProfile">
+      <div class="eachField"><label>Member ID :</label> {{ dealData?.memberId?.memberIdNo }}</div>
+      <div class="eachField"><label>Deal ID :</label> {{ dealData?.dealIdNo }}</div>
+      <div class="eachField" *ngIf="role === 'agent'">
+        <label>Agent Name :</label> {{ agentName }} - {{ logedAgentId }}
       </div>
-      <div class="eachField">
-        <label class="labels">Deal ID :</label>
-        <label>{{ dealData?.dealIdNo }}</label>
-      </div>
-      <div class="eachField">
-        <label class="labels">agentName :</label>
-        <label>{{ agentName }} - {{ logedAgentId }}</label>
-      </div>
-      <div class="eachField">
-        <label for="" class="labels">Name : </label>
-        <label for="">{{ dealData?.memberName }}</label>
-      </div>
-
-      <div class="eachField">
-        <label for="" class="labels">Selected Plan : </label>
-        <label for="">{{ dealData?.tenureType }}</label>
-      </div>
-      <div class="eachField">
-        <label for="" class="labels">start Date : </label>
-        <label for="">{{ dealData?.fromDate | date }}</label>
-      </div>
-      <div class="eachField">
-        <label for="" class="labels">EndDate : </label>
-        <label for="">{{ dealData?.endDate | date }}</label>
-      </div>
+      <div class="eachField"><label>Name :</label> {{ dealData?.memberId?.memberName }}</div>
+      <div class="eachField"><label>Selected Plan :</label> {{ dealData?.tenureType }}</div>
+      <div class="eachField"><label>Start Date :</label> {{ dealData?.fromDate | date }}</div>
+      <div class="eachField"><label>End Date :</label> {{ dealData?.endDate | date }}</div>
     </div>
-    <div class="col-12 col-md-6 col-lg-6 col-xl-6 paymentDetails">
+
+    <div class="col-12 col-md-6 paymentDetails">
       <form [formGroup]="paymentForm" (ngSubmit)="save()">
-        <!-- ROW 1 -->
         <div class="buttonsDiv">
           <div class="button">
             <label>Installment</label>
-            <input type="text" class="form-control" formControlName="installment" />
-            <small
-              class="text-danger"
-              *ngIf="
-                paymentForm.get('installment')?.touched && paymentForm.get('installment')?.invalid
-              "
-            >
-              Installment is required
-            </small>
+            <input type="text" formControlName="installment" class="form-control"/>
           </div>
           <div class="button">
             <label>Amount</label>
-            <input type="text" class="form-control" formControlName="collectionAmount" readonly />
+            <input type="text" formControlName="collectionAmount" class="form-control" readonly />
           </div>
         </div>
 
         <div class="buttonsDiv2">
           <div class="button col-12 col-lg-6">
-            <label>
-              <input type="radio" formControlName="paymentMode" value="online" />
-              Online Payment
-            </label>
-
+            <label><input type="radio" formControlName="paymentMode" value="online"/> Online Payment</label>
             <div *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
-              <button
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#qrModal"
-                (click)="openQr()"
-              >
-                Generate QR
-              </button>
+              <button type="button" (click)="openQr()">Generate QR</button>
             </div>
           </div>
-
           <div class="cashButton col-12 col-lg-6">
-            <label>
-              <input type="radio" formControlName="paymentMode" value="cash" />
-              Cash
-            </label>
+            <label><input type="radio" formControlName="paymentMode" value="cash"/> Cash</label>
           </div>
         </div>
 
-        <!-- TXID -->
         <div class="buttonsDiv3" *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
           <div class="button">
             <label>Transaction ID (TXID)</label>
-            <input type="text" class="form-control" formControlName="transactionId" />
-            <small
-              class="text-danger"
-              *ngIf="
-                paymentForm.get('transactionId')?.touched &&
-                paymentForm.get('transactionId')?.invalid
-              "
-            >
-              Transaction ID is required
-            </small>
+            <input type="text" formControlName="transactionId" class="form-control"/>
           </div>
         </div>
 
         <div class="buttonsDiv3">
           <div class="button">
-            <button type="submit">Save</button>
+            <button type="submit" [disabled]="!isMemberLoaded || !dealData">Save</button>
           </div>
         </div>
       </form>
     </div>
   </div>
+
   <div class="section2">
-    <div class="progressLabelDiv">
-      <label for="">Progress</label>
-    </div>
     <div class="table-responsive">
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">SNo</th>
-            <th scope="col">Deal ID</th>
-            <th scope="col">Transaction ID</th>
-
-            <th scope="col">Amount</th>
-            <th scope="col">Member Id</th>
-            <th scope="col">Agent Id</th>
-            <!-- <th scope="col">Collection Date</th> -->
-            <th scope="col">Qr Id</th>
-            <th scope="col">Payment Mode</th>
-            <th scope="col">UPI Transaction ID</th>
+            <th>SNo</th>
+            <th>Deal ID</th>
+            <th>Transaction ID</th>
+            <th>Amount</th>
+            <th>Member Id</th>
+            <th>Agent Id</th>
+            <th>QR</th>
+            <th>Payment Mode</th>
+            <th>UPI TxID</th>
           </tr>
         </thead>
         <tbody *ngIf="collectionData.length > 0">
           <tr *ngFor="let item of collectionData; let i = index">
             <td>{{ i + 1 }}</td>
-            <td>{{ item.dealIdNo }}</td>
+            <td>{{ item.dealIdNo}}</td>
             <td>{{ item.transactionId }}</td>
-            <td>{{ item.amount }}</td>
+            <td>{{ item.tenureInstallment}}</td>
             <td>{{ item.memberIdNo }}</td>
-            <td>{{ item.agentData?.agentIdNo }}</td>
-            <!-- <td>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td> -->
-            <td>{{item.primaryQRCode}}</td>
+            <td>{{ item.agentNameId }}</td>
+            <td>{{ item.primaryQRCode}}</td>
             <td>{{ item.paymentMode }}</td>
             <td>{{ item.upiTransactionId }}</td>
           </tr>
         </tbody>
-
         <tbody *ngIf="collectionData.length === 0">
-          <tr>
-            <td colspan="7" class="text-center p-4">No collections found</td>
-          </tr>
+          <tr><td colspan="9" class="text-center">No collections found</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
+<!-- QR Modal -->
 <div class="modal fade" id="qrModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -158,13 +98,9 @@
         <h5 class="modal-title">{{ primaryQR?.name }}</h5>
         <button class="btn-close" data-bs-dismiss="modal" (click)="onQrClosed()"></button>
       </div>
-
       <div class="modal-body text-center">
-        <img *ngIf="primaryQR?.url; else noQr" [src]="primaryQR.url" class="img-fluid" />
-
-        <ng-template #noQr>
-          <p class="text-danger">QR Image not available</p>
-        </ng-template>
+        <img *ngIf="primaryQR?.url; else noQr" [src]="primaryQR.url" class="img-fluid"/>
+        <ng-template #noQr><p class="text-danger">QR Image not available</p></ng-template>
       </div>
     </div>
   </div>

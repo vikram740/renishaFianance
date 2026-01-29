@@ -53,13 +53,17 @@ enter() {
 
   const enterId = this.memberLoginForm.value.memberId.trim();
 
-  this.common.getDeals(1, 1000).subscribe({
+  this.common.getDeal().subscribe({
     next: (res: any) => {
       const allDeals = res.list || [];
+      console.log('allDeals', allDeals)
+
 
       const memberDeals = allDeals.filter(
-        (d: any) => d.memberIdNo === enterId
+      
+        (d: any) => d.memberId?.memberIdNo === enterId
       );
+        console.log('memberDeals', memberDeals)
 
       if (memberDeals.length === 0) {
         toast.error('Invalid Member ID or No Deals Found');

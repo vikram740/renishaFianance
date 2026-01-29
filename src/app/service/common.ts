@@ -90,6 +90,12 @@ export class Common {
       environment.baseUrl + renishaFinance.getAllDeals + '?page=' + page + '&limit=' + limit,
     );
   }
+  getDeal(){
+      return this.http.get(
+      environment.baseUrl + renishaFinance.getAllDeals
+    );
+
+  }
 
   getSingleDeal(id: string) {
     return this.http.get(environment.baseUrl + renishaFinance.getSingleDealById + '/' + id);
@@ -120,5 +126,10 @@ export class Common {
   
   getDealCollections() {
     return this.http.get(environment.baseUrl + renishaFinance.getDealCollection);
+  }
+
+  userById(id:string){
+    return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)
+
   }
 }

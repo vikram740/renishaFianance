@@ -84,7 +84,7 @@ export class DealForm {
     const end = new Date(start);
 
     switch (tenureType) {
-      case 'days':
+      case 'daily':
         end.setDate(start.getDate() + tenurePlan);
         break;
       case 'weekly':

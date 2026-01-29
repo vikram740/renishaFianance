@@ -57,7 +57,7 @@ export class Sidenav {
  
 
   menuAgentItems = [
-  { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
+  // { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
   { name: 'Collection', icon: this.collection, link: '/collection' },
   { name: 'Members', icon: this.members, link: '/members' },
   { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },

@@ -22,7 +22,7 @@ import { environment } from '../../environments/environment.development';
   selector: 'app-member-add-collection',
   imports: [MatExpansionModule, ReactiveFormsModule, CommonModule, MatProgressSpinnerModule],
   templateUrl: './member-add-collection.html',
-  styleUrl: './member-add-collection.scss',
+  styleUrls: ['./member-add-collection.scss'],
 })
 export class MemberAddCollection implements OnInit {
   memberData: any;
@@ -42,6 +42,7 @@ export class MemberAddCollection implements OnInit {
   isQrLoaded = false;
   qrId: any;
   agentById: any;
+  id: any;
 
   authService = inject(Auth);
   route = inject(ActivatedRoute);
@@ -64,7 +65,11 @@ export class MemberAddCollection implements OnInit {
       const txCtrl = this.paymentForm.get('transactionId');
       if (mode === 'cash') {
         txCtrl?.clearValidators();
-        txCtrl?.setValue('CASH');
+        // Use dealId + memberId + timestamp for uniqueness
+        const dealId = this.dealData?._id || 'DEAL';
+        const memberId = this.memberId || 'MEM';
+        const uniqueTxId = `${dealId}-${memberId}-CASH-${Date.now()}`;
+        txCtrl?.setValue(uniqueTxId);
       } else {
         txCtrl?.setValidators(Validators.required);
         txCtrl?.setValue('');
@@ -74,17 +79,18 @@ export class MemberAddCollection implements OnInit {
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (!this.id) {
       this.router.navigate(['/member-login']);
       return;
     }
 
     if (isPlatformBrowser(this.platformId)) {
       this.agentEmail = localStorage.getItem('agentEmail');
+      this.role = localStorage.getItem('role');
     }
 
-    this.getDealById(id);
+    this.getDealById(this.id);
     this.getPrimaryQr();
     this.getAllAgent();
   }
@@ -93,19 +99,24 @@ export class MemberAddCollection implements OnInit {
   getDealById(id: string) {
     this.common.getSingleDeal(id).subscribe((res: any) => {
       this.dealData = res.data;
+      console.log('this.dealData', this.dealData?._id);
+      this.memberId = this.dealData.memberId?._id;
 
+      this.getCollections();
+      this.cdr.detectChanges();
+      console.log('this.memberId', this.memberId);
       if (!this.dealData) {
         toast.error('Deal not found ❌');
         return;
       }
 
-      this.getMemberByMemberIdNo(this.dealData.memberIdNo);
+      // this.getMemberByMemberIdNo(this.memberId);
 
-      this.memberData = {
-        _id: this.dealData.memberId,
-        memberIdNo: this.dealData.memberIdNo,
-        memberName: this.dealData.memberName,
-      };
+      // this.memberData = {
+      //   _id: this.dealData.memberId,
+      //   memberIdNo: this.dealData.memberIdNo,
+      //   memberName: this.dealData.memberName,
+      // };
 
       const perInstallment = Number(this.dealData.tenureInstallment);
 
@@ -118,29 +129,31 @@ export class MemberAddCollection implements OnInit {
   }
 
   // Fetch member by memberIdNo from getAllMember
-  getMemberByMemberIdNo(memberIdNo: string) {
-    this.common.getAllMember().subscribe({
-      next: (res: any) => {
-        const members = res.list || [];
-        const member = members.find((m: any) => m.memberIdNo === memberIdNo);
-        if (member) {
-          this.memberId = member._id;
-          console.log('this.memberId', this.memberId);
-          this.isMemberLoaded = true;
-          this.tryLoadCollections();
-        } else {
-          toast.error('Member not found ❌');
-        }
-      },
-      error: () => toast.error('Failed to load members ❌'),
-    });
-  }
+  // getMemberByMemberIdNo(memberIdNo: string) {
+  //   this.common.getAllMember().subscribe({
+  //     next: (res: any) => {
+  //       const members = res.list || [];
+  //       console.log('members', members)
+  //       const member = members.find((m: any) => m._id === this.memberId);
+  //       console.log('member', member)
+  //       if (member) {
+  //         this.memberId = member._id;
+  //         console.log('this.memberId', this.memberId);
+  //         this.isMemberLoaded = true;
+  //         this.tryLoadCollections();
+  //       } else {
+  //         toast.error('Member not found ❌');
+  //       }
+  //     },
+  //     error: () => toast.error('Failed to load members ❌'),
+  //   });
+  // }
 
-  tryLoadCollections() {
-    if (this.isMemberLoaded && this.isQrLoaded) {
-      this.getCollections();
-    }
-  }
+  // tryLoadCollections() {
+  //   if (this.isMemberLoaded && this.isQrLoaded) {
+  //     this.getCollections();
+  //   }
+  // }
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({
@@ -159,12 +172,15 @@ export class MemberAddCollection implements OnInit {
           : null;
 
         this.isQrLoaded = true;
-        this.tryLoadCollections();
+        this.primaryQR?.qrId;
+
+        // ✅ ADD THIS
+        this.cdr.detectChanges();
       },
       error: () => {
         this.primaryQR = null;
         this.isQrLoaded = true;
-        this.tryLoadCollections();
+        this.cdr.detectChanges(); // ✅ here also
       },
     });
   }
@@ -194,56 +210,20 @@ export class MemberAddCollection implements OnInit {
   getCollections() {
     this.common.getDealCollections().subscribe({
       next: (res: any) => {
-        const list = Array.isArray(res.list) ? res.list : [];
-        console.log('list', list);
+        const list = res.list || [];
 
         const data = list.filter(
           (item: any) =>
-            String(item.memberId) === String(this.memberId) &&
-            String(item.dealIdNo) === String(this.dealData?.dealIdNo),
+            String(item.memberId?._id || item.memberId) === String(this.memberId) &&
+            item.dealIdNo === this.dealData?.dealIdNo,
         );
-        console.log('data', data);
+        this.collectionData = Array.from(new Map(data.map((d: any) => [d._id, d])).values());
+        this.cdr.detectChanges()
 
-        const qrId = this.primaryQR?.qrId;
-        const agentId = data[0]?.agentNameId;
-
-        if (!agentId) {
-          this.collectionData = data.map((item: any) => ({
-            ...item,
-            qrId,
-          }));
-
-          this.cdr.markForCheck();
-          return;
-        }
-
-        this.common.getAllAgents().subscribe((res: any) => {
-          const agent = res.list || [];
-          // console.log('agent', agent)
-          const agentData = agent.find((i: any) => i.agentIdNo === agentId);
-          // console.log('agentData', agentData)
-
-          this.collectionData = data.map((item: any) => ({
-            ...item,
-            agentData,
-          }));
-          const nextInstallment = this.getNextInstallmentNumber();
-          const perInstallment = Number(this.dealData?.tenureInstallment || 0);
-          const walletDue = this.calculateWalletWithRollingInterest();
-
-          this.paymentForm.patchValue({
-            installment: nextInstallment,
-            collectionAmount: perInstallment,
-          });
-
-          console.log('', this.collectionData);
-
-          this.cdr.markForCheck();
-        });
+        console.log('FINAL DATA:', this.collectionData);
       },
       error: () => {
         this.collectionData = [];
-        this.cdr.markForCheck();
       },
     });
   }
@@ -251,7 +231,7 @@ export class MemberAddCollection implements OnInit {
   getAllAgent() {
     this.common.getAllAgents().subscribe((res: any) => {
       this.agentList = res.list || [];
-      const agentEmail = this.getAgentEmailFromLocalStorage();
+      const agentEmail = this.agentEmail;
       if (!agentEmail) return;
 
       const selectedAgent = this.agentList.find((agent: any) => agent.agentEmail === agentEmail);
@@ -263,158 +243,38 @@ export class MemberAddCollection implements OnInit {
     });
   }
 
-  getAgentEmailFromLocalStorage(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('agentEmail');
-    }
-    return null;
-  }
-
   formatDateToDDMMYYYY(date: string): string {
     if (!date) return date;
     const [year, month, day] = date.split('-');
     return `${day}-${month}-${year}`;
   }
 
-  getNextInstallmentNumber(): number {
-    if (!this.collectionData || this.collectionData.length === 0) {
-      return 1;
-    }
-
-    const last = this.collectionData.reduce((a, b) =>
-      a.installmentNumber > b.installmentNumber ? a : b,
-    );
-
-    return Number(last.installmentNumber || 0) + 1;
-  }
-
-   getCycleDays(type: string): number {
-    switch ((type || '').toLowerCase()) {
-      case 'daily': return 1;
-      case 'weekly': return 7;
-      case 'monthly': return 30;
-      case 'yearly': return 365;
-      default: return 1;
-    }
-  }
-
-  getCyclesPassed(fromDate: string, tenureType: string): number {
-    const start = new Date(fromDate).getTime();
-    const now = Date.now();
-    const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-    return Math.floor(days / this.getCycleDays(tenureType));
-  }
-
-  // ✅ CORRECT COMPOUND INTEREST
-  calculateCompoundInterest(amount: number, rate: number, cycles: number): number {
-    return +(amount * (Math.pow(1 + rate / 100, cycles) - 1)).toFixed(2);
-  }
-
-   getPlanDays(type: string): number {
-    switch ((type || '').toLowerCase()) {
-      case 'daily': return 1;
-      case 'weekly': return 7;
-      case 'monthly': return 30;
-      case 'quarterly': return 90;
-      case 'half yearly':
-      case 'half-yearly':
-      case 'halfyearly': return 180;
-      case 'yearly': return 365;
-      default: return 1;
-    }
-  }
-
-  calculateWalletWithRollingInterest(): number {
-    const rate = Number(this.dealData?.percentage || 0);
-    const cycleDays = this.getPlanDays(this.dealData?.tenureType);
-    const dayMs = 24 * 60 * 60 * 1000;
-
-    const payments = [...this.collectionData].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
-
-    let wallet = 0;
-    let lastTime = new Date(this.dealData?.fromDate).getTime();
-
-    for (const p of payments) {
-      const payTime = new Date(p.createdAt).getTime();
-      const daysPassed = Math.floor((payTime - lastTime) / dayMs);
-      const cycles = Math.floor(daysPassed / cycleDays);
-
-      if (cycles > 0 && wallet > 0) {
-        wallet = wallet * Math.pow(1 + rate / 100, cycles);
-      }
-
-      wallet += Number(p.amount || 0);
-      lastTime = payTime;
-    }
-
-    const daysTillNow = Math.floor((Date.now() - lastTime) / dayMs);
-    const cyclesTillNow = Math.floor(daysTillNow / cycleDays);
-
-    if (cyclesTillNow > 0 && wallet > 0) {
-      wallet = wallet * Math.pow(1 + rate / 100, cyclesTillNow);
-    }
-
-    return +wallet.toFixed(2);
-  }
-
   /* -------------------- SAVE -------------------- */
 
   save() {
-  if (this.paymentForm.invalid || !this.isMemberLoaded) {
-    this.paymentForm.markAllAsTouched();
-    return;
+    if (this.paymentForm.invalid || !this.isMemberLoaded || !this.dealData?._id) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
+    const formData = this.paymentForm.getRawValue();
+    const payload = {
+      dealId: this.id,
+      memberId: this.memberId,
+      paymentMode: formData.paymentMode,
+      upiTransactionId: formData.transactionId,
+      installmentNumber: formData.installment,
+      amount: Number(formData.collectionAmount),
+      primaryQRCode: this.primaryQR?.qrId,
+    };
+
+    this.common.createDealCollection(payload).subscribe({
+      next: (res) => {
+        console.log('res', res);
+        toast.success('Collection created successfully ✅');
+        this.getCollections();
+      },
+      error: (err) => toast.error(err?.message || 'Failed ❌'),
+    });
   }
-
-  const formData = this.paymentForm.getRawValue();
-  const amount = Number(formData.collectionAmount);
-  const rate = Number(this.dealData?.percentage || 0);
-  const installmentNumber = Number(formData.installment);
-
-  // 🔹 WALLET BEFORE (principal + interest)
-  const walletBefore = this.collectionData.reduce(
-    (sum, i) =>
-      sum + Number(i.amount || 0) + Number(i.compoundInterest || 0),
-    0
-  );
-
-  // 🔹 INTEREST (starts from 2nd payment)
-  const compoundInterest =
-    installmentNumber === 1
-      ? 0
-      : +(walletBefore * (rate / 100)).toFixed(2);
-
-  // 🔹 UNIQUE TRANSACTION ID
-  const uniqueId = Date.now();
-  const transactionId =
-    formData.paymentMode === 'online'
-      ? `${formData.transactionId}_${uniqueId}`
-      : `CASH_${uniqueId}`;
-
-  // 🔹 PAYLOAD
-  const payload = {
-    memberId: this.memberId,
-    paymentMode: formData.paymentMode,
-    upiTransactionId: transactionId,
-    installmentNumber,
-    amount,
-    compoundInterest, // ✅ ONLY THIS MONTH’S INTEREST
-    primaryQRCode: this.primaryQR?.qrId,
-  };
-
-  this.common.createDealCollection(payload).subscribe({
-    next: () => {
-      toast.success('Collection created successfully ✅');
-      this.paymentForm.reset({
-        paymentMode: 'online',
-        transactionId: '',
-        collectionAmount: amount,
-      });
-      this.getCollections();
-    },
-    error: (err) => toast.error(err?.message || 'Failed ❌'),
-  });
-}
-
 }

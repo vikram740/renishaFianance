@@ -38,7 +38,8 @@
             <th>Plan</th>
             <th>Amount</th>
             <th>Installment</th>
-            <th>%</th>
+            <th>Percentage(%)</th>
+            <th>Wallet Amount</th>
             <th>From</th>
             <th>To</th>
             <th></th>
@@ -47,13 +48,14 @@
         <tbody>
           <tr *ngFor="let d of dealList">
             <td>{{ d.dealIdNo }}</td>
-            <td>{{ d.memberIdNo }}</td>
-            <td>{{ d.memberName }}</td>
+            <td>{{ d.memberId?.memberIdNo }}</td>
+            <td>{{ d.memberId?.memberName }}</td>
             <td>{{ d.tenureType }}</td>
             <td>{{ d.tenurePlan }}</td>
             <td>{{ d.tenureAmount }}</td>
             <td>{{ d.tenureInstallment }}</td>
             <td>{{ d.percentage }}%</td>
+            <td class="text-success">{{d.walletAmount?.wallet}}</td>
             <td>{{ d.fromDate | date }}</td>
             <td>{{ d.endDate | date }}</td>
 

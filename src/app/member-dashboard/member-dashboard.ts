@@ -1,11 +1,13 @@
-import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { Common } from '../service/common';
-import { isPlatformBrowser } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-member-dashboard',
@@ -15,9 +17,12 @@ import { isPlatformBrowser } from '@angular/common';
     MatDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
+    DatePipe,
+    MatTableModule,
+    MatPaginatorModule
   ],
   templateUrl: './member-dashboard.html',
-  styleUrl: './member-dashboard.scss',
+  styleUrls: ['./member-dashboard.scss'],
 })
 export class MemberDashboard {
   memberEmail!: string;
@@ -29,6 +34,13 @@ export class MemberDashboard {
     cdr = inject(ChangeDetectorRef);
 
   platformId = inject(PLATFORM_ID);
+
+  displayedColumns: string[] = [
+  'dealIdNo', 'tenureType', 'tenureAmount', 'tenureInstallment', 'fromDate', 'endDate', 'wallet'
+];
+dataSource = new MatTableDataSource<any>([]);
+
+@ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -55,44 +67,60 @@ export class MemberDashboard {
   this.common.getAllMember().subscribe({
     next: (res: any) => {
       const members = res?.list || [];
+      console.log('members', members)
 
       const member = members.find(
-        (m: any) => (m.memberEmail || '').trim().toLowerCase() === email
+       
+        (m: any) => (m.memberEmail || '').trim().toLowerCase() === this.memberEmail
       );
+       console.log('member', member)
 
       if (!member) {
         console.warn('Member not found');
         return;
       }
 
-      this.memberId = member._id;
+      this.memberId = member.memberIdNo;
+      console.log('this.memberId', this.memberId)
       this.memeberData = member;
-
-      this.getDealCollection();
+      this.getDeal()
     },
     error: () => this.logout(),
   });
 }
+getDeal() {
+  const memberId = this.memberId; // make sure this is set in your component
 
+  this.common.getDeal().subscribe((res: any) => {
+    const allCollections = res.list || [];
+    console.log('allCollections', allCollections)
 
-getDealCollection(){
-  this.common.getDealCollections().subscribe((res:any)=>{
-    const all = res?.list|| [];
-    this.collectionData = all.filter(
-      (c: any) => String(c.memberId) === String(this.memberId)
+    // Filter collections for the current member
+      const memberDeals = allCollections.filter(
+      (item: any) => item.memberId?.memberIdNo === memberId
     );
+     this.collectionData = memberDeals;
 
-     this.walletAmount = this.collectionData.reduce(
-      (sum: number, c: any) => sum + Number(c.amount || 0),
-      0
-    );
-    this.cdr.detectChanges()
+    // Update dataSource for the table
+    this.dataSource.data = memberDeals;
 
-    console.log('this.collectionData', this.collectionData);
-     console.log('this.walletAmount', this.walletAmount)
-  })
+    // Assign paginator
+    setTimeout(() => {
+      this.dataSource.paginator = this.paginator;
+    });
 
+    // Get wallet from last collection (if any)
+    const lastCollection = this.collectionData[this.collectionData.length - 1];
+    this.walletAmount = lastCollection?.walletAmount?.wallet || 0;
+
+    console.log('Filtered collections', this.collectionData);
+    console.log('Wallet amount for member', this.walletAmount);
+  });
 }
+
+
+
+ 
 
 
   logout() {

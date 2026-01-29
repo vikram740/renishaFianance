@@ -58,6 +58,7 @@ getDeals() {
   this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
     this.allDealList = res.list;
     this.dealList = res.list;
+    console.log('this.dealList', this.dealList)
     this.totalCount = res.count;
     this.cdr.detectChanges()
   });

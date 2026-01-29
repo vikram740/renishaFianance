@@ -52,9 +52,11 @@ export class Payments {
   getAllQr() {
     this.common.getAllQr().subscribe((res: any) => {
       this.qrList = (res.list || []).map((q: any) => this.mapQr(q));
+     
       // Set activeQR: first primary or first item
       this.activeQR = this.qrList.find((q) => q.isPrimary) || this.qrList[0] || null;
-      this.cdr.detectChanges()
+       this.cdr.detectChanges()
+      
       console.log('QR List', this.qrList);
     });
   }
@@ -129,6 +131,7 @@ export class Payments {
       this.common.setPrimary(this.pendingQR).subscribe({
         next: (res: any) => {
           console.log('Primary QR updated on server', res);
+          this.cdr.detectChanges();
           this.getAllQr(); // Refresh QR list from backend
           this.closeModal('confirmModal');
           this.reset();
