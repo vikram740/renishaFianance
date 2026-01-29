@@ -1,5 +1,5 @@
 <div class="collectionPage">
-    <!-- <div class="collectionLabel">
+  <!-- <div class="collectionLabel">
         <h3>Monthly Overall Collection</h3>
     </div>
     <div class="datePickersDiv">
@@ -66,8 +66,6 @@
                 <button type="button" class="addCollection" (click)="addCollection()">Add Collection</button>
             </div> -->
 
-
-  <div class="collection-container">
   <h2>Today's Collection</h2>
 
   <!-- TOTAL AMOUNT CARD -->
@@ -76,46 +74,33 @@
     <h3>₹ {{ todayTotalAmount }}</h3>
   </div>
 
-  <!-- TABLE -->
-  <table *ngIf="todayCollections.length > 0">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Transaction ID</th>
-        <th>Deal ID</th>
-        <th>Payment</th>
-        <th>Amount</th>
-        <th>Time</th>
-      </tr>
-    </thead>
+  <div class="table-responsive" *ngIf="todayCollections.length > 0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Transaction ID</th>
+          <th>Deal ID</th>
+          <th>Payment</th>
+          <th>Amount</th>
+          <th>Time</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <tr *ngFor="let c of todayCollections; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ c.transactionId }}</td>
-        <td>{{ c.dealId }}</td>
-        <td>{{ c.paymentMode | uppercase }}</td>
-        <td class="amount">₹ {{ c.amount }}</td>
-        <td>{{ c.createdAt | date:'shortTime' }}</td>
-      </tr>
-    </tbody>
-  </table>
+      <tbody>
+        <tr *ngFor="let c of todayCollections; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ c.transactionId }}</td>
+          <td>{{ c.dealIdNo }}</td>
+          <td>{{ c.paymentMode | uppercase }}</td>
+          <td class="amount">₹ {{ c.amount }}</td>
+          <td>{{ c.createdAt | date: 'shortTime' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <p class="empty" *ngIf="todayCollections.length === 0">
     No collections for today
   </p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>

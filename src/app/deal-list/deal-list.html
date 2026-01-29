@@ -61,8 +61,8 @@
 
             <td class="d-flex gap-2">
               <span class="material-symbols-outlined">visibility</span>
-              <span class="material-symbols-outlined">edit</span>
-              <span class="material-symbols-outlined text-danger">delete</span>
+              <span class="material-symbols-outlined" *ngIf="role === 'agent'">edit</span>
+              <span class="material-symbols-outlined text-danger" *ngIf="role === 'agent'">delete</span>
             </td>
           </tr>
         </tbody>

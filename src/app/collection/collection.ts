@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,54 +23,74 @@ export class Collection {
 
   agentEmail = '';
   agentIdNo = '';
+  cdr=inject(ChangeDetectorRef)
 
   todayCollections: any[] = [];
   todayTotalAmount = 0;
 
-  ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
+ ngOnInit() {
+  if (!isPlatformBrowser(this.platformId)) return;
 
-    this.agentEmail = localStorage.getItem('agentEmail') || '';
-    if (!this.agentEmail) return;
+  this.agentEmail = localStorage.getItem('agentEmail') || '';
+  if (!this.agentEmail) return;
 
-    this.loadAgent();
-  }
+  this.loadAgent();
+}
 
-  loadAgent() {
-    this.common.getAllAgents().subscribe((res: any) => {
-      const agents = res.list || [];
+loadAgent() {
+  this.common.getAllAgents().subscribe((res: any) => {
+    const agents = res.list || [];
 
-      const agent = agents.find(
-        (a: any) =>
-          a.agentEmail?.toLowerCase() === this.agentEmail.toLowerCase()
-      );
+    const agent = agents.find(
+      (a: any) => a.agentEmail?.toLowerCase() === this.agentEmail.toLowerCase()
+    );
 
-      if (!agent) return;
+    if (!agent) return;
 
-      this.agentIdNo = agent.agentIdNo;
-      console.log('this.agentIdNo', this.agentIdNo)
-      this.loadTodayCollections();
-    });
-  }
+    this.agentIdNo = agent.agentIdNo;
+    this.loadTodayCollections();
+  });
+}
 
-  loadTodayCollections() {
-   const today = new Date().toISOString().split('T')[0];
+loadTodayCollections() {
+  const now = new Date();
+  const todayLocal =
+    now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
 
   this.common.getDealCollections().subscribe((res: any) => {
     const collections = res.list || [];
-    console.log('collections', collections)
 
     const todayAgentCollections = collections.filter((item: any) => {
-      const createdDate = item.createdAt?.split('T')[0];
-       return (
-        createdDate === today &&
-        item.transactionId?.includes(this.agentIdNo)
+      if (!item.createdAt) return false;
+
+      const d = new Date(item.createdAt);
+      const createdLocal =
+        d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+
+      return (
+        createdLocal === todayLocal &&
+        item.agentNameId === this.agentIdNo
       );
     });
 
     this.todayCollections = todayAgentCollections;
 
-    console.log('Today agent collection count:', this.todayCollections);
+    this.todayTotalAmount = this.todayCollections.reduce(
+      (sum, item) => sum + Number(item.amount || 0),
+      0
+    );
+
+    // ✅ Only here it is meaningful
+    this.cdr.detectChanges();
   });
-  }
+}
+
+
+
+
+
 }

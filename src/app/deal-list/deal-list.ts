@@ -27,6 +27,7 @@ export class DealList {
   editModalInstance: any;
   searchText:string='';
   allDealList:any[]=[];
+  role:any
   cdr = inject(ChangeDetectorRef);
 page = 1;
 limit = 10;
@@ -44,8 +45,10 @@ submitted:boolean=false;
 //   endDate: new FormControl('', Validators.required),
 //   agentNameId: new FormControl('', Validators.required),
 // });
-
+ if (!isPlatformBrowser(this.platformId)) return;
+   this.role = localStorage.getItem("role")
   this.getDeals();
+
 }
 
 onPageChange(event: any) {

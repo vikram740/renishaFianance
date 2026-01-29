@@ -62,6 +62,38 @@ export class Login {
   //   }
   // }
 
+  ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    if (token) {
+      if (role === 'member') {
+        this.router.navigate(['/memberDashboard']);
+      } else if (role === 'agent') {
+        this.router.navigate(['/collection']);
+      } else {
+        this.router.navigate(['/dashboard']); // admin
+      }
+      return;
+    }
+
+    const remember = JSON.parse(localStorage.getItem('rememberMe') || 'false');
+    this.rememberMe.set(remember);
+
+    if (remember) {
+      const creds = this.authService.getCredentials();
+      if (creds) {
+        this.loginForm.patchValue({
+          email: creds.email,
+          password: creds.password,
+          rememberMe: true,
+        });
+      }
+    }
+  }
+
   loginForm: FormGroup = this.fb.group({
     email: new FormControl('', [
       Validators.required,
@@ -80,6 +112,9 @@ export class Login {
     if (token) {
       if (role === 'member') {
         this.router.navigate(['/memberDashboard']);
+      }
+      if (role === 'agent') {
+        this.router.navigate(['/collection']);
       } else {
         this.router.navigate(['/dashboard']);
       }
@@ -113,17 +148,18 @@ export class Login {
         // calling user name from the service file
         this.fullName = res.firstName + ' ' + res.lastName;
         this.authService.setName(this.fullName);
-        localStorage.setItem('Id',res._id)
+        localStorage.setItem('Id', res._id);
 
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
         this.authService.getCredentials();
 
         if (res.role === 'admin') {
-          localStorage.setItem('adminPassword',res.password);
+          localStorage.setItem('adminPassword', res.password);
         }
         if (res.role === 'agent') {
           localStorage.setItem('agentEmail', res.email);
+          this.router.navigate(['/collection']);
         }
 
         // calling user role from the service file
@@ -141,10 +177,14 @@ export class Login {
         if (this.role === 'member') {
           localStorage.setItem('memberEmail', res.email);
           this.router.navigate(['/memberDashboard']);
+        } else if (this.role === 'agent') {
+          localStorage.setItem('agentEmail', res.email);
+          this.router.navigate(['/collection']);
         } else {
-          this.router.navigate(['/dashboard']);
-          toast.success('Login Successfully', { class: 'toast-success' });
+          this.router.navigate(['/dashboard']); // admin
         }
+
+        toast.success('Login Successfully', { class: 'toast-success' });
       });
     }
   }

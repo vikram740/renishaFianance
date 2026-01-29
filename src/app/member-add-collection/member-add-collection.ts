@@ -102,6 +102,8 @@ export class MemberAddCollection implements OnInit {
       console.log('this.dealData', this.dealData?._id);
       this.memberId = this.dealData.memberId?._id;
 
+       this.isMemberLoaded = true;
+
       this.getCollections();
       this.cdr.detectChanges();
       console.log('this.memberId', this.memberId);
@@ -128,32 +130,6 @@ export class MemberAddCollection implements OnInit {
     });
   }
 
-  // Fetch member by memberIdNo from getAllMember
-  // getMemberByMemberIdNo(memberIdNo: string) {
-  //   this.common.getAllMember().subscribe({
-  //     next: (res: any) => {
-  //       const members = res.list || [];
-  //       console.log('members', members)
-  //       const member = members.find((m: any) => m._id === this.memberId);
-  //       console.log('member', member)
-  //       if (member) {
-  //         this.memberId = member._id;
-  //         console.log('this.memberId', this.memberId);
-  //         this.isMemberLoaded = true;
-  //         this.tryLoadCollections();
-  //       } else {
-  //         toast.error('Member not found ❌');
-  //       }
-  //     },
-  //     error: () => toast.error('Failed to load members ❌'),
-  //   });
-  // }
-
-  // tryLoadCollections() {
-  //   if (this.isMemberLoaded && this.isQrLoaded) {
-  //     this.getCollections();
-  //   }
-  // }
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({
@@ -208,25 +184,27 @@ export class MemberAddCollection implements OnInit {
   }
 
   getCollections() {
-    this.common.getDealCollections().subscribe({
-      next: (res: any) => {
-        const list = res.list || [];
+  this.common.getDealCollections().subscribe({
+    next: (res: any) => {
+      const list = res.list || [];
+      console.log('list', list)
 
-        const data = list.filter(
-          (item: any) =>
-            String(item.memberId?._id || item.memberId) === String(this.memberId) &&
-            item.dealIdNo === this.dealData?.dealIdNo,
-        );
-        this.collectionData = Array.from(new Map(data.map((d: any) => [d._id, d])).values());
-        this.cdr.detectChanges()
+      const data = list.filter(
+        (item: any) =>
+          String(item.dealId?._id || item.dealId) === String(this.id)
+      );
 
-        console.log('FINAL DATA:', this.collectionData);
-      },
-      error: () => {
-        this.collectionData = [];
-      },
-    });
-  }
+      this.collectionData = data;
+      this.cdr.detectChanges();
+
+      console.log('FINAL DATA:', this.collectionData);
+    },
+    error: () => {
+      this.collectionData = [];
+    },
+  });
+}
+
 
   getAllAgent() {
     this.common.getAllAgents().subscribe((res: any) => {
@@ -252,7 +230,7 @@ export class MemberAddCollection implements OnInit {
   /* -------------------- SAVE -------------------- */
 
   save() {
-    if (this.paymentForm.invalid || !this.isMemberLoaded || !this.dealData?._id) {
+    if (this.paymentForm.invalid  || !this.dealData?._id) {
       this.paymentForm.markAllAsTouched();
       return;
     }
