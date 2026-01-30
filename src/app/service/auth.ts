@@ -158,7 +158,7 @@ export class Auth {
 
 deleteUser(userId: string) {
   return this.http.delete(
-    environment.baseUrl + renishaFinance.deleteUser,{ body: { _id: userId } });
+    environment.baseUrl + renishaFinance.deleteUser + '/' + userId);
 }
 
 }

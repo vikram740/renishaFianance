@@ -11,18 +11,28 @@ export class Common {
   // createAgent(body:any){
   //   return this.http.post(environment.baseUrl + renishaFinance.createAgent,body)
   // }
-  // getAllAgents(){
-  //   return this.http.get(environment.baseUrl+renishaFinance.getAllAgents)
-  // }
+  getAllAgent(page: number, limit: number){
+    return this.http.get(environment.baseUrl+renishaFinance.getAllAgents + '?page=' + page + '&limit=' + limit)
+  }
   getSingleAgent(id:any){
     return this.http.get(environment.baseUrl+renishaFinance.getSingleAgent +'/'+id)
   }
-  // editAgent(body:any,id:any){
-  //     return this.http.put(environment.baseUrl+renishaFinance.editAgent +'/'+id,body)
-  // }
-  // deleteAgent(id:any){
-  //   return this.http.delete(environment.baseUrl+renishaFinance.deleteAgent +'/'+id)
-  // }
+  editAgent(body:any){
+      return this.http.put(environment.baseUrl+renishaFinance.editAgent,body)
+  }
+  deleteAgent(id:any){
+    return this.http.delete(environment.baseUrl+renishaFinance.deleteAgent +'/'+id)
+  }
+  searchAgent(searchString: string, page: number, limit: number) {
+  const body = { searchString };
+  const params = {
+    page: page.toString(),
+    limit: limit.toString(),
+  };
+
+  return this.http.post( environment.baseUrl + renishaFinance.searchAgent,body, { params });
+}
+
   createMember(body: any) {
     return this.http.post(environment.baseUrl + renishaFinance.createMember, body);
   }
@@ -91,10 +101,10 @@ export class Common {
     );
   }
   getDeal(){
-      return this.http.get(
-      environment.baseUrl + renishaFinance.getAllDeals
-    );
+      return this.http.get( environment.baseUrl + renishaFinance.getAllDeals); }
 
+  deleteDeal(id: any) {
+    return this.http.delete(environment.baseUrl + renishaFinance.deleteDeal + '/' + id);
   }
 
   getSingleDeal(id: string) {
@@ -125,8 +135,19 @@ export class Common {
   }
   
   getDealCollections() {
-    return this.http.get(environment.baseUrl + renishaFinance.getDealCollection);
+    return this.http.get(environment.baseUrl + renishaFinance.getDealCollection );
   }
+
+  getDealCollection(page: number, limit: number) {
+    return this.http.get(environment.baseUrl + renishaFinance.getDealCollection  + '?page=' + page + '&limit=' + limit);
+  }
+ deleteCollection(id: string) {
+  return this.http.delete(
+    environment.baseUrl + renishaFinance.deleteDealCollection + '/' + id
+  );
+}
+
+
 
   userById(id:string){
     return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)

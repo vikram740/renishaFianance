@@ -21,10 +21,12 @@ export const routes: Routes = [
     { path: 'approvals', canActivate: [authGuard], loadComponent: () => import('./approval/approval').then(m => m.Approval) },
     { path: 'request', canActivate: [authGuard], loadComponent: () => import('./request/request').then(m => m.Request) },
     { path: 'dealForm', canActivate: [authGuard], loadComponent: () => import('./deal-form/deal-form').then(m => m.DealForm) },
-    { path: 'dealList', canActivate: [], loadComponent: () => import('./deal-list/deal-list').then(m => m.DealList) },
-    { path: 'userManagement', canActivate: [], loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement) },
-    { path: 'primaryQrLog', canActivate: [], loadComponent: () => import('./primar-qr-log/primar-qr-log').then(m => m.PrimarQrLog) },
+    { path: 'dealList', canActivate: [authGuard], loadComponent: () => import('./deal-list/deal-list').then(m => m.DealList) },
+    { path: 'userManagement', canActivate: [authGuard], loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement) },
+    { path: 'agentList', canActivate: [authGuard], loadComponent: () => import('./agent-list/agent-list').then(m => m.AgentList) },
+    { path: 'primaryQrLog', canActivate: [authGuard], loadComponent: () => import('./primar-qr-log/primar-qr-log').then(m => m.PrimarQrLog) },
     { path: 'payments', canActivate: [authGuard], loadComponent: () => import('./payments/payments').then(m => m.Payments) },
+    { path: 'paymentList', canActivate: [authGuard], loadComponent: () => import('./payments-list/payments-list').then(m => m.PaymentsList) },
     { path: 'notification', canActivate: [authGuard], loadComponent: () => import('./notification/notification').then(m => m.Notification) },
     { path: '**', redirectTo: 'login' }
 ];

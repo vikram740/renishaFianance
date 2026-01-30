@@ -7,6 +7,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { toast } from 'ngx-sonner';
+import { ConfirmationModal } from '../confirmation-modal/confirmation-modal';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-deal-list',
@@ -33,6 +35,7 @@ page = 1;
 limit = 10;
 totalCount = 0;
 submitted:boolean=false;
+ dialog = inject(MatDialog);
   ngOnInit() {
 //     this.dealForm = new FormGroup({
 //   dealIdNo: new FormControl(''),
@@ -121,6 +124,32 @@ onSearch(event: Event) {
   this.dealList = filtered;
   this.totalCount = filtered.length;
 }
+
+openDialog(dealId: string): void {
+    const dialogRef = this.dialog.open(ConfirmationModal, {
+      width: '400px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.deleteDeal(dealId);
+      } else {
+        console.log('Dialog was closed without confirmation');
+      }
+    });
+  }
+
+  deleteDeal(id: string) {
+    this.common.deleteDeal(id).subscribe((res: any) => {
+      console.log('res', res);
+      toast.success('Deals deleted successfully', { class: 'toast-success' });
+      this.getDeals();
+    });
+  }
+
+
+
+
 
 
 

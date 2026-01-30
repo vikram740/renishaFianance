@@ -27,27 +27,27 @@ export class Collection {
 
   todayCollections: any[] = [];
   todayTotalAmount = 0;
+  agentId :any
 
  ngOnInit() {
   if (!isPlatformBrowser(this.platformId)) return;
 
   this.agentEmail = localStorage.getItem('agentEmail') || '';
   if (!this.agentEmail) return;
+  this.agentId = localStorage.getItem('agentMongoId') || '';
+  console.log('this.agentId', this.agentId)
 
   this.loadAgent();
 }
 
 loadAgent() {
-  this.common.getAllAgents().subscribe((res: any) => {
-    const agents = res.list || [];
+  this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
+    const agents = res.user || [];
+    console.log('agents', agents)
 
-    const agent = agents.find(
-      (a: any) => a.agentEmail?.toLowerCase() === this.agentEmail.toLowerCase()
-    );
 
-    if (!agent) return;
 
-    this.agentIdNo = agent.agentIdNo;
+    this.agentIdNo = agents._id;
     this.loadTodayCollections();
   });
 }
@@ -73,7 +73,7 @@ loadTodayCollections() {
 
       return (
         createdLocal === todayLocal &&
-        item.agentNameId === this.agentIdNo
+        item.agentId === this.agentIdNo
       );
     });
 

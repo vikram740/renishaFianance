@@ -1,0 +1,221 @@
+<div class="agentListDiv">
+  <div class="container">
+    <div class="row mb-2">
+      <div class="col-12 col-md-6">
+        <div class="searchBar">
+          <input
+            type="text"
+            placeholder="Search agent"
+            class="form-input w-100"
+            (input)="onSearch($event)"
+          />
+          <span class="material-symbols-outlined">search</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <button class="actionButtons" (click)="exportToExcel()">Export</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table mt-3">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Agent ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Location</th>
+            <th >Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let a of agents,let i = index">
+            <td>{{i+1}}</td>
+            <td>{{ a.agentIdNo }}</td>
+            <td>{{ a.agentName }}</td>
+            <td>{{ a.agentEmail }}</td>
+            <td>{{ a.agentPhone }}</td>
+             <td>{{ a.agentPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
+            <td>
+
+                <span
+                class="material-symbols-outlined"
+                data-bs-toggle="modal"
+                data-bs-target="#documentViewModal"
+                (click)="viewDocuments(a)"
+              >
+                visibility
+              </span>
+              <span class="material-symbols-outlined" (click)="openSignupComponent()"> person </span>
+              <span
+                class="material-symbols-outlined"
+                data-bs-toggle="modal"
+                data-bs-target="#editMemberModal"
+                (click)="editAgent(a)"
+              >
+                edit
+              </span>
+              <span
+                class="material-symbols-outlined text-danger"
+                (click)="openDialog(a._id)"
+               
+              >
+                delete
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="limit"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="editAgentModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Agent</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="agentForm" (ngSubmit)="saveEdit()">
+
+          <div class="row mb-3">
+            <label class="col-md-4">Name</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" formControlName="agentName" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-md-4">Date of Birth</label>
+            <div class="col-md-8">
+              <input type="date" class="form-control" formControlName="agentBirth" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-md-4">Aadhaar</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" formControlName="agentAdhaar" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-md-4">Phone</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" formControlName="agentPhone" maxlength="10" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-md-4">Email</label>
+            <div class="col-md-8">
+              <input type="email" class="form-control" formControlName="agentEmail" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-md-4">Current Address</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" formControlName="agentCurrentAddress" />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="col-md-4">Permanent Address</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" formControlName="agentPermanentAddress" />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= DOCUMENT VIEW MODAL ================= -->
+<div
+  class="modal fade"
+  id="documentViewModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Agent Documents</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="selectedDocs; else noDocs">
+
+          <div *ngIf="selectedDocs.photo" class="mb-3">
+            <h6>Photo</h6>
+            <img [src]="selectedDocs.photo" class="img-fluid border rounded" />
+          </div>
+
+          <div *ngIf="selectedDocs.sign" class="mb-3">
+            <h6>Signature</h6>
+            <img [src]="selectedDocs.sign" class="img-fluid border rounded" />
+          </div>
+
+        </ng-container>
+
+        <ng-template #noDocs>
+          <p class="text-center text-muted">No documents available</p>
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Signup</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+         (click)="closeModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <app-signup
+          *ngIf="openSignup"
+          (close)="closeModal()"
+        ></app-signup>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="paymentsDiv">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-12 col-md-7 col-lg-5">
+        <div class="searchBar">
+          <input
+            type="text"
+            placeholder="Search"
+            class="form-input w-100"
+            (input)="onSearch($event)"
+          />
+          <span class="material-symbols-outlined">search</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-5 col-lg-7">
+        <button class="actionButtons" (click)="exportToExcel()">
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section2 mt-4">
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Deal ID</th>
+          <th>Transaction ID</th>
+          <th>Amount</th>
+          <th>Member ID</th>
+          <th>Member Name</th>
+          <th>Agent</th>
+          <th>Payment Mode</th>
+          <th>UPI TxID</th>
+          <th>Qr Id</th>
+          <th>Time</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody *ngIf="paymentsList.length > 0">
+        <tr *ngFor="let item of paymentsList; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.dealIdNo }}</td>
+          <td>{{ item.transactionId }}</td>
+          <td>{{ item.tenureInstallment }}</td>
+          <td>{{ item.memberIdNo }}</td>
+          <td>{{ item.memberName }}</td>
+          <td>{{ item.agentName }}</td>
+          <td>{{ item.paymentMode }}</td>
+         
+          <td>
+            {{ item.paymentMode === 'online' ? item.upiTransactionId : 'CASH' }}
+          </td>
+          <td>{{item.primaryQRCode}}</td>
+           <td>{{ item.createdAt | date: 'shortTime' }}</td>
+           <td> <span class="material-symbols-outlined text-danger"  (click)="openDialog(item._id)">delete</span></td>
+        </tr>
+      </tbody>
+
+      <tbody *ngIf="paymentsList.length === 0">
+        <tr>
+          <td colspan="9" class="text-center">No collections found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+  <mat-paginator
+    [length]="totalCount"
+    [pageSize]="limit"
+    [pageSizeOptions]="[5, 10, 25]"
+    (page)="onPageChange($event)"
+  ></mat-paginator>
+</div>

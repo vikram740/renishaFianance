@@ -13,12 +13,12 @@ import { environment, renishaFinance } from '../../environments/environment.deve
   styleUrl: './sidenav.scss',
 })
 export class Sidenav {
-  route = inject(Router)
-  authService = inject(Auth)
+  route = inject(Router);
+  authService = inject(Auth);
   role: any;
   dashboard: string = '/icons/Dashboard.png';
-  collection:string ='/icons/collection.png';
-  memberLogin:string='/icons/member login.png';
+  collection: string = '/icons/collection.png';
+  memberLogin: string = '/icons/member login.png';
   registration: string = '/icons/Registration.png';
   members: string = '/icons/Members.png';
   notifications: string = '/icons/Notification.png';
@@ -33,10 +33,10 @@ export class Sidenav {
   trash: string = '/icons/Trash.png';
   logoff: string = '/icons/Logout.png';
   help: string = '/icons/Help.png';
-  agentEmail :any;
+  agentEmail: any;
   common = inject(Common);
-  agentList :any;
-  agentPhoto:any
+  agentList: any;
+  agentPhoto: any;
   menuAdminItems = [
     { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
     { name: 'Collection', icon: this.collection, link: '/collection' },
@@ -48,65 +48,65 @@ export class Sidenav {
     { name: 'Approvals', icon: this.approvals, link: '/approvals' },
     { name: 'Documents', icon: this.documents, link: '/documents' },
     { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
-     { name: 'Deal List', icon: this.members, link: '/dealList' },
-    {name: 'Payments', icon: this.payments, link: '/payments' },
+    { name: 'Deal List', icon: this.members, link: '/dealList' },
+    { name: 'Payments', icon: this.payments, link: '/payments' },
+    { name: 'PrimaryQrLog', icon: this.payments, link: '/primaryQrLog' },
+    { name: 'PaymentsList', icon: this.payments, link: '/paymentList' },
+    { name: 'User Management', icon: this.customers, link: '/userManagement' },
     { name: 'Customer management', icon: this.customers, link: '/customerManagement' },
     { name: 'Collection Agent management', icon: this.collectionAgent, link: '/collectionAgent' },
+    { name: 'Agent List', icon: this.collectionAgent, link: '/agentList' },
     { name: 'Referral Agent management', icon: this.refferals, link: '/referralAgent' },
   ];
- 
 
   menuAgentItems = [
-  // { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
-  { name: 'Collection', icon: this.collection, link: '/collection' },
-  { name: 'Members', icon: this.members, link: '/members' },
-  { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
-  // { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
-  { name: 'Deal List', icon: this.members, link: '/dealList' },
-];
+    // { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
+    { name: 'Collection', icon: this.collection, link: '/collection' },
+    { name: 'Members', icon: this.members, link: '/members' },
+    { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
+    // { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
+    { name: 'Deal List', icon: this.members, link: '/dealList' },
+  ];
 
- menuMemberItems =[
-      { name: 'Member Dashboard', icon: this.memberLogin, link: '/memberDashboard' },
-  ]
+  menuMemberItems = [
+    { name: 'Member Dashboard', icon: this.memberLogin, link: '/memberDashboard' },
+  ];
   utlityMenu = [
     // { name: 'Settings', icon: this.settings, link: '/settings' },
     // { name: 'Trash', icon: this.trash, link: '/trash' },
     // { name: 'Help', icon: this.help, link: '/help' },
   ];
 
-    constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    ){}
-
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
     this.role = this.authService.getRole();
-    
-        if (isPlatformBrowser(this.platformId)) {
-          this.agentEmail = localStorage.getItem('agentEmail');
-        }
-        this.getAllAgent()
-  }
-  
- get menuItems() {
-  this.role = this.authService.getRole();
 
-  if (this.role === 'admin') {
-    return this.menuAdminItems;
+    if (isPlatformBrowser(this.platformId)) {
+      this.agentEmail = localStorage.getItem('agentEmail');
+    }
+    this.getAllAgent();
   }
 
-  if (this.role === 'agent') {
-    return this.menuAgentItems;
+  get menuItems() {
+    this.role = this.authService.getRole();
+
+    if (this.role === 'admin') {
+      return this.menuAdminItems;
+    }
+
+    if (this.role === 'agent') {
+      return this.menuAgentItems;
+    }
+
+    // member
+    return this.menuMemberItems;
   }
 
-  // member
-  return this.menuMemberItems;
-}
-
-   getAllAgent() {
+  getAllAgent() {
     this.common.getAllAgents().subscribe((res: any) => {
       this.agentList = res.list || [];
-      console.log('this.agentList', this.agentList)
+      console.log('this.agentList', this.agentList);
       const agentEmail = this.agentEmail;
       if (!agentEmail) return;
 
@@ -114,9 +114,9 @@ export class Sidenav {
       if (selectedAgent) {
         const bsaeUrl = environment.uploadUrl + renishaFinance.uploads + '/';
         this.agentPhoto = {
-          agentPhoto:selectedAgent.agentPhoto? bsaeUrl +selectedAgent.agentPhoto:null 
-        }
-        console.log('this.agentPhoto', this.agentPhoto)
+          agentPhoto: selectedAgent.agentPhoto ? bsaeUrl + selectedAgent.agentPhoto : null,
+        };
+        console.log('this.agentPhoto', this.agentPhoto);
       }
     });
   }
@@ -125,13 +125,14 @@ export class Sidenav {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
-       localStorage.removeItem('adminPassword');
-         localStorage.removeItem('agentEmail');
+      localStorage.removeItem('adminPassword');
+      localStorage.removeItem('agentEmail');
       localStorage.removeItem('memberEmail');
       localStorage.removeItem('userName');
+      localStorage.removeItem('agentId');
+      localStorage.removeItem('Id');
+      localStorage.removeItem('agentMongoId');
       this.route.navigate(['/login']);
     }
   }
-
 }
-

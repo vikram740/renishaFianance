@@ -27,6 +27,7 @@ export class Documents {
 
     this.common.getDeals(1, 1000).subscribe((res: any) => {
       const list = res.list || [];
+      console.log('list', list)
       const found = list.find((d: any) => d.dealIdNo?.toString() === this.searchId.trim());
 
       if (!found) {
@@ -38,7 +39,8 @@ export class Documents {
 
       this.common.getSingleDeal(mongoId).subscribe((dealRes: any) => {
         const deal = dealRes.data;
-        const memberId = deal.memberId;
+        console.log('deal', deal)
+        const memberId = deal.memberId?._id;
 
         this.common.getsingleMember(memberId).subscribe((memberRes: any) => {
           const member = memberRes.user;

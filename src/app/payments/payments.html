@@ -20,7 +20,7 @@
   <!-- QR LIST BUTTONS -->
   <div class="btn-group w-100 mt-3" *ngIf="qrList.length">
     <button
-      *ngFor="let qr of qrList; let i = index"
+      *ngFor="let qr of qrList| slice:0:4; let i = index"
       class="btn"
       [ngClass]="qr.isPrimary ? 'btn-success' : 'btn-danger'"
       (click)="requestPrimaryChange(qr)"

@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import { Auth } from '../service/auth';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Common } from '../service/common';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class Login {
   router = inject(Router);
   authService = inject(Auth);
   platformId = inject(PLATFORM_ID);
-
+  common = inject(Common);
   fullName: any;
   role: any;
   // loginForm: FormGroup;
@@ -68,7 +69,7 @@ export class Login {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
 
-    if (token) {
+    if (token && role) {
       if (role === 'member') {
         this.router.navigate(['/memberDashboard']);
       } else if (role === 'agent') {
@@ -79,6 +80,7 @@ export class Login {
       return;
     }
 
+    // remember me
     const remember = JSON.parse(localStorage.getItem('rememberMe') || 'false');
     this.rememberMe.set(remember);
 
@@ -103,38 +105,38 @@ export class Login {
     rememberMe: [false],
   });
 
-  initEffect = effect(() => {
-    if (!isPlatformBrowser(this.platformId)) return;
+  // initEffect = effect(() => {
+  //   if (!isPlatformBrowser(this.platformId)) return;
 
-    // Check token
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (token) {
-      if (role === 'member') {
-        this.router.navigate(['/memberDashboard']);
-      }
-      if (role === 'agent') {
-        this.router.navigate(['/collection']);
-      } else {
-        this.router.navigate(['/dashboard']);
-      }
-    }
+  //   // Check token
+  //   const token = localStorage.getItem('token');
+  //   const role = localStorage.getItem('role');
+  //   if (token) {
+  //     if (role === 'member') {
+  //       this.router.navigate(['/memberDashboard']);
+  //     }
+  //     if (role === 'agent') {
+  //       this.router.navigate(['/collection']);
+  //     } else {
+  //       this.router.navigate(['/dashboard']);
+  //     }
+  //   }
 
-    // Remember me
-    const remember = JSON.parse(localStorage.getItem('rememberMe') || 'false');
-    this.rememberMe.set(remember);
+  //   // Remember me
+  //   const remember = JSON.parse(localStorage.getItem('rememberMe') || 'false');
+  //   this.rememberMe.set(remember);
 
-    if (remember) {
-      const creds = this.authService.getCredentials();
-      if (creds) {
-        this.loginForm.patchValue({
-          email: creds.email,
-          password: creds.password,
-          rememberMe: true,
-        });
-      }
-    }
-  });
+  //   if (remember) {
+  //     const creds = this.authService.getCredentials();
+  //     if (creds) {
+  //       this.loginForm.patchValue({
+  //         email: creds.email,
+  //         password: creds.password,
+  //         rememberMe: true,
+  //       });
+  //     }
+  //   }
+  // });
 
   signIn() {
     if (this.loginForm.invalid) {
@@ -179,7 +181,17 @@ export class Login {
           this.router.navigate(['/memberDashboard']);
         } else if (this.role === 'agent') {
           localStorage.setItem('agentEmail', res.email);
-          this.router.navigate(['/collection']);
+          this.router.navigate(['/collection']).then(() => {
+            // NOW token exists for interceptor
+            this.common.getAllAgents().subscribe((response: any) => {
+              const agents = response.list || [];
+              const agent = agents.find((a: any) => a.agentEmail === res.email);
+
+              if (agent) {
+                localStorage.setItem('agentMongoId', agent._id);
+              }
+            });
+          });
         } else {
           this.router.navigate(['/dashboard']); // admin
         }

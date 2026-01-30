@@ -97,23 +97,26 @@ saveEdit() {
 
   this.auth.updateUser(payload).subscribe({
     next: () => {
-      this.loadUsers();
-       toast.success('user updated successfully', { class: 'toast-success' });
-        if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        import('bootstrap').then((bootstrap) => {
-          const modalEl = document.getElementById('editUserModal');
-          if (!modalEl) return;
+      toast.success('User updated successfully', { class: 'toast-success' });
 
-          const modal = new bootstrap.Modal(modalEl);
-          modal?.hide();
-        });
-      });
-    }
+      this.loadUsers();
       this.userForm.reset();
+
+      if (isPlatformBrowser(this.platformId)) {
+        setTimeout(() => {
+          import('bootstrap').then((bootstrap) => {
+            const modalEl = document.getElementById('editUserModal');
+            if (!modalEl) return;
+
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide(); // ✅ THIS WORKS
+          });
+        });
+      }
     }
   });
 }
+
 
 deleteUser(id: string) {
   this.auth.deleteUser(id).subscribe(() => { 

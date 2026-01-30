@@ -43,6 +43,8 @@ export class MemberAddCollection implements OnInit {
   qrId: any;
   agentById: any;
   id: any;
+  agentId:any;
+  isSaving = false;
 
   authService = inject(Auth);
   route = inject(ActivatedRoute);
@@ -56,26 +58,31 @@ export class MemberAddCollection implements OnInit {
     this.paymentForm = new FormGroup({
       collectionAmount: new FormControl('', Validators.required),
       paymentMode: new FormControl('online', Validators.required),
-      transactionId: new FormControl('', Validators.required),
+      upiTransactionId: new FormControl('', Validators.required),
       installment: new FormControl(''),
     });
 
     // Adjust TXID validators for payment mode
     this.paymentForm.get('paymentMode')?.valueChanges.subscribe((mode) => {
-      const txCtrl = this.paymentForm.get('transactionId');
-      if (mode === 'cash') {
-        txCtrl?.clearValidators();
-        // Use dealId + memberId + timestamp for uniqueness
-        const dealId = this.dealData?._id || 'DEAL';
-        const memberId = this.memberId || 'MEM';
-        const uniqueTxId = `${dealId}-${memberId}-CASH-${Date.now()}`;
-        txCtrl?.setValue(uniqueTxId);
-      } else {
-        txCtrl?.setValidators(Validators.required);
-        txCtrl?.setValue('');
-      }
-      txCtrl?.updateValueAndValidity();
-    });
+  const txCtrl = this.paymentForm.get('upiTransactionId'); // ✅ FIXED
+
+  if (!txCtrl) return;
+
+  if (mode === 'cash') {
+    txCtrl.clearValidators();
+
+    // optional: auto-generate a readable CASH id
+    const dealId = this.dealData?._id || 'DEAL';
+    const memberId = this.memberId || 'MEM';
+    txCtrl.setValue(`CASH-${dealId}-${memberId}-${Date.now()}`);
+  } else {
+    txCtrl.setValidators(Validators.required);
+    txCtrl.setValue('');
+  }
+
+  txCtrl.updateValueAndValidity();
+});
+
   }
 
   ngOnInit() {
@@ -88,6 +95,8 @@ export class MemberAddCollection implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.agentEmail = localStorage.getItem('agentEmail');
       this.role = localStorage.getItem('role');
+      this.agentId = localStorage.getItem('agentMongoId')
+      console.log('this.agentId', this.agentId)
     }
 
     this.getDealById(this.id);
@@ -99,28 +108,16 @@ export class MemberAddCollection implements OnInit {
   getDealById(id: string) {
     this.common.getSingleDeal(id).subscribe((res: any) => {
       this.dealData = res.data;
-      console.log('this.dealData', this.dealData?._id);
       this.memberId = this.dealData.memberId?._id;
-
-       this.isMemberLoaded = true;
+      this.isMemberLoaded = true;
 
       this.getCollections();
       this.cdr.detectChanges();
-      console.log('this.memberId', this.memberId);
       if (!this.dealData) {
         toast.error('Deal not found ❌');
         return;
       }
-
-      // this.getMemberByMemberIdNo(this.memberId);
-
-      // this.memberData = {
-      //   _id: this.dealData.memberId,
-      //   memberIdNo: this.dealData.memberIdNo,
-      //   memberName: this.dealData.memberName,
-      // };
-
-      const perInstallment = Number(this.dealData.tenureInstallment);
+     const perInstallment = Number(this.dealData.tenureInstallment);
 
       this.paymentForm.patchValue({
         installment: 1,
@@ -129,7 +126,6 @@ export class MemberAddCollection implements OnInit {
       });
     });
   }
-
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({
@@ -150,7 +146,6 @@ export class MemberAddCollection implements OnInit {
         this.isQrLoaded = true;
         this.primaryQR?.qrId;
 
-        // ✅ ADD THIS
         this.cdr.detectChanges();
       },
       error: () => {
@@ -184,40 +179,35 @@ export class MemberAddCollection implements OnInit {
   }
 
   getCollections() {
-  this.common.getDealCollections().subscribe({
-    next: (res: any) => {
-      const list = res.list || [];
-      console.log('list', list)
+    this.common.getDealCollections().subscribe({
+      next: (res: any) => {
+        const list = res.list || [];
 
-      const data = list.filter(
-        (item: any) =>
-          String(item.dealId?._id || item.dealId) === String(this.id)
-      );
+        const data = list.filter(
+          (item: any) =>
+            String(item.memberId?._id || item.memberId) === String(this.memberId) &&
+            item.dealIdNo === this.dealData?.dealIdNo,
+        );
+        this.collectionData = Array.from(new Map(data.map((d: any) => [d._id, d])).values());
+        this.cdr.detectChanges()
 
-      this.collectionData = data;
-      this.cdr.detectChanges();
-
-      console.log('FINAL DATA:', this.collectionData);
-    },
-    error: () => {
-      this.collectionData = [];
-    },
-  });
-}
-
+        console.log('FINAL DATA:', this.collectionData);
+      },
+      error: () => {
+        this.collectionData = [];
+      },
+    });
+  }
 
   getAllAgent() {
-    this.common.getAllAgents().subscribe((res: any) => {
-      this.agentList = res.list || [];
-      const agentEmail = this.agentEmail;
-      if (!agentEmail) return;
-
-      const selectedAgent = this.agentList.find((agent: any) => agent.agentEmail === agentEmail);
-      if (selectedAgent) {
-        this.logedAgentId = selectedAgent.agentIdNo;
-        this.agentName = selectedAgent.agentName;
-        this.agentById = selectedAgent._id;
-      }
+    this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
+      this.agentList = res.user || [];
+      console.log('this.agentList', this.agentList)
+      this.logedAgentId =  res.user.agentIdNo;
+      this.agentName = res.user.agentName;
+      this.agentById = res.user._id;
+      console.log('this.agentById', this.agentById)
+      
     });
   }
 
@@ -230,17 +220,19 @@ export class MemberAddCollection implements OnInit {
   /* -------------------- SAVE -------------------- */
 
   save() {
-    if (this.paymentForm.invalid  || !this.dealData?._id) {
+    if (this.isSaving ||this.paymentForm.invalid || !this.isMemberLoaded || !this.dealData?._id) {
       this.paymentForm.markAllAsTouched();
       return;
     }
+      this.isSaving = true;
 
     const formData = this.paymentForm.getRawValue();
     const payload = {
       dealId: this.id,
       memberId: this.memberId,
+      agentId: this.agentById,
       paymentMode: formData.paymentMode,
-      upiTransactionId: formData.transactionId,
+      upiTransactionId:formData.upiTransactionId,
       installmentNumber: formData.installment,
       amount: Number(formData.collectionAmount),
       primaryQRCode: this.primaryQR?.qrId,

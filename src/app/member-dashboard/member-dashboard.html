@@ -115,6 +115,11 @@
     <td mat-cell *matCellDef="let element">{{ element.endDate | date:'dd-MM-yyyy' }}</td>
   </ng-container>
 
+   <ng-container matColumnDef="lastpaidDate">
+    <th mat-header-cell *matHeaderCellDef>lastpaidDate</th>
+    <td mat-cell *matCellDef="let element">{{ element.lastPaidDate | date:'dd-MM-yyyy' }}</td>
+  </ng-container>
+
   <!-- Wallet Column -->
   <ng-container matColumnDef="wallet">
     <th mat-header-cell *matHeaderCellDef>Wallet</th>

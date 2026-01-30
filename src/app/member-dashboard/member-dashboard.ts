@@ -36,7 +36,7 @@ export class MemberDashboard {
   platformId = inject(PLATFORM_ID);
 
   displayedColumns: string[] = [
-  'dealIdNo', 'tenureType', 'tenureAmount', 'tenureInstallment', 'fromDate', 'endDate', 'wallet'
+  'dealIdNo', 'tenureType', 'tenureAmount', 'tenureInstallment', 'fromDate', 'endDate','lastpaidDate', 'wallet'
 ];
 dataSource = new MatTableDataSource<any>([]);
 

@@ -40,7 +40,7 @@
         <div class="buttonsDiv3" *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
           <div class="button">
             <label>Transaction ID (TXID)</label>
-            <input type="text" formControlName="transactionId" class="form-control"/>
+            <input type="text" formControlName="upiTransactionId" class="form-control"/>
           </div>
         </div>
 
@@ -76,7 +76,7 @@
             <td>{{ item.transactionId }}</td>
             <td>{{ item.tenureInstallment}}</td>
             <td>{{ item.memberIdNo }}</td>
-            <td>{{ item.agentNameId }}</td>
+            <td>{{ item.agentName}}</td>
             <td>{{ item.primaryQRCode}}</td>
             <td>{{ item.paymentMode }}</td>
             <td>{{ item.upiTransactionId }}</td>
