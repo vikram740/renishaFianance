@@ -93,7 +93,6 @@ export class Members implements OnInit {
 
   editMember(member: any) {
     this.selectedMemberId = member._id;
-    console.log('this.selectedMemberId', this.selectedMemberId);
 
     this.generateID.patchValue({
       memberName: member.memberName,
@@ -142,7 +141,6 @@ export class Members implements OnInit {
       };
 
       this.common.editMember(payload).subscribe((res: any) => {
-        console.log('res', res);
         this.editModalInstance.hide();
         document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
         document.body.classList.remove('modal-open');
@@ -188,7 +186,6 @@ export class Members implements OnInit {
 
   deleteMember(id: string) {
     this.common.deletemember(id).subscribe((res: any) => {
-      console.log('res', res);
       toast.success('Member deleted successfully', { class: 'toast-success' });
       this.getMembersList();
     });

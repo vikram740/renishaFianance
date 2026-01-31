@@ -55,15 +55,13 @@ enter() {
 
   this.common.getDeal().subscribe({
     next: (res: any) => {
-      const allDeals = res.list || [];
-      console.log('allDeals', allDeals)
+      const allDeals = res?.data?.list || [];
 
 
       const memberDeals = allDeals.filter(
       
-        (d: any) => d.memberId?.memberIdNo === enterId
+        (d: any) => d.memberIdNo === enterId
       );
-        console.log('memberDeals', memberDeals)
 
       if (memberDeals.length === 0) {
         toast.error('Invalid Member ID or No Deals Found');

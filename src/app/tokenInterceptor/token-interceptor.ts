@@ -5,7 +5,7 @@ import { Auth } from '../service/auth';
 import { isPlatformBrowser } from '@angular/common';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('Interceptor triggered for:', req.url);
+
 
   const platformId = inject(PLATFORM_ID);
   let token: string | null = null;
@@ -14,7 +14,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     token = localStorage.getItem('token');
   }
 
-  console.log('Token from localStorage:', token);
 
   if (token) {
     const authReq = req.clone({
@@ -23,11 +22,8 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
       },
     });
 
-    console.log('Auth header added');
     return next(authReq);
   }
-
-  console.log('No token found, sending request without auth');
   return next(req);
 };
 

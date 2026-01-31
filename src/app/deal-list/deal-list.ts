@@ -63,7 +63,8 @@ onPageChange(event: any) {
 getDeals() {
   this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
     this.allDealList = res.list;
-    this.dealList = res.list;
+    // this.dealList = res.list;
+       this.dealList = res.data?.list;
     console.log('this.dealList', this.dealList)
     this.totalCount = res.count;
     this.cdr.detectChanges()

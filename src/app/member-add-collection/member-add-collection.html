@@ -1,12 +1,12 @@
 <div class="memberAddCollectionPage" *ngIf="dealData">
   <div class="section1">
     <div class="col-12 col-md-3 memberProfile">
-      <div class="eachField"><label>Member ID :</label> {{ dealData?.memberId?.memberIdNo }}</div>
+      <div class="eachField"><label>Member ID :</label> {{ dealData.memberIdNo }}</div>
       <div class="eachField"><label>Deal ID :</label> {{ dealData?.dealIdNo }}</div>
       <div class="eachField" *ngIf="role === 'agent'">
         <label>Agent Name :</label> {{ agentName }} - {{ logedAgentId }}
       </div>
-      <div class="eachField"><label>Name :</label> {{ dealData?.memberId?.memberName }}</div>
+      <div class="eachField"><label>Name :</label> {{ dealData?.member?.memberName }}</div>
       <div class="eachField"><label>Selected Plan :</label> {{ dealData?.tenureType }}</div>
       <div class="eachField"><label>Start Date :</label> {{ dealData?.fromDate | date }}</div>
       <div class="eachField"><label>End Date :</label> {{ dealData?.endDate | date }}</div>
@@ -21,7 +21,7 @@
           </div>
           <div class="button">
             <label>Amount</label>
-            <input type="text" formControlName="collectionAmount" class="form-control" readonly />
+            <input type="text" formControlName="collectionAmount" class="form-control" />
           </div>
         </div>
 
@@ -74,7 +74,8 @@
             <td>{{ i + 1 }}</td>
             <td>{{ item.dealIdNo}}</td>
             <td>{{ item.transactionId }}</td>
-            <td>{{ item.tenureInstallment}}</td>
+            <td>{{ item.tenureAmount
+}}</td>
             <td>{{ item.memberIdNo }}</td>
             <td>{{ item.agentName}}</td>
             <td>{{ item.primaryQRCode}}</td>

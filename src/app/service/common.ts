@@ -141,6 +141,11 @@ export class Common {
   getDealCollection(page: number, limit: number) {
     return this.http.get(environment.baseUrl + renishaFinance.getDealCollection  + '?page=' + page + '&limit=' + limit);
   }
+
+  getDealInsallment(id:string){
+     return this.http.get(environment.baseUrl + renishaFinance.getDealInsallment + '/' +id );
+
+  }
  deleteCollection(id: string) {
   return this.http.delete(
     environment.baseUrl + renishaFinance.deleteDealCollection + '/' + id

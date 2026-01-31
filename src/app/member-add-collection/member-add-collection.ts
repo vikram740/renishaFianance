@@ -44,6 +44,7 @@ export class MemberAddCollection implements OnInit {
   agentById: any;
   id: any;
   agentId:any;
+  installmentList:any
   isSaving = false;
 
   authService = inject(Auth);
@@ -87,6 +88,7 @@ export class MemberAddCollection implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
+    console.log('this.id', this.id)
     if (!this.id) {
       this.router.navigate(['/member-login']);
       return;
@@ -95,6 +97,7 @@ export class MemberAddCollection implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.agentEmail = localStorage.getItem('agentEmail');
       this.role = localStorage.getItem('role');
+      console.log('this.role', this.role)
       this.agentId = localStorage.getItem('agentMongoId')
       console.log('this.agentId', this.agentId)
     }
@@ -102,13 +105,16 @@ export class MemberAddCollection implements OnInit {
     this.getDealById(this.id);
     this.getPrimaryQr();
     this.getAllAgent();
+    this.getInstallment()
   }
 
   // Fetch deal by ID
   getDealById(id: string) {
     this.common.getSingleDeal(id).subscribe((res: any) => {
       this.dealData = res.data;
-      this.memberId = this.dealData.memberId?._id;
+      console.log('this.dealData', this.dealData)
+      this.memberId = this.dealData.memberId;
+      console.log('this.memberId', this.memberId)
       this.isMemberLoaded = true;
 
       this.getCollections();
@@ -182,6 +188,7 @@ export class MemberAddCollection implements OnInit {
     this.common.getDealCollections().subscribe({
       next: (res: any) => {
         const list = res.list || [];
+        console.log('list', list)
 
         const data = list.filter(
           (item: any) =>
@@ -209,6 +216,15 @@ export class MemberAddCollection implements OnInit {
       console.log('this.agentById', this.agentById)
       
     });
+  }
+
+  getInstallment(){
+    this.common.getDealInsallment(this.id).subscribe((res:any)=>{
+      this.installmentList = res
+      console.log('this.installmentList', this.installmentList)
+
+    })
+
   }
 
   formatDateToDDMMYYYY(date: string): string {
