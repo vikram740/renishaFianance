@@ -116,8 +116,7 @@ export class MemberAddCollection implements OnInit {
       this.memberId = this.dealData.memberId;
       console.log('this.memberId', this.memberId)
       this.isMemberLoaded = true;
-
-      this.getCollections();
+      this. getInstallment();
       this.cdr.detectChanges();
       if (!this.dealData) {
         toast.error('Deal not found ❌');
@@ -184,27 +183,27 @@ export class MemberAddCollection implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
-  getCollections() {
-    this.common.getDealCollections().subscribe({
-      next: (res: any) => {
-        const list = res.list || [];
-        console.log('list', list)
+  //  getInstallment() {
+  //   this.common.getDealCollections().subscribe({
+  //     next: (res: any) => {
+  //       const list = res|| [];
+  //       console.log('list', list)
 
-        const data = list.filter(
-          (item: any) =>
-            String(item.memberId?._id || item.memberId) === String(this.memberId) &&
-            item.dealIdNo === this.dealData?.dealIdNo,
-        );
-        this.collectionData = Array.from(new Map(data.map((d: any) => [d._id, d])).values());
-        this.cdr.detectChanges()
+  //       const data = list.filter(
+  //         (item: any) =>
+  //           String(item.memberId?._id || item.memberId) === String(this.memberId) &&
+  //           item.dealIdNo === this.dealData?.dealIdNo,
+  //       );
+  //       this.collectionData = Array.from(new Map(data.map((d: any) => [d._id, d])).values());
+  //       this.cdr.detectChanges()
 
-        console.log('FINAL DATA:', this.collectionData);
-      },
-      error: () => {
-        this.collectionData = [];
-      },
-    });
-  }
+  //       console.log('FINAL DATA:', this.collectionData);
+  //     },
+  //     error: () => {
+  //       this.collectionData = [];
+  //     },
+  //   });
+  // }
 
   getAllAgent() {
     this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
@@ -220,7 +219,8 @@ export class MemberAddCollection implements OnInit {
 
   getInstallment(){
     this.common.getDealInsallment(this.id).subscribe((res:any)=>{
-      this.installmentList = res
+      this.installmentList = res.installments
+
       console.log('this.installmentList', this.installmentList)
 
     })
@@ -250,7 +250,7 @@ export class MemberAddCollection implements OnInit {
       paymentMode: formData.paymentMode,
       upiTransactionId:formData.upiTransactionId,
       installmentNumber: formData.installment,
-      amount: Number(formData.collectionAmount),
+       installmentPaidAmount: Number(formData.collectionAmount),
       primaryQRCode: this.primaryQR?.qrId,
     };
 
@@ -258,7 +258,7 @@ export class MemberAddCollection implements OnInit {
       next: (res) => {
         console.log('res', res);
         toast.success('Collection created successfully ✅');
-        this.getCollections();
+        this. getInstallment();
       },
       error: (err) => toast.error(err?.message || 'Failed ❌'),
     });

@@ -49,8 +49,10 @@ export class DealForm {
       if (!id) return;
 
       const member = this.memberList.find(
+       
         (m: any) => m.memberIdNo?.toLowerCase() === id.toLowerCase(),
       );
+       console.log('member', member)
 
       if (member) {
         this.selectedMemberMongoId = member._id;
@@ -123,6 +125,7 @@ export class DealForm {
   getMembersList() {
     this.common.getAllMember().subscribe((res: any) => {
       this.memberList = res.list;
+      console.log('this.memberList', this.memberList)
     });
   }
   getAllAgent() {

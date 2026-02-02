@@ -38,7 +38,7 @@ export class Dashboard {
   loadCollections() {
     this.common.getDeal().subscribe({
       next: (res: any) => {
-        this.collections = res.list || [];
+        this.collections = res.data?.list || [];
         console.log('Collections:', this.collections);
         this.calculateAmounts();
       },
@@ -53,7 +53,7 @@ export class Dashboard {
 
     this.collections.forEach((item: any) => {
       invested += Number(item.tenureInstallment || 0);
-      walletTotal += Number(item.walletAmount?.wallet || 0);
+      walletTotal += Number(item.walletAmount||0);
     });
 
     this.investedAmount = invested;

@@ -6,7 +6,7 @@
       <div class="eachField" *ngIf="role === 'agent'">
         <label>Agent Name :</label> {{ agentName }} - {{ logedAgentId }}
       </div>
-      <div class="eachField"><label>Name :</label> {{ dealData?.member?.memberName }}</div>
+      <div class="eachField"><label>Name :</label> {{ dealData?.memberName }}</div>
       <div class="eachField"><label>Selected Plan :</label> {{ dealData?.tenureType }}</div>
       <div class="eachField"><label>Start Date :</label> {{ dealData?.fromDate | date }}</div>
       <div class="eachField"><label>End Date :</label> {{ dealData?.endDate | date }}</div>
@@ -69,8 +69,8 @@
             <th>UPI TxID</th>
           </tr>
         </thead>
-        <tbody *ngIf="collectionData.length > 0">
-          <tr *ngFor="let item of collectionData; let i = index">
+        <tbody *ngIf="installmentList.length > 0">
+          <tr *ngFor="let item of installmentList; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ item.dealIdNo}}</td>
             <td>{{ item.transactionId }}</td>
@@ -83,7 +83,7 @@
             <td>{{ item.upiTransactionId }}</td>
           </tr>
         </tbody>
-        <tbody *ngIf="collectionData.length === 0">
+        <tbody *ngIf="installmentList.length === 0">
           <tr><td colspan="9" class="text-center">No collections found</td></tr>
         </tbody>
       </table>
