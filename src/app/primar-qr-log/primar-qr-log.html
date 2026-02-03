@@ -33,9 +33,10 @@
         <tr *ngFor="let t of filteredCollections">
           <td>{{ t.memberName }}</td>
           <td>{{ t.dealIdNo }}</td>
-          <td>{{t.agentNameId}}</td>
+          <td>{{t.agentName}}</td>
           <td>{{t.memberIdNo}}</td>
-          <td>{{ t.amount }}</td>
+          <td>{{ t.installmentPaidAmount
+ }}</td>
           <td>{{ t.transactionId }}</td>
           <td>{{ t.paymentMode }}</td>
           <td>{{ t.installmentNumber }}</td>

@@ -62,7 +62,7 @@ export class Registration {
         nomineePermanentAddress: new FormControl('', Validators.required),
         nomineeSignature: new FormControl('', Validators.required),
         nomineePhoto: new FormControl('', Validators.required),
-       nomineeRelationship: new FormControl('', Validators.required),
+        nomineeRelationship: new FormControl('', Validators.required),
       }),
     });
   }
@@ -223,11 +223,13 @@ export class Registration {
       this.common.createMember(formData).subscribe((res: any) => {
         // this.isLoading = false;
         console.log('resgistration', res.data);
-        toast.success('Resgistration Successfully', { class: 'toast-success' });
+        toast.success('Registration Successfully', { class: 'toast-success' });
         this.generateID.reset();
         this.submitted = false;
         this.memberSignatureName = '';
         this.memberPhotoName = '';
+        this.memberPanName = '';
+        this.memberAdhaarName = '';
         this.nomineePhotoName = '';
         this.nomineeSignatureName = '';
       });

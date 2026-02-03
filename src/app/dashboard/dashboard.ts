@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,60 +19,74 @@ import { DecimalPipe } from '@angular/common';
 })
 export class Dashboard {
 
- collections: any[] = [];
+deals: any[] = [];        // from getAllDeals
+  collections: any[] = []; // from getDealCollections
 
-  investedAmount = 0;   // Σ tenureInstallment
-  totalAmount = 0;      // Σ walletAmount.wallet
+  totalAmount = 0;      // Σ walletAmount (deals)
+  investedAmount = 0;   // Σ installmentPaidAmount (collections)
   interestAmount = 0;   // total - invested
+  cdr =inject(ChangeDetectorRef)
 
-  constructor(
-    private common: Common,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private common: Common) {}
 
   ngOnInit() {
+    this.loadDeals();
     this.loadCollections();
   }
 
-  // 🔹 Load DEAL summary data
-  loadCollections() {
+  // 🔹 1. Load ALL DEALS → TOTAL WALLET
+  loadDeals() {
     this.common.getDeal().subscribe({
       next: (res: any) => {
-        this.collections = res.data?.list || [];
-        console.log('Collections:', this.collections);
-        this.calculateAmounts();
+        this.deals = res?.data?.list || [];
+
+        // ✅ SUM OF ALL WALLET AMOUNTS
+        this.totalAmount = this.deals.reduce(
+          (sum: number, d: any) => sum + Number(d.walletAmount || 0),
+          0
+        );
+          console.log('this.totalAmount', this.totalAmount)
+
+        this.calculateInterest();
       },
-      error: () => this.resetAmounts(),
+      error: () => this.resetAmounts()
     });
   }
 
-  // 🔹 CORE CALCULATION (FINANCE SAFE)
-  calculateAmounts(): void {
-    let invested = 0;
-    let walletTotal = 0;
+  // 🔹 2. Load DEAL COLLECTIONS → INVESTED
+  loadCollections() {
+    this.common.getDealCollections().subscribe({
+      next: (res: any) => {
+        this.collections = res?.list || [];
+        console.log('this.collections', this.collections)
 
-    this.collections.forEach((item: any) => {
-      invested += Number(item.tenureInstallment || 0);
-      walletTotal += Number(item.walletAmount||0);
+        // ✅ SUM OF ALL INSTALLMENTS PAID
+        this.investedAmount = this.collections.reduce(
+          (sum: number, c: any) => sum + Number(c.installmentPaidAmount || 0),
+          0
+        );
+            console.log('this.investedAmount', this.investedAmount)
+
+        this.calculateInterest();
+
+  
+      },
+      error: () => this.resetAmounts()
     });
+  }
 
-    this.investedAmount = invested;
-    this.totalAmount = walletTotal;
-    this.interestAmount = walletTotal - invested;
-
-    this.cdr.detectChanges();
-
-    console.log('Invested:', this.investedAmount);
-    console.log('Total Wallet:', this.totalAmount);
-    console.log('Interest:', this.interestAmount);
+  // 🔹 3. INTEREST = TOTAL - INVESTED
+  calculateInterest() {
+    this.interestAmount = this.totalAmount - this.investedAmount;
+    this.cdr.detectChanges()
+    console.log('this.interestAmount', this.interestAmount)
   }
 
   resetAmounts() {
-    this.investedAmount = 0;
     this.totalAmount = 0;
+    this.investedAmount = 0;
     this.interestAmount = 0;
   }
-
 
 
 

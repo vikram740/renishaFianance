@@ -21,17 +21,17 @@
   <!-- WALLET SUMMARY -->
   <div class="walletBox summary">
     <div class="walletItem invested">
-      <label>Invested Amount</label>
-      <h2>₹ {{ investedAmount }}</h2>
+      <label>Deposited Amount</label>
+      <h2>₹ {{ investedAmount}}</h2>
     </div>
 
     <div class="walletItem interest">
-      <label>Interest Amount</label>
+      <label>Earned Amount</label>
       <h2>₹ {{ interestAmount | number: '1.0-0' }}</h2>
     </div>
 
     <div class="walletItem total">
-      <label>Total Amount</label>
+      <label>Total Wallet Amount</label>
       <h2>₹ {{ totalAmount | number: '1.0-0' }}</h2>
     </div>
   </div>

@@ -48,10 +48,12 @@ export class PrimarQrLog {
   selectQr(qr: string) {
     this.selectedQr = qr;
     this.filteredCollections = this.collectionData.filter(c => c.primaryQRCode === qr);
+    console.log('this.filteredCollections', this.filteredCollections)
   }
 
   getTotalAmount(): number {
-    return this.filteredCollections.reduce((sum, t) => sum + Number(t.amount), 0);
+    return this.filteredCollections.reduce((sum, t) => sum + Number(t.installmentPaidAmount
+), 0);
   }
 
 }

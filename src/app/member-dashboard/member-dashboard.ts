@@ -8,6 +8,7 @@ import { Common } from '../service/common';
 import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-member-dashboard',
@@ -26,17 +27,27 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
   styleUrls: ['./member-dashboard.scss'],
 })
 export class MemberDashboard {
-  memberEmail!: string;
-  memberId!: string;
-  memeberData: any;
-  common = inject(Common);
-  collectionData: any;
+ 
+  private common = inject(Common);
+  private platformId = inject(PLATFORM_ID);
+
+  memberEmail = '';
+  memberId = '';
+
   walletAmount = 0;
- installmentList: any[] = [];
+  totalInstallments=0
+  totalPaidAmount = 0;
 
-  cdr = inject(ChangeDetectorRef);
+  dataSource = new MatTableDataSource<any>([]);
 
-  platformId = inject(PLATFORM_ID);
+  // 🔥 Observable-driven modal data
+  installment$ = new BehaviorSubject<any[] | null>(null);
+  collectionList:any =[]
+  cdr = inject(ChangeDetectorRef)
+
+  page = 1;
+  limit = 5;
+  total = 0;
 
   displayedColumns: string[] = [
     'dealIdNo',
@@ -45,11 +56,10 @@ export class MemberDashboard {
     'tenureInstallment',
     'fromDate',
     'endDate',
-    'lastpaidDate',
+    'lastPaidDate',
     'wallet',
     'action'
   ];
-  dataSource = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -57,88 +67,85 @@ export class MemberDashboard {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.memberEmail = localStorage.getItem('memberEmail') || '';
-    console.log('Stored Email:', this.memberEmail);
-
     if (!this.memberEmail) {
       this.logout();
       return;
     }
+
     this.getMemberDetails();
   }
 
+  ngAfterViewInit() {
+    this.paginator.page.subscribe(event => {
+      this.page = event.pageIndex + 1;
+      this.limit = event.pageSize;
+      this.getDeals();
+    });
+  }
+
   getMemberDetails() {
-    const email = (localStorage.getItem('memberEmail') || '').trim().toLowerCase();
-
-    if (!email) {
-      this.logout();
-      return;
-    }
-
     this.common.getAllMember().subscribe({
       next: (res: any) => {
-        const members = res?.list || [];
-        console.log('members', members);
-
-        const member = members.find(
-          (m: any) => (m.memberEmail || '').trim().toLowerCase() === this.memberEmail,
+        const member = res?.list?.find(
+          (m: any) =>
+            m.memberEmail?.toLowerCase().trim() ===
+            this.memberEmail.toLowerCase().trim()
         );
-        console.log('member', member);
 
         if (!member) {
-          console.warn('Member not found');
+          this.logout();
           return;
         }
 
         this.memberId = member.memberIdNo;
-        console.log('this.memberId', this.memberId);
-        this.memeberData = member;
-        this.getDeal();
+        this.getDeals();
       },
-      error: () => this.logout(),
+      error: () => this.logout()
     });
   }
-  getDeal() {
-    const memberId = this.memberId; // make sure this is set in your component
 
-    this.common.getDeal().subscribe((res: any) => {
-      const allCollections = res.data?.list || [];
-      console.log('allCollections', allCollections);
+  getDeals() {
+    this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
+      const list = res?.data?.list || [];
+      this.total = res?.data?.total || 0;
 
-      // Filter collections for the current member
-      const memberDeals = allCollections.filter(
-        (item: any) => item.memberIdNo === memberId,
+      const memberDeals = list.filter(
+        (d: any) => d.memberIdNo === this.memberId
       );
-      this.collectionData = memberDeals;
 
-      // Update dataSource for the table
       this.dataSource.data = memberDeals;
 
-      // Assign paginator
-      setTimeout(() => {
-        this.dataSource.paginator = this.paginator;
-      });
-
-      // Get wallet from last collection (if any)
-      const lastCollection = this.collectionData[this.collectionData.length - 1];
-      this.walletAmount = lastCollection?.walletAmount || 0;
-
-      console.log('Filtered collections', this.collectionData);
-      console.log('Wallet amount for member', this.walletAmount);
+      this.walletAmount = memberDeals.reduce(
+        (sum: number, d: any) => sum + (Number(d.walletAmount) || 0),
+        0
+      );
     });
   }
 
-  viewDocuments(id:string){
-    this.installmentList=[]
-    this.common.getDealInsallment(id).subscribe((res:any)=>{
-      this.installmentList = res.installments;
-      this.cdr.detectChanges()
+  // 🔥 NO FLAGS, NO NG0100
+ viewDocuments(dealId: string) {
+  // loading state
+  this.installment$.next([]);
 
-      console.log('this.installmentList', this.installmentList)
-    })
+  // call BOTH APIs independently
+  this.common.getSingleDeal(dealId).subscribe((res: any) => {
+    this.installment$.next(res?.data?.interestHistory || []);
+    this.cdr.markForCheck();
+  });
 
-  }
+  this.common.getDealInsallment(dealId).subscribe((res: any) => {
+    this.collectionList = res
+    this.totalInstallments = res?.totalInstallments;
+    this.totalPaidAmount = res?.totalPaidAmount
 
 
+    console.log('this.collectionList', this.collectionList)
+
+    this.collectionList = [...(res?.installments || [])];
+    console.log('collectionList length:', this.collectionList.length);
+     this.cdr.markForCheck();
+  });
+}
 
   logout() {
     if (isPlatformBrowser(this.platformId)) {

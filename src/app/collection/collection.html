@@ -93,7 +93,8 @@
           <td>{{ c.transactionId }}</td>
           <td>{{ c.dealIdNo }}</td>
           <td>{{ c.paymentMode | uppercase }}</td>
-          <td class="amount">₹ {{ c.amount }}</td>
+          <td class="amount">₹ {{ c.installmentPaidAmount
+ }}</td>
           <td>{{ c.createdAt | date: 'shortTime' }}</td>
         </tr>
       </tbody>

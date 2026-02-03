@@ -48,6 +48,7 @@ loadAgent() {
 
 
     this.agentIdNo = agents._id;
+    console.log('this.agentIdNo', this.agentIdNo)
     this.loadTodayCollections();
   });
 }
@@ -61,6 +62,7 @@ loadTodayCollections() {
 
   this.common.getDealCollections().subscribe((res: any) => {
     const collections = res.list || [];
+    console.log('collections', collections)
 
     const todayAgentCollections = collections.filter((item: any) => {
       if (!item.createdAt) return false;
@@ -80,7 +82,8 @@ loadTodayCollections() {
     this.todayCollections = todayAgentCollections;
 
     this.todayTotalAmount = this.todayCollections.reduce(
-      (sum, item) => sum + Number(item.amount || 0),
+      (sum, item) => sum + Number(item.installmentPaidAmount
+|| 0),
       0
     );
 

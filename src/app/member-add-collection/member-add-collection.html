@@ -72,12 +72,11 @@
         <tbody *ngIf="installmentList.length > 0">
           <tr *ngFor="let item of installmentList; let i = index">
             <td>{{ i + 1 }}</td>
-            <td>{{ item.dealIdNo}}</td>
+            <td>{{ item.dealId}}</td>
             <td>{{ item.transactionId }}</td>
-            <td>{{ item.tenureAmount
-}}</td>
-            <td>{{ item.memberIdNo }}</td>
-            <td>{{ item.agentName}}</td>
+           <td>{{ item.installmentPaidAmount}}</td>
+            <td>{{ item.memberId }}</td>
+            <td>{{ item.agentId}}</td>
             <td>{{ item.primaryQRCode}}</td>
             <td>{{ item.paymentMode }}</td>
             <td>{{ item.upiTransactionId }}</td>

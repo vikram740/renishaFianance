@@ -43,8 +43,8 @@ export class MemberAddCollection implements OnInit {
   qrId: any;
   agentById: any;
   id: any;
-  agentId:any;
-  installmentList:any
+  agentId: any;
+  installmentList: any[] = [];
   isSaving = false;
 
   authService = inject(Auth);
@@ -65,30 +65,29 @@ export class MemberAddCollection implements OnInit {
 
     // Adjust TXID validators for payment mode
     this.paymentForm.get('paymentMode')?.valueChanges.subscribe((mode) => {
-  const txCtrl = this.paymentForm.get('upiTransactionId'); // ✅ FIXED
+      const txCtrl = this.paymentForm.get('upiTransactionId'); // ✅ FIXED
 
-  if (!txCtrl) return;
+      if (!txCtrl) return;
 
-  if (mode === 'cash') {
-    txCtrl.clearValidators();
+      if (mode === 'cash') {
+        txCtrl.clearValidators();
 
-    // optional: auto-generate a readable CASH id
-    const dealId = this.dealData?._id || 'DEAL';
-    const memberId = this.memberId || 'MEM';
-    txCtrl.setValue(`CASH-${dealId}-${memberId}-${Date.now()}`);
-  } else {
-    txCtrl.setValidators(Validators.required);
-    txCtrl.setValue('');
-  }
+        // optional: auto-generate a readable CASH id
+        const dealId = this.dealData?._id || 'DEAL';
+        const memberId = this.memberId || 'MEM';
+        txCtrl.setValue(`CASH-${dealId}-${memberId}-${Date.now()}`);
+      } else {
+        txCtrl.setValidators(Validators.required);
+        txCtrl.setValue('');
+      }
 
-  txCtrl.updateValueAndValidity();
-});
-
+      txCtrl.updateValueAndValidity();
+    });
   }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    console.log('this.id', this.id)
+    console.log('this.id', this.id);
     if (!this.id) {
       this.router.navigate(['/member-login']);
       return;
@@ -97,32 +96,32 @@ export class MemberAddCollection implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.agentEmail = localStorage.getItem('agentEmail');
       this.role = localStorage.getItem('role');
-      console.log('this.role', this.role)
-      this.agentId = localStorage.getItem('agentMongoId')
-      console.log('this.agentId', this.agentId)
+      console.log('this.role', this.role);
+      this.agentId = localStorage.getItem('agentMongoId');
+      console.log('this.agentId', this.agentId);
     }
 
     this.getDealById(this.id);
     this.getPrimaryQr();
     this.getAllAgent();
-    this.getInstallment()
+    this.getInstallment();
   }
 
   // Fetch deal by ID
   getDealById(id: string) {
     this.common.getSingleDeal(id).subscribe((res: any) => {
       this.dealData = res.data;
-      console.log('this.dealData', this.dealData)
+      console.log('this.dealData', this.dealData);
       this.memberId = this.dealData.memberId;
-      console.log('this.memberId', this.memberId)
+      console.log('this.memberId', this.memberId);
       this.isMemberLoaded = true;
-      this. getInstallment();
+      this.getInstallment();
       this.cdr.detectChanges();
       if (!this.dealData) {
         toast.error('Deal not found ❌');
         return;
       }
-     const perInstallment = Number(this.dealData.tenureInstallment);
+      const perInstallment = Number(this.dealData.tenureInstallment);
 
       this.paymentForm.patchValue({
         installment: 1,
@@ -208,23 +207,20 @@ export class MemberAddCollection implements OnInit {
   getAllAgent() {
     this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
       this.agentList = res.user || [];
-      console.log('this.agentList', this.agentList)
-      this.logedAgentId =  res.user.agentIdNo;
+      console.log('this.agentList', this.agentList);
+      this.logedAgentId = res.user.agentIdNo;
       this.agentName = res.user.agentName;
       this.agentById = res.user._id;
-      console.log('this.agentById', this.agentById)
-      
+      console.log('this.agentById', this.agentById);
     });
   }
 
-  getInstallment(){
-    this.common.getDealInsallment(this.id).subscribe((res:any)=>{
-      this.installmentList = res.installments
-
-      console.log('this.installmentList', this.installmentList)
-
-    })
-
+  getInstallment() {
+    this.common.getDealInsallment(this.id).subscribe((res: any) => {
+      console.log('INSTALLMENT API FULL RESPONSE:', res);
+      this.installmentList = res.installments || res.data || [];
+      this.cdr.detectChanges();
+    });
   }
 
   formatDateToDDMMYYYY(date: string): string {
@@ -236,11 +232,11 @@ export class MemberAddCollection implements OnInit {
   /* -------------------- SAVE -------------------- */
 
   save() {
-    if (this.isSaving ||this.paymentForm.invalid || !this.isMemberLoaded || !this.dealData?._id) {
+    if (this.isSaving || this.paymentForm.invalid || !this.isMemberLoaded || !this.dealData?._id) {
       this.paymentForm.markAllAsTouched();
       return;
     }
-      this.isSaving = true;
+    this.isSaving = true;
 
     const formData = this.paymentForm.getRawValue();
     const payload = {
@@ -248,9 +244,9 @@ export class MemberAddCollection implements OnInit {
       memberId: this.memberId,
       agentId: this.agentById,
       paymentMode: formData.paymentMode,
-      upiTransactionId:formData.upiTransactionId,
+      upiTransactionId: formData.upiTransactionId,
       installmentNumber: formData.installment,
-       installmentPaidAmount: Number(formData.collectionAmount),
+      installmentPaidAmount: Number(formData.collectionAmount),
       primaryQRCode: this.primaryQR?.qrId,
     };
 
@@ -258,7 +254,7 @@ export class MemberAddCollection implements OnInit {
       next: (res) => {
         console.log('res', res);
         toast.success('Collection created successfully ✅');
-        this. getInstallment();
+        this.getInstallment();
       },
       error: (err) => toast.error(err?.message || 'Failed ❌'),
     });

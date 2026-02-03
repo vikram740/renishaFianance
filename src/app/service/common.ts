@@ -151,10 +151,7 @@ export class Common {
     environment.baseUrl + renishaFinance.deleteDealCollection + '/' + id
   );
 }
-
-
-
-  userById(id:string){
+userById(id:string){
     return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)
 
   }

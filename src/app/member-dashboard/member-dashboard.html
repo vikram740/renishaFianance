@@ -1,206 +1,171 @@
 <div class="memberDashboardPage">
-    <!-- <div class="collectionLabel">
-        <h3>Member's Collection</h3>
-    </div> -->
-      <div class="collectionLabel">
+
+  <div class="collectionLabel">
     <h3>Wallet Summary</h3>
   </div>
-    <div class="walletBox">
+
+  <div class="walletBox">
     <label>Total Wallet Amount</label>
-    <h2>₹{{walletAmount}} </h2>
+    <h2>₹{{ walletAmount }}</h2>
   </div>
-
-  <!-- <div class="addColeectBtn">
-    <button type="button" class="addCollection" routerLink="/memberLogin">Add Collection</button>
-  </div> -->
-    <!-- <div class="datePickersDiv">
-        <div class="eachDatePicker">
-            <div>
-                <mat-form-field>
-                    <mat-label>From</mat-label>
-                    <input matInput [matDatepicker]="picker1">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
-
-            </div>
-        </div>
-        <div class="eachDatePicker">
-            <div>
-                <mat-form-field>
-                    <mat-label>To</mat-label>
-                    <input matInput [matDatepicker]="picker2">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2></mat-datepicker>
-                </mat-form-field>
-            </div>
-        </div>
+   <!-- <div class="walletBox summary">
+    <div class="walletItem invested">
+      <label>Deposited Amount</label>
+      <h2>₹ {{ investedAmount}}</h2>
     </div>
-    <div class="collectionDiv">
-        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
-            <div class="collectionBlocks">
-                <div class="todayCollection">
-                    <label for="">Today Collection Amount</label>
-                    <h2>30,000</h2>
-                </div>
-                <div class="todayCollection">
-                    <label for="">Today Pending Amount</label>
-                    <h2>10,000</h2>
-                </div>
-            </div>
-            <div class="collectionBlocks">
-                <div class="todayCollection">
-                    <label for="">Total Cash</label>
-                    <h2>30,000</h2>
-                </div>
-                <div class="todayCollection">
-                    <label for="">Account Transfer</label>
-                    <h2>10,000</h2>
-                </div>
-            </div>
-           
-        </div>
-        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
-            <div class="monthlyCollection">
-                <label for="">Monthly Collection</label>
-                <div class="piechartDiv">
-                    <img src="/images/pieChart.png" alt="" class="img-fluid pieChart">
-                </div>
-                <h2>10,00,000</h2>
-            </div>
-        </div>
-    </div> -->
-     <!-- <div class="addColeectBtn">
-                <button type="button" class="addCollection" routerLink="/memberLogin">Add Collection</button>
-            </div> -->
 
-   <div class="mt-5">
-      <h3 >My Deals</h3>
+    <div class="walletItem interest">
+      <label>Earned Amount</label>
+      <h2>₹ {{ interestAmount | number: '1.0-0' }}</h2>
+    </div>
+
+  </div> -->
+
+  <div class="mt-5">
+    <h3>My Deals</h3>
+
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-  <!-- Deal ID Column -->
-  <ng-container matColumnDef="dealIdNo">
-    <th mat-header-cell *matHeaderCellDef>Deal ID</th>
-    <td mat-cell *matCellDef="let element">{{ element.dealIdNo }}</td>
-  </ng-container>
+      <ng-container matColumnDef="dealIdNo">
+        <th mat-header-cell *matHeaderCellDef>Deal ID</th>
+        <td mat-cell *matCellDef="let e">{{ e.dealIdNo }}</td>
+      </ng-container>
 
-  <!-- Tenure Column -->
-  <ng-container matColumnDef="tenureType">
-    <th mat-header-cell *matHeaderCellDef>Tenure</th>
-    <td mat-cell *matCellDef="let element">{{ element.tenureType }}</td>
-  </ng-container>
+      <ng-container matColumnDef="tenureType">
+        <th mat-header-cell *matHeaderCellDef>Tenure</th>
+        <td mat-cell *matCellDef="let e">{{ e.tenureType }}</td>
+      </ng-container>
 
-  <!-- Amount Column -->
-  <ng-container matColumnDef="tenureAmount">
-    <th mat-header-cell *matHeaderCellDef>Amount</th>
-    <td mat-cell *matCellDef="let element">₹{{ element.tenureAmount }}</td>
-  </ng-container>
+      <ng-container matColumnDef="tenureAmount">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let e">₹{{ e.tenureAmount }}</td>
+      </ng-container>
 
-  <!-- Installment Column -->
-  <ng-container matColumnDef="tenureInstallment">
-    <th mat-header-cell *matHeaderCellDef>Installment</th>
-    <td mat-cell *matCellDef="let element">₹{{ element.tenureInstallment }}</td>
-  </ng-container>
+      <ng-container matColumnDef="tenureInstallment">
+        <th mat-header-cell *matHeaderCellDef>Installment</th>
+        <td mat-cell *matCellDef="let e">₹{{ e.tenureInstallment }}</td>
+      </ng-container>
 
-  <!-- From / End Date Column -->
-  <ng-container matColumnDef="fromDate">
-    <th mat-header-cell *matHeaderCellDef>From</th>
-    <td mat-cell *matCellDef="let element">{{ element.fromDate | date:'dd-MM-yyyy' }}</td>
-  </ng-container>
+      <ng-container matColumnDef="fromDate">
+        <th mat-header-cell *matHeaderCellDef>From</th>
+        <td mat-cell *matCellDef="let e">
+          {{ e.fromDate | date:'dd-MM-yyyy' }}
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="endDate">
-    <th mat-header-cell *matHeaderCellDef>End</th>
-    <td mat-cell *matCellDef="let element">{{ element.endDate | date:'dd-MM-yyyy' }}</td>
-  </ng-container>
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef>End</th>
+        <td mat-cell *matCellDef="let e">
+          {{ e.endDate | date:'dd-MM-yyyy' }}
+        </td>
+      </ng-container>
 
-   <ng-container matColumnDef="lastpaidDate">
-    <th mat-header-cell *matHeaderCellDef>lastpaidDate</th>
-    <td mat-cell *matCellDef="let element">{{ element.lastPaidDate | date:'dd-MM-yyyy' }}</td>
-  </ng-container>
+      <ng-container matColumnDef="lastPaidDate">
+        <th mat-header-cell *matHeaderCellDef>Last Paid</th>
+        <td mat-cell *matCellDef="let e">
+          {{ e.lastPaidDate | date:'dd-MM-yyyy' }}
+        </td>
+      </ng-container>
 
-  <!-- Wallet Column -->
-  <ng-container matColumnDef="wallet">
-    <th mat-header-cell *matHeaderCellDef>Wallet</th>
-    <td mat-cell *matCellDef="let element">₹{{ element.walletAmount || 0 }}</td>
-  </ng-container>
-    <ng-container matColumnDef="action">
-  <th mat-header-cell *matHeaderCellDef>View</th>
-  <td mat-cell *matCellDef="let element">
-    <span
-      class="material-symbols-outlined action-icon"
-      (click)="viewDocuments(element._id)"
-      data-bs-toggle="modal"
-      data-bs-target="#installmentViewModal"
-    >
-      visibility
-    </span>
-  </td>
-</ng-container>
+      <ng-container matColumnDef="wallet">
+        <th mat-header-cell *matHeaderCellDef>Wallet</th>
+        <td mat-cell *matCellDef="let e">₹{{ e.walletAmount || 0 }}</td>
+      </ng-container>
 
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>View</th>
+        <td mat-cell *matCellDef="let e">
+          <span
+            class="material-symbols-outlined action-icon"
+            (click)="viewDocuments(e._id)"
+            data-bs-toggle="modal"
+            data-bs-target="#installmentViewModal">
+            visibility
+          </span>
+        </td>
+      </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
 
-</table>
-
-<mat-paginator [pageSize]="5" showFirstLastButtons></mat-paginator>
-
-   </div>
-
-
-
+    <mat-paginator
+      [length]="total"
+      [pageSize]="limit"
+      [pageSizeOptions]="[5,10,20]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
 </div>
 
-
-<div class="modal fade" id="installmentViewModal" tabindex="-1" aria-hidden="true">
+<!-- MODAL -->
+<div class="modal fade" id="installmentViewModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
+
       <div class="modal-header">
-        <h5 class="modal-title">deal installment</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-      
-        ></button>
+        <h5 class="modal-title">Deal Installments</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body">
-        <div *ngIf="installmentList?.length; else noData">
+ <div class="modal-body">
 
-  <table class="table table-bordered">
-    <thead>
+ 
+
+  <!-- PAID INSTALLMENTS -->
+  <div *ngIf="collectionList.length > 0; else noPaid">
+    <h6 class="mt-3">Paid Installments-({{totalInstallments}})</h6>
+    <p>Total Paid Amount -  {{totalPaidAmount|currency:'INR':'symbol':'1.0-0'}}</p>
+    <table class="table table-bordered">
       <tr>
-        <th>S.no</th>
+        <th>S.NO</th>
         <th>Date</th>
         <th>Paid Amount</th>
-        <th>Interest</th>
-        <th>Wallet After</th>
         <th>Mode</th>
       </tr>
-    </thead>
 
-    <tbody>
-      <tr *ngFor="let inst of installmentList; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ inst.createdAt | date:'dd-MM-yyyy' }}</td>
-        <td>₹{{ inst.amount }}</td>
-        <td>₹{{ inst.interest || 0 }}</td>
-        <td>₹{{ inst.walletAfterPayment }}</td>
-        <td>{{ inst.paymentMode }}</td>
+      <tr *ngFor="let i of collectionList; let idx = index">
+        <td>{{ idx + 1 }}</td>
+        <td>{{ i.createdAt | date:'dd-MM-yyyy' }}</td>
+        <td>₹{{ i.installmentPaidAmount }}</td>
+        <td>{{ i.paymentMode }}</td>
       </tr>
-    </tbody>
-  </table>
+    </table>
+  </div>
+
+  <ng-template #noPaid>
+    <p class="text-muted text-center">No paid installments found</p>
+  </ng-template>
+
+   <!-- INTEREST HISTORY -->
+  <ng-container *ngIf="installment$ | async as installments">
+    <div *ngIf="installments.length > 0; else noInterest">
+      <h6>Interest History</h6>
+      <table class="table table-bordered">
+        <tr>
+          <th>S.NO</th>
+          <th>Date</th>
+          <th>Interest</th>
+          <th>Wallet After</th>
+        </tr>
+
+        <tr *ngFor="let i of installments; let idx = index">
+          <td>{{ idx + 1 }}</td>
+          <td>{{ i.date | date:'dd-MM-yyyy' }}</td>
+          <td>₹{{ i.interest || 0 }}</td>
+          <td>₹{{ i.walletAfterInterest }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <ng-template #noInterest>
+      <p class="text-muted text-center">No interest history</p>
+    </ng-template>
+  </ng-container>
 
 </div>
 
-<ng-template #noData>
-  <p class="text-center text-muted">No installments found</p>
-</ng-template>
 
-      </div>
     </div>
   </div>
 </div>

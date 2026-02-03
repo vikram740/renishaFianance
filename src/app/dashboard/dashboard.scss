@@ -23,7 +23,7 @@
   .datePickersDiv {
     display: flex;
     @include mobile() {
-      flex-wrap: wrap;
+      flex-wrap:nowrap;
     }
      @include tablet() {
       flex-wrap: wrap;
@@ -189,15 +189,15 @@
 }
 
 .walletItem.invested h2 {
-  color: #1976d2;
+  color: #1976d2; 
 }
 
 .walletItem.interest h2 {
-  color: #2e7d32;
+  color: #153b62;
 }
 
 .walletItem.total h2 {
-  color: #d84315;
+  color: #2e7d32;;
 }
 }
 

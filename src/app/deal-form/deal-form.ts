@@ -95,6 +95,12 @@ export class DealForm {
       case 'monthly':
         end.setMonth(start.getMonth() + tenurePlan);
         break;
+      case 'quarterly':
+        end.setMonth(start.getMonth() + tenurePlan *3);
+        break;
+      case 'halfyearly':
+        end.setMonth(start.getMonth() + tenurePlan *6);
+        break;
       case 'yearly':
         end.setFullYear(start.getFullYear() + tenurePlan);
         break;
@@ -162,7 +168,7 @@ export class DealForm {
 
     this.common.createDeal(payload).subscribe((res: any) => {
       console.log('deal ', res);
-      toast.success('Resgistration Successfully', { class: 'toast-success' });
+      toast.success('Registration Successfully', { class: 'toast-success' });
       this.dealForm.reset();
     });
   }
