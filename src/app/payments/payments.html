@@ -20,7 +20,7 @@
   <!-- QR LIST BUTTONS -->
   <div class="btn-group w-100 mt-3" *ngIf="qrList.length">
     <button
-      *ngFor="let qr of qrList| slice:0:4; let i = index"
+      *ngFor="let qr of qrList | slice: 0 : 4; let i = index"
       class="btn"
       [ngClass]="qr.isPrimary ? 'btn-success' : 'btn-danger'"
       (click)="requestPrimaryChange(qr)"
@@ -28,6 +28,70 @@
       {{ qr.qrCodeFileName }}
     </button>
   </div>
+
+  <div class="table-responsive mt-4" *ngIf="qrList.length; else noQrTable">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>S.No</th>
+          <th>QR Name</th>
+          <th>QR ID</th>
+          <th>Primary</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let qr of qrList; let i = index">
+          <td>{{ i + 1 }}</td>
+
+          <td>{{ qr.qrCodeFileName }}</td>
+
+          <td>{{ qr.qrCodeIdNo }}</td>
+
+          <td>
+            <span class="badge" [ngClass]="qr.isPrimary ? 'bg-success' : 'bg-secondary'">
+              {{ qr.isPrimary ? 'Primary' : 'Secondary' }}
+            </span>
+          </td>
+
+          <td class="text-center">
+            <!-- VIEW -->
+            <span
+              class="material-symbols-outlined action-icon text-primary"
+              title="View"
+              (click)="viewQr(qr)"
+            >
+              visibility
+            </span>
+
+            <!-- SET PRIMARY -->
+            <!-- <span
+              class="material-symbols-outlined action-icon text-success ms-2"
+              title="Set Primary"
+              *ngIf="!qr.isPrimary"
+              (click)="requestPrimaryChange(qr)"
+            >
+              check_circle
+            </span> -->
+
+            <!-- DELETE -->
+            <span
+              class="material-symbols-outlined action-icon text-danger ms-2"
+              title="Delete"
+              (click)="requestDelete(qr)"
+            >
+              delete
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noQrTable>
+    <p class="text-muted text-center mt-3">No QR codes found</p>
+  </ng-template>
 </div>
 
 <!-- VIEW QR MODAL -->

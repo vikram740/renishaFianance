@@ -3,7 +3,7 @@
 .topNav {
   display: flex;
   justify-content: space-between;
-  padding: 0 30px;
+  padding: 0 2px 0 30px;
   height: 120px;
   background: #000;
   float: right;
@@ -85,6 +85,25 @@
         align-items: center;
       }
     }
+    .eachTabsection{
+      cursor: pointer;
+
+        .custom-icon{
+                height:20px;
+                width: 20px;
+                // cursor: pointer;
+            }
+             label {
+                    font-size: 20px;
+                    padding: 0 10px;
+                    font-family: $font-regular;
+                    font-size: 16px;
+                    font-weight: 400;
+                    cursor: pointer;
+
+                }
+    }
+    
   }
 }
 

@@ -12,7 +12,7 @@ import { environment, renishaFinance } from '../../environments/environment.deve
   styleUrls: ['./payments.scss'],
 })
 export class Payments {
- private platformId = inject(PLATFORM_ID);
+  private platformId = inject(PLATFORM_ID);
   private common = inject(Common);
 
   qrList: any[] = [];
@@ -25,7 +25,8 @@ export class Payments {
   enteredPassword = '';
   passwordError = false;
 
-  pendingAction: 'upload' | 'setPrimary' | null = null;
+  pendingAction: 'upload' | 'setPrimary' | 'delete' | null = null;
+
   pendingQR: string | null = null;
 
   confirmTitle = '';
@@ -52,38 +53,35 @@ export class Payments {
   getAllQr() {
     this.common.getAllQr().subscribe((res: any) => {
       this.qrList = (res.list || []).map((q: any) => this.mapQr(q));
-     
       // Set activeQR: first primary or first item
       this.activeQR = this.qrList.find((q) => q.isPrimary) || this.qrList[0] || null;
-       this.cdr.detectChanges()
-      
+      this.cdr.detectChanges();
+
       console.log('QR List', this.qrList);
     });
   }
 
   /* ---------------- VIEW ---------------- */
   viewQr(qr: any) {
+    this.selectedQR = {
+      name: qr.qrCodeFileName,
+      image: qr.url,
+    };
 
-   this.selectedQR = {
-    name: qr.qrCodeFileName,
-    image: qr.url 
-  };
+    console.log('Selected QR', this.selectedQR);
 
-  console.log('Selected QR', this.selectedQR);
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        import('bootstrap').then((bootstrap) => {
+          const modalEl = document.getElementById('qrModal');
+          if (!modalEl) return;
 
-  if (isPlatformBrowser(this.platformId)) {
-    setTimeout(() => {
-      import('bootstrap').then((bootstrap) => {
-        const modalEl = document.getElementById('qrModal');
-        if (!modalEl) return;
-
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
+          const modal = new bootstrap.Modal(modalEl);
+          modal.show();
+        });
       });
-    });
+    }
   }
-}
-
 
   /* ---------------- UPLOAD ---------------- */
   requestUpload(input: HTMLInputElement) {
@@ -113,6 +111,13 @@ export class Payments {
     this.confirmMessage = `Set "${qr.qrCodeFileName}" as primary?`;
     this.openAdminModal(); // ask for admin password
   }
+  requestDelete(qr: any) {
+    this.pendingAction = 'delete';
+    this.pendingQR = qr.id;
+    this.confirmTitle = 'Delete QR';
+    this.confirmMessage = `Are you sure you want to delete "${qr.qrCodeFileName}"?`;
+    this.openAdminModal();
+  }
 
   /* ---------------- CONFIRM ---------------- */
   confirmAction() {
@@ -122,8 +127,10 @@ export class Payments {
         this.qrList.unshift(newQr);
         if (!this.activeQR) this.activeQR = newQr;
         this.closeModal('confirmModal');
+        this.getAllQr();
         this.reset();
       });
+
       return;
     }
 
@@ -137,6 +144,20 @@ export class Payments {
           this.reset();
         },
         error: (err) => console.error('Failed to set primary', err),
+      });
+      return;
+    }
+    if (this.pendingAction === 'delete' && this.pendingQR) {
+      this.common.deleteQr(this.pendingQR).subscribe({
+        next: () => {
+          this.qrList = this.qrList.filter((q) => q.id !== this.pendingQR);
+          this.activeQR = this.qrList.find((q) => q.isPrimary) || this.qrList[0] || null;
+
+          this.closeModal('confirmModal');
+          this.reset();
+          this.getAllQr();
+        },
+        error: (err) => console.error('Delete failed', err),
       });
       return;
     }
@@ -161,6 +182,9 @@ export class Payments {
 
     if (this.pendingAction === 'setPrimary') {
       this.openModal('confirmModal');
+    }
+    if (this.pendingAction === 'setPrimary' || this.pendingAction === 'delete') {
+      this.openModal('confirmModal'); // ✅ FIX
     }
   }
 

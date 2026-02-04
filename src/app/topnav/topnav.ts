@@ -56,7 +56,13 @@ export class Topnav {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+      localStorage.removeItem('adminPassword');
+      localStorage.removeItem('agentEmail');
+      localStorage.removeItem('memberEmail');
       localStorage.removeItem('userName');
+      localStorage.removeItem('agentId');
+      localStorage.removeItem('Id');
+      localStorage.removeItem('agentMongoId');
       this.route.navigate(['/login']);
     }
   }

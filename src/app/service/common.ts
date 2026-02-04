@@ -119,6 +119,10 @@ export class Common {
      return this.http.get(environment.baseUrl + renishaFinance.getAllQr);
 
   }
+  deleteQr(id:string){
+     return this.http.delete(environment.baseUrl + renishaFinance.deleteQr + '/' +id );
+
+  }
   getReferralById(id: string) {
     return this.http.get(environment.baseUrl + renishaFinance.getReferralById + '/' + id);
   }
@@ -154,5 +158,5 @@ export class Common {
 userById(id:string){
     return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)
 
-  }
+}
 }

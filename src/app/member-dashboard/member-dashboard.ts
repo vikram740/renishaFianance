@@ -46,7 +46,7 @@ export class MemberDashboard {
   cdr = inject(ChangeDetectorRef)
 
   page = 1;
-  limit = 5;
+  limit = 10;
   total = 0;
 
   displayedColumns: string[] = [
@@ -58,6 +58,7 @@ export class MemberDashboard {
     'endDate',
     'lastPaidDate',
     'wallet',
+    'status',
     'action'
   ];
 
@@ -106,12 +107,15 @@ export class MemberDashboard {
 
   getDeals() {
     this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
-      const list = res?.data?.list || [];
+      const list = res?.data?.list|| [];
+      console.log('list', list)
       this.total = res?.data?.total || 0;
 
       const memberDeals = list.filter(
         (d: any) => d.memberIdNo === this.memberId
       );
+      
+      console.log('',memberDeals)
 
       this.dataSource.data = memberDeals;
 

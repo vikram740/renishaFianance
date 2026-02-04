@@ -24,7 +24,7 @@
               <button class="actionButtons">Edit Columns</button>
             </div>
             <div>
-              <button class="actionButtons" (click)="exportToExcel()">Export</button>
+              <button class="actionButtons" (click)="exportToExcel()" *ngIf="role === 'admin'">Export</button>
             </div>
 
             <div>
@@ -69,7 +69,7 @@
             <th>Phone No</th>
             <th>Email</th>
             <th>Location</th>
-            <th></th>
+            <th *ngIf="role === 'admin'"></th>
           </tr>
         </thead>
         <tbody>
@@ -79,11 +79,12 @@
             <td>{{ member.memberPhone }}</td>
             <td>{{member.memberEmail}}</td>
             <td>{{ member.memberPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
-            <td class="d-flex gap-2">
+            <td class="d-flex gap-2" *ngIf="role === 'admin'">
               <span
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
                 data-bs-target="#documentViewModal"
+               
                 (click)="viewDocuments(member)"
               >
                 visibility
@@ -93,6 +94,7 @@
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
                 data-bs-target="#editMemberModal"
+               
                 (click)="editMember(member)"
               >
                 edit

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-primar-qr-log',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './primar-qr-log.html',
   styleUrls: ['./primar-qr-log.scss'],
 })
@@ -27,33 +27,49 @@ export class PrimarQrLog {
     this.common.getDealCollections().subscribe({
       next: (res: any) => {
         this.collectionData = Array.isArray(res.list) ? res.list : [];
-        console.log('collectionData',this.collectionData)
+        console.log('collectionData', this.collectionData);
 
         // Get unique QR codes
-        this.qrList = [...new Set(this.collectionData.map(c => c.primaryQRCode))];
-        this.cdr.detectChanges()
-        console.log('this.qrList', this.qrList)
+        this.qrList = [
+        ...new Set(
+          this.collectionData
+            .map(c => c?.primaryQRCode)
+            .filter(qr => qr)
+        )
+      ];
+
+        const hasCash = this.collectionData.some((c) => !c.primaryQRCode);
+
+        if (hasCash) {
+          this.qrList.push('CASH');
+        }
+
+        this.cdr.detectChanges();
+        console.log('this.qrList', this.qrList);
 
         // Default select first QR
-        if(this.qrList.length > 0) {
+        if (this.qrList.length > 0) {
           this.selectQr(this.qrList[0]);
         }
       },
       error: () => {
         this.collectionData = [];
-      }
+      },
     });
   }
 
   selectQr(qr: string) {
     this.selectedQr = qr;
-    this.filteredCollections = this.collectionData.filter(c => c.primaryQRCode === qr);
-    console.log('this.filteredCollections', this.filteredCollections)
+
+    if (qr === 'CASH') {
+      this.filteredCollections = this.collectionData.filter((c) => !c.primaryQRCode);
+      return;
+    }
+
+    this.filteredCollections = this.collectionData.filter((c) => c.primaryQRCode === qr);
   }
 
   getTotalAmount(): number {
-    return this.filteredCollections.reduce((sum, t) => sum + Number(t.installmentPaidAmount
-), 0);
+    return this.filteredCollections.reduce((sum, t) => sum + Number(t.installmentPaidAmount), 0);
   }
-
 }

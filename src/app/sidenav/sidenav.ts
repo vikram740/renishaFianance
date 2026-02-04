@@ -54,7 +54,7 @@ export class Sidenav {
     { name: 'PaymentsList', icon: this.payments, link: '/paymentList' },
     { name: 'User Management', icon: this.customers, link: '/userManagement' },
     { name: 'Customer management', icon: this.customers, link: '/customerManagement' },
-    { name: 'Collection Agent management', icon: this.collectionAgent, link: '/collectionAgent' },
+    // { name: 'Collection Agent management', icon: this.collectionAgent, link: '/collectionAgent' },
     { name: 'Agent List', icon: this.collectionAgent, link: '/agentList' },
     { name: 'Referral Agent management', icon: this.refferals, link: '/referralAgent' },
   ];
@@ -111,13 +111,13 @@ export class Sidenav {
       if (!agentEmail) return;
 
       const selectedAgent = this.agentList.find((agent: any) => agent.agentEmail === agentEmail);
-      if (selectedAgent) {
-        const bsaeUrl = environment.uploadUrl + renishaFinance.uploads + '/';
-        this.agentPhoto = {
-          agentPhoto: selectedAgent.agentPhoto ? bsaeUrl + selectedAgent.agentPhoto : null,
-        };
-        console.log('this.agentPhoto', this.agentPhoto);
-      }
+      // if (selectedAgent) {
+      //   const bsaeUrl = environment.uploadUrl + renishaFinance.uploads + '/';
+      //   this.agentPhoto = {
+      //     agentPhoto: selectedAgent.agentPhoto ? bsaeUrl + selectedAgent.agentPhoto : null,
+      //   };
+      //   console.log('this.agentPhoto', this.agentPhoto);
+      // }
     });
   }
 

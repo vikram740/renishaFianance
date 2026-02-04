@@ -10,10 +10,11 @@ import { saveAs } from 'file-saver';
 import { environment, renishaFinance } from '../../environments/environment.development';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Signup } from '../signup/signup';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-agent-list',
-  imports: [CommonModule,MatPaginatorModule,ReactiveFormsModule,Signup],
+  imports: [CommonModule, MatPaginatorModule, ReactiveFormsModule, Signup, RouterLink],
   templateUrl: './agent-list.html',
   styleUrl: './agent-list.scss',
 })

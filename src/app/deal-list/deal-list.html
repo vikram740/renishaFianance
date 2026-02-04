@@ -21,7 +21,7 @@
         <div class="col-12 col-md-5 col-lg-7">
           <div class="actionContainer">
             <div>
-              <button class="actionButtons" (click)="exportToExcel()">Export</button>
+              <button class="actionButtons" *ngIf="role === 'admin'" (click)="exportToExcel()">Export</button>
             </div>
           </div>
         </div>
@@ -37,12 +37,12 @@
             <th>Tenure Type</th>
             <!-- <th>Plan</th> -->
             <th>Amount</th>
-            <th>Installment</th>
+            <th>Installment Amount</th>
             <th>Percentage(%)</th>
             <th>Wallet Amount</th>
             <th>From</th>
             <th>To</th>
-            <th></th>
+            <th *ngIf="role === 'admin'"></th>
           </tr>
         </thead>
         <tbody>
@@ -59,10 +59,10 @@
             <td>{{ d.fromDate | date }}</td>
             <td>{{ d.endDate | date }}</td>
 
-            <td class="d-flex gap-2">
-              <span class="material-symbols-outlined">visibility</span>
-              <span class="material-symbols-outlined" *ngIf="role === 'admin'">edit</span>
-              <span class="material-symbols-outlined text-danger" *ngIf="role === 'admin'" (click)="openDialog(d._id)">delete</span>
+            <td class="d-flex gap-2" *ngIf="role === 'admin'">
+              <!-- <span class="material-symbols-outlined" *ngIf="role === 'admin'">visibility</span> -->
+              <span class="material-symbols-outlined" >edit</span>
+              <span class="material-symbols-outlined text-danger"  (click)="openDialog(d._id)">delete</span>
             </td>
           </tr>
         </tbody>

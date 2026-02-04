@@ -16,12 +16,10 @@
       <form [formGroup]="paymentForm" (ngSubmit)="save()">
         <div class="buttonsDiv">
           <div class="button">
-            <label>Installment</label>
-            <input type="text" formControlName="installment" class="form-control"/>
-          </div>
-          <div class="button">
-            <label>Amount</label>
-            <input type="text" formControlName="collectionAmount" class="form-control" />
+            <label>Installment:</label>{{ paymentForm.get('installment')?.value }}
+            <label>Amount:</label>{{ paymentForm.get('collectionAmount')?.value }}
+            <!-- <input type="text" formControlName="installment" class="form-control" readonly/> -->
+            <!-- <p>{{ paymentForm.get('installment')?.value }}</p> -->
           </div>
         </div>
 
@@ -77,7 +75,7 @@
            <td>{{ item.installmentPaidAmount}}</td>
             <td>{{ item.memberId }}</td>
             <td>{{ item.agentId}}</td>
-            <td>{{ item.primaryQRCode}}</td>
+            <td>{{ item.primaryQRCode || 'N/A' }}</td>
             <td>{{ item.paymentMode }}</td>
             <td>{{ item.upiTransactionId }}</td>
           </tr>
@@ -105,3 +103,31 @@
     </div>
   </div>
 </div>
+
+
+<!--confirmation Modal-->
+
+<!-- Transaction Success Modal -->
+<div
+  class="modal fade"
+  id="successModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <div class="modal-body">
+        <h4 class="mb-3 text-success">✅ Transaction Completed</h4>
+        <p>Your payment has been recorded successfully.</p>
+
+        <button
+          class="btn btn-primary mt-3"
+          (click)="onSuccessOk()"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
