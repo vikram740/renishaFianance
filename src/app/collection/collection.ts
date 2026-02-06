@@ -37,6 +37,25 @@ export class Collection {
   this.agentId = localStorage.getItem('agentMongoId') || '';
   console.log('this.agentId', this.agentId)
 
+    this.common.getAllAgents().subscribe((response: any) => {
+          const agents = response.list || [];
+  
+          const agent = agents.find(
+            (a: any) => a.agentEmail?.toLowerCase() === this.agentEmail.toLowerCase()
+          );
+  
+          if (!agent?._id) {
+            console.error('Agent Mongo ID not found');
+            return;
+          }
+  
+          // ✅ STORE MONGO ID
+          localStorage.setItem('agentMongoId', agent._id);
+  
+        });
+
+  
+
   this.loadAgent();
 }
 

@@ -1,10 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { MaterialModule } from '../../materialModule/material.module';
 import { MatIcon } from '@angular/material/icon';
 import { MatChipAvatar } from '@angular/material/chips';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive} from '@angular/router';
 import { Auth } from '../service/auth';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Common } from '../service/common';
+import { environment, renishaFinance } from '../../environments/environment.development';
 
 @Component({
   selector: 'app-topnav',
@@ -18,6 +20,11 @@ export class Topnav {
   userName: any;
   userRole: any;
   role: any;
+  common = inject(Common);
+  cdr=inject(ChangeDetectorRef)
+   profilePhoto: string | null = null;
+     private platformId = inject(PLATFORM_ID);
+
 
   menuAdminItems = [
     { name: 'Dashboard', link: '/dashboard' },
@@ -42,12 +49,61 @@ export class Topnav {
 
   ngOnInit() {
     // fetching user name and user role from the service file
-    this.userName = this.authService.getName();
+    this.userName = localStorage.getItem("memberName");
+    console.log('this.userName', this.userName)
     this.userRole = this.authService.getRole();
+
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.userRole === 'agent') {
+        this.loadAgentProfile();
+      } else {
+        this.loadMemberProfile();
+      }
+    }
   }
   get isAdminRole() {
     this.role = this.authService.getRole();
     return this.role === 'agent' || this.role === 'admin';
+  }
+
+    loadMemberProfile() {
+    const memberEmail = localStorage.getItem('memberEmail');
+    if (!memberEmail) return;
+
+    this.common.getAllMember().subscribe((res: any) => {
+      const member = res.list?.find(
+        (m: any) => m.memberEmail === memberEmail
+      );
+
+      if (member?.memberPhoto) {
+        this.profilePhoto =
+          environment.uploadUrl +
+          renishaFinance.uploads +
+          '/' +
+          member.memberPhoto;
+      }
+      this.cdr.detectChanges()
+    });
+  }
+
+    loadAgentProfile() {
+    const agentEmail = localStorage.getItem('agentEmail');
+    if (!agentEmail) return;
+
+    this.common.getAllAgents().subscribe((res: any) => {
+      const agent = res.list?.find(
+        (a: any) => a.agentEmail === agentEmail
+      );
+
+      if (agent?.agentPhoto) {
+        this.profilePhoto =
+          environment.uploadUrl +
+          renishaFinance.uploads +
+          '/' +
+          agent.agentPhoto;
+      }
+       this.cdr.detectChanges()
+    });
   }
   closeMobileMenu(navbar: HTMLElement) {
     navbar.classList.remove('show');
@@ -56,7 +112,13 @@ export class Topnav {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+      localStorage.removeItem('adminPassword');
+      localStorage.removeItem('agentEmail');
+      localStorage.removeItem('memberEmail');
       localStorage.removeItem('userName');
+      localStorage.removeItem('agentId');
+      localStorage.removeItem('Id');
+      localStorage.removeItem('agentMongoId');
       this.route.navigate(['/login']);
     }
   }

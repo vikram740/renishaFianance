@@ -184,7 +184,7 @@
   :host ::ng-deep .mat-mdc-form-field-flex {
     height: 50px !important;
   }
-    th {
+  th {
     background-color: #153b62;
     color: #fff;
     text-align: center;
@@ -216,8 +216,71 @@
   tr:last-child th {
     border-bottom: none; /* outer border stays */
   }
-  .material-symbols-outlined{
+  .material-symbols-outlined {
     cursor: pointer;
     font-size: 20px;
   }
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .completed {
+    background-color: #2e7d32; // green
+    color: #fff;
+  }
+
+  .installment-completed {
+    background-color: #f57c00; // orange 🔥
+    color: #fff;
+  }
+
+  .active {
+    background-color: #1976d2; // blue
+    color: #fff;
+  }
+  
+ .walletBox.summary {
+  display: flex;
+  justify-content: space-between;
+
+}
+  .walletItem {
+    background: #fff;
+    padding: 16px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    width: 100%;
+  }
+
+  .walletItem label {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .walletItem h2 {
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  .walletItem.invested h2 {
+    color: #1976d2;
+  }
+
+  .walletItem.interest h2 {
+    color: #153b62;
+  }
+
+  .walletItem.total h2 {
+    color: #2e7d32;
+  }
+  .dateFilter {
+  display: flex;
+  gap: 10px;
+}
+
 }

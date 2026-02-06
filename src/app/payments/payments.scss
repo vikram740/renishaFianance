@@ -43,6 +43,7 @@
         background: #e9f7ef;
       }
     }
+    
   }
 
   .upload-btn {
@@ -77,4 +78,32 @@
       margin: 10px 0;
     }
   }
+  .table-responsive {
+
+            thead {
+                tr {
+                    th {
+                        background-color: #153B62;
+                        padding: 15px;
+                        color: white;
+                        font-weight: normal;
+                        font-family: $font-regular;
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    td {
+                        padding: 15px;
+                        font-family: $font-regular;
+                        background-color: #D9D9D9;
+                        font-size: 16px;
+                        border-bottom: 1px solid white !important;
+                    }
+                }
+            }
+        }
+
 }

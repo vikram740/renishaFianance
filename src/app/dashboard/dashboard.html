@@ -2,39 +2,53 @@
   <div class="collectionLabel">
     <h3>Wallet Summary</h3>
   </div>
-  <!-- <form [formGroup]="dateForm" class="dateFilter">
-    <mat-form-field appearance="outline">
-      <mat-label>From Date</mat-label>
-      <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" />
-      <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-      <mat-datepicker #fromPicker></mat-datepicker>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>To Date</mat-label>
-      <input matInput [matDatepicker]="toPicker" formControlName="toDate" />
-      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-      <mat-datepicker #toPicker></mat-datepicker>
-    </mat-form-field>
-  </form> -->
-
-  <!-- WALLET SUMMARY -->
   <div class="walletBox summary">
     <div class="walletItem invested">
       <label>Deposited Amount</label>
-      <h2>₹ {{ investedAmount}}</h2>
+      <h2>₹ {{ totalOverallPaid}}</h2>
     </div>
 
     <div class="walletItem interest">
       <label>Earned Amount</label>
-      <h2>₹ {{ interestAmount | number: '1.0-0' }}</h2>
+      <h2>₹ {{ totalInterest | number: '1.0-0' }}</h2>
     </div>
 
     <div class="walletItem total">
       <label>Total Wallet Amount</label>
-      <h2>₹ {{ totalAmount | number: '1.0-0' }}</h2>
+      <h2>₹ {{ totalCollection| number: '1.0-0' }}</h2>
+    </div>
+
+    
+  </div>
+  
+
+
+  <form [formGroup]="dateForm" class="dateFilter">
+  <mat-form-field appearance="outline">
+    <mat-label>From Date</mat-label>
+    <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" />
+    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+    <mat-datepicker #fromPicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>To Date</mat-label>
+    <input matInput [matDatepicker]="toPicker" formControlName="toDate" />
+    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+    <mat-datepicker #toPicker></mat-datepicker>
+  </mat-form-field>
+</form>
+
+
+  <!-- WALLET SUMMARY -->
+
+    <div class="walletBox summary">
+    <div class="walletItem invested">
+      <label>Deposited Amount</label>
+      <h2>₹ {{ totalPaid}}</h2>
     </div>
   </div>
+  
 
   <!-- <div class="addColeectBtn">
     <button type="button" class="addCollection">

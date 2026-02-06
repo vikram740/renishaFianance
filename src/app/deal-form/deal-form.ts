@@ -49,19 +49,18 @@ export class DealForm {
       if (!id) return;
 
       const member = this.memberList.find(
-       
         (m: any) => m.memberIdNo?.toLowerCase() === id.toLowerCase(),
       );
-       console.log('member', member)
+      console.log('member', member);
 
       if (member) {
         this.selectedMemberMongoId = member._id;
         this.dealForm.patchValue({
-          memberIdNo:member.memberIdNo,
+          memberIdNo: member.memberIdNo,
           memberName: member.memberName,
           memberAadhar: member.memberAdhaar,
           memberBirth: member.memberBirth,
-          memberPan:member.memberPan
+          memberPan: member.memberPan,
         });
       } else {
         this.dealForm.patchValue({
@@ -96,10 +95,10 @@ export class DealForm {
         end.setMonth(start.getMonth() + tenurePlan);
         break;
       case 'quarterly':
-        end.setMonth(start.getMonth() + tenurePlan *3);
+        end.setMonth(start.getMonth() + tenurePlan * 3);
         break;
       case 'halfyearly':
-        end.setMonth(start.getMonth() + tenurePlan *6);
+        end.setMonth(start.getMonth() + tenurePlan * 6);
         break;
       case 'yearly':
         end.setFullYear(start.getFullYear() + tenurePlan);
@@ -131,7 +130,7 @@ export class DealForm {
   getMembersList() {
     this.common.getAllMember().subscribe((res: any) => {
       this.memberList = res.list;
-      console.log('this.memberList', this.memberList)
+      console.log('this.memberList', this.memberList);
     });
   }
   getAllAgent() {
@@ -148,18 +147,26 @@ export class DealForm {
     }
 
     const raw = this.dealForm.getRawValue();
+    const withSystemTime = (dateStr: string) => {
+      const now = new Date();
+      const date = new Date(dateStr);
+
+      date.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
+      return date.toISOString();
+    };
 
     const payload = {
       memberId: this.selectedMemberMongoId,
-      memberIdNo:raw.memberIdNo,
-      memberName:raw.memberName,
+      memberIdNo: raw.memberIdNo,
+      memberName: raw.memberName,
       memberAadhar: raw.memberAdhaar,
       memberBirth: raw.memberBirth,
-      memberPan:raw.memberPan,
+      memberPan: raw.memberPan,
       tenureType: raw.tenureType,
       tenurePlan: raw.tenurePlan,
-      fromDate: raw.fromDate,
-      endDate: raw.endDate,
+      fromDate: withSystemTime(raw.fromDate),
+      endDate: withSystemTime(raw.endDate),
       agentNameId: raw.agentNameId,
       tenureAmount: raw.tenureAmount,
       percentage: raw.percentage,

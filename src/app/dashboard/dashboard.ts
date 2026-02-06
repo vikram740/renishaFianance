@@ -2,93 +2,130 @@ import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Common } from '../service/common';
 import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MatFormFieldModule,
+  imports: [
+    MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
-  DecimalPipe],
+    DecimalPipe,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard {
+  dateForm!: FormGroup;
 
-deals: any[] = [];        // from getAllDeals
-  collections: any[] = []; // from getDealCollections
+  totalPaid = 0;
+  totalOverallPaid = 0;
+  totalCollection = 0;
+  totalInterest = 0;
+  message = '';
+  cdr = inject(ChangeDetectorRef)
 
-  totalAmount = 0;      // Σ walletAmount (deals)
-  investedAmount = 0;   // Σ installmentPaidAmount (collections)
-  interestAmount = 0;   // total - invested
-  cdr =inject(ChangeDetectorRef)
+  constructor(
+    private fb: FormBuilder,
+    private common: Common,
+  ) {}
 
-  constructor(private common: Common) {}
+ ngOnInit() {
+  // 1️⃣ Create form
+  this.dateForm = this.fb.group({
+    fromDate: [null],
+    toDate: [null],
+  });
 
-  ngOnInit() {
-    this.loadDeals();
-    this.loadCollections();
+  // 2️⃣ Load OVERALL dashboard (no date)
+  this.loadOverallDashboard();
+
+  // 3️⃣ Patch today WITHOUT triggering valueChanges
+  this.patchToday(false);
+
+  // 4️⃣ Subscribe to date changes
+  this.dateForm.valueChanges.subscribe(({ fromDate, toDate }) => {
+    if (fromDate && toDate) {
+      this.loadPaidDashboard(fromDate, toDate);
+    }
+  });
+
+  // 5️⃣ Manually load TODAY paid dashboard ONCE
+  const { fromDate, toDate } = this.dateForm.value;
+  if (fromDate && toDate) {
+    this.loadPaidDashboard(fromDate, toDate);
+  }
+}
+
+
+  patchToday(emit = true) {
+    const today = new Date();
+    this.dateForm.patchValue(
+      {
+        fromDate: today,
+        toDate: today,
+      },
+      { emitEvent: emit },
+    );
   }
 
-  // 🔹 1. Load ALL DEALS → TOTAL WALLET
-  loadDeals() {
-    this.common.getDeal().subscribe({
-      next: (res: any) => {
-        this.deals = res?.data?.list || [];
+  withSystemTime(date: Date): string {
+    const now = new Date();
+    const d = new Date(date);
 
-        // ✅ SUM OF ALL WALLET AMOUNTS
-        this.totalAmount = this.deals.reduce(
-          (sum: number, d: any) => sum + Number(d.walletAmount || 0),
-          0
-        );
-          console.log('this.totalAmount', this.totalAmount)
+    d.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
 
-        this.calculateInterest();
-      },
-      error: () => this.resetAmounts()
+    return d.toISOString();
+  }
+  withEndOfDay(date: Date): string {
+    const d = new Date(date);
+    d.setHours(23, 59, 59, 999);
+    return d.toISOString();
+  }
+
+  loadOverallDashboard() {
+    const params = { type: 'overview' };
+
+    this.common.dashBoard(params).subscribe((res: any) => {
+      const data = res?.data?.[0] || {};
+      this.totalOverallPaid = data.totalPaidAmount || 0;
+      this.totalCollection = data.totalCollection || 0;
+      this.totalInterest = data.totalInterestAmount || 0;
+      this.cdr.detectChanges()
     });
   }
 
-  // 🔹 2. Load DEAL COLLECTIONS → INVESTED
-  loadCollections() {
-    this.common.getDealCollections().subscribe({
-      next: (res: any) => {
-        this.collections = res?.list || [];
-        console.log('this.collections', this.collections)
+  /* 🔹 FILTERED PAID API CALL */
+  loadPaidDashboard(fromDate: Date, toDate: Date) {
+    const params = {
+      type: 'overview',
+      mode: 'custom',
+      fromDate: this.withSystemTime(fromDate),
+      toDate: this.withEndOfDay(toDate),
+    };
 
-        // ✅ SUM OF ALL INSTALLMENTS PAID
-        this.investedAmount = this.collections.reduce(
-          (sum: number, c: any) => sum + Number(c.installmentPaidAmount || 0),
-          0
-        );
-            console.log('this.investedAmount', this.investedAmount)
-
-        this.calculateInterest();
-
-  
-      },
-      error: () => this.resetAmounts()
+    this.common.dashBoard(params).subscribe((res: any) => {
+      const data = res?.data?.[0] || {};
+      this.totalPaid = data.totalPaidAmount || 0;
+     this.cdr.detectChanges()
+      console.log('this.totalPaid', this.totalPaid);
     });
   }
 
-  // 🔹 3. INTEREST = TOTAL - INVESTED
-  calculateInterest() {
-    this.interestAmount = this.totalAmount - this.investedAmount;
-    this.cdr.detectChanges()
-    console.log('this.interestAmount', this.interestAmount)
+  resetValues() {
+    this.totalPaid = 0;
+    this.totalCollection = 0;
+    this.totalInterest = 0;
+    this.message = 'Failed to load dashboard';
   }
-
-  resetAmounts() {
-    this.totalAmount = 0;
-    this.investedAmount = 0;
-    this.interestAmount = 0;
-  }
-
-
-
-
 }

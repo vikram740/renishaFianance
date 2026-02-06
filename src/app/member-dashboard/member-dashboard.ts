@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, inject, PLATFORM_ID, ViewChild } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { Common } from '../service/common';
-import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { BehaviorSubject } from 'rxjs';
@@ -21,33 +21,41 @@ import { BehaviorSubject } from 'rxjs';
     DatePipe,
     MatTableModule,
     MatPaginatorModule,
-    CommonModule
+    CommonModule,
+    DecimalPipe,
   ],
   templateUrl: './member-dashboard.html',
   styleUrls: ['./member-dashboard.scss'],
 })
 export class MemberDashboard {
- 
   private common = inject(Common);
   private platformId = inject(PLATFORM_ID);
 
   memberEmail = '';
   memberId = '';
+  memberIdNo = '';
 
-  walletAmount = 0;
-  totalInstallments=0
-  totalPaidAmount = 0;
-
+  memberDeals: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
 
-  // 🔥 Observable-driven modal data
-  installment$ = new BehaviorSubject<any[] | null>(null);
-  collectionList:any =[]
-  cdr = inject(ChangeDetectorRef)
+  totalPaid = 0;
+  totalCollection = 0;
+  totalInterest = 0;
+  message = '';
+
+  walletAmount = 0;
+  totalInstallments = 0;
+  totalPaidAmount = 0;
+
+  dateForm!: FormGroup;
+  isFormReady = false; // ✅ KEY FIX
 
   page = 1;
-  limit = 5;
+  limit = 10;
   total = 0;
+
+  installment$ = new BehaviorSubject<any[] | null>(null);
+  collectionList: any[] = [];
 
   displayedColumns: string[] = [
     'dealIdNo',
@@ -58,12 +66,32 @@ export class MemberDashboard {
     'endDate',
     'lastPaidDate',
     'wallet',
-    'action'
+    'status',
+    'action',
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+dashboard$ = new BehaviorSubject<{
+  totalPaid: number;
+  totalCollection: number;
+  totalInterest: number;
+  message: string;
+}>({
+  totalPaid: 0,
+  totalCollection: 0,
+  totalInterest: 0,
+  message: ''
+});
+
+
+  // ================== INIT ==================
 
   ngOnInit() {
+    this.dateForm = new FormGroup({
+      fromDate: new FormControl(null),
+      toDate: new FormControl(null),
+    });
+
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.memberEmail = localStorage.getItem('memberEmail') || '';
@@ -72,6 +100,18 @@ export class MemberDashboard {
       return;
     }
 
+    // ✅ React ONLY after setup is done
+    this.dateForm.valueChanges.subscribe(values => {
+      if (
+        this.isFormReady &&
+        values.fromDate &&
+        values.toDate &&
+        this.memberId
+      ) {
+        this.loadDashboard();
+      }
+    });
+
     this.getMemberDetails();
   }
 
@@ -79,9 +119,11 @@ export class MemberDashboard {
     this.paginator.page.subscribe(event => {
       this.page = event.pageIndex + 1;
       this.limit = event.pageSize;
-      this.getDeals();
+      this.updateTableData();
     });
   }
+
+  // ================== MEMBER ==================
 
   getMemberDetails() {
     this.common.getAllMember().subscribe({
@@ -97,55 +139,116 @@ export class MemberDashboard {
           return;
         }
 
-        this.memberId = member.memberIdNo;
+        this.memberId = member._id;        // Mongo ObjectId
+        this.memberIdNo = member.memberIdNo;
+
+        this.loadDashboard(); // ✅ first load
         this.getDeals();
+
+        this.isFormReady = true; // ✅ enable date filter AFTER init
       },
-      error: () => this.logout()
+      error: () => this.logout(),
     });
   }
 
-  getDeals() {
-    this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
-      const list = res?.data?.list || [];
-      this.total = res?.data?.total || 0;
+  // ================== DASHBOARD ==================
 
-      const memberDeals = list.filter(
-        (d: any) => d.memberIdNo === this.memberId
+  loadDashboard() {
+  const { fromDate, toDate } = this.dateForm.value;
+
+  const params: any = {
+    type: 'overview',
+    memberId: this.memberId
+  };
+
+  if (fromDate && toDate) {
+    params.mode = 'custom';
+    params.fromDate = this.withSystemTime(fromDate);
+    params.toDate = this.withEndOfDay(toDate);
+  }
+
+  this.common.dashBoard(params).subscribe({
+    next: (res: any) => {
+      const d = res?.data?.[0] || {};
+
+      this.dashboard$.next({
+        totalPaid: d.totalPaidAmount || 0,
+        totalCollection: d.totalCollection || 0,
+        totalInterest: d.totalInterestAmount || 0,
+        message: res.message
+      });
+    },
+    error: () => {
+      this.dashboard$.next({
+        totalPaid: 0,
+        totalCollection: 0,
+        totalInterest: 0,
+        message: 'Failed'
+      });
+    }
+  });
+}
+
+
+  // ================== DEALS ==================
+
+  getDeals() {
+    this.common.getDeals(1, 1000).subscribe((res: any) => {
+      const list = res?.list || [];
+
+      this.memberDeals = list.filter(
+        (d: any) => d.memberIdNo === this.memberIdNo
       );
 
-      this.dataSource.data = memberDeals;
+      this.total = this.memberDeals.length;
+      this.updateTableData();
 
-      this.walletAmount = memberDeals.reduce(
-        (sum: number, d: any) => sum + (Number(d.walletAmount) || 0),
+      this.walletAmount = this.memberDeals.reduce(
+        (sum, d) => sum + Number(d.walletAmount || 0),
         0
       );
     });
   }
 
-  // 🔥 NO FLAGS, NO NG0100
- viewDocuments(dealId: string) {
-  // loading state
-  this.installment$.next([]);
+  updateTableData() {
+    const start = (this.page - 1) * this.limit;
+    this.dataSource.data = this.memberDeals.slice(start, start + this.limit);
+  }
 
-  // call BOTH APIs independently
-  this.common.getSingleDeal(dealId).subscribe((res: any) => {
-    this.installment$.next(res?.data?.interestHistory || []);
-    this.cdr.markForCheck();
-  });
+  // ================== DATE HELPERS ==================
 
-  this.common.getDealInsallment(dealId).subscribe((res: any) => {
-    this.collectionList = res
-    this.totalInstallments = res?.totalInstallments;
-    this.totalPaidAmount = res?.totalPaidAmount
+  withSystemTime(date: Date): string {
+    const now = new Date();
+    const d = new Date(date);
+    d.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    return d.toISOString();
+  }
 
+  withEndOfDay(date: Date): string {
+    const d = new Date(date);
+    d.setHours(23, 59, 59, 999);
+    return d.toISOString();
+  }
 
-    console.log('this.collectionList', this.collectionList)
+  // ================== MODAL ==================
 
-    this.collectionList = [...(res?.installments || [])];
-    console.log('collectionList length:', this.collectionList.length);
-     this.cdr.markForCheck();
-  });
-}
+  viewDocuments(dealId: string) {
+    this.installment$.next([]);
+
+    this.common.getDealInsallment(dealId).subscribe((res: any) => {
+      this.collectionList = res?.installments || [];
+      this.installment$.next(res?.interestHistory || []);
+      this.totalInstallments = res?.totalInstallments;
+      this.totalPaidAmount = res?.totalPaidAmount;
+    });
+  }
+
+  resetValues() {
+    this.totalPaid = 0;
+    this.totalCollection = 0;
+    this.totalInterest = 0;
+    this.message = 'No data available';
+  }
 
   logout() {
     if (isPlatformBrowser(this.platformId)) {

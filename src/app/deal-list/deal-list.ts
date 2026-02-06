@@ -9,6 +9,7 @@ import { saveAs } from 'file-saver';
 import { toast } from 'ngx-sonner';
 import { ConfirmationModal } from '../confirmation-modal/confirmation-modal';
 import { MatDialog } from '@angular/material/dialog';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-deal-list',
@@ -36,6 +37,10 @@ limit = 10;
 totalCount = 0;
 submitted:boolean=false;
  dialog = inject(MatDialog);
+  installment$ = new BehaviorSubject<any[] | null>(null);
+   collectionList:any =[]
+    totalInstallments=0
+  totalPaidAmount = 0;
   ngOnInit() {
 //     this.dealForm = new FormGroup({
 //   dealIdNo: new FormControl(''),
@@ -62,9 +67,10 @@ onPageChange(event: any) {
 
 getDeals() {
   this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
-    this.allDealList = res.list;
+    this.allDealList = res
+    console.log('this.allDealList', this.allDealList)
     // this.dealList = res.list;
-       this.dealList = res.data?.list;
+       this.dealList = res.list;
     console.log('this.dealList', this.dealList)
     this.totalCount = res.count;
     this.cdr.detectChanges()
@@ -147,6 +153,31 @@ openDialog(dealId: string): void {
       this.getDeals();
     });
   }
+
+   viewDocuments(dealId: string) {
+  // loading state
+  this.installment$.next([]);
+
+  // call BOTH APIs independently
+  // this.common.getSingleDeal(dealId).subscribe((res: any) => {
+  //   this.installment$.next(res?.data?.interestHistory || []);
+  //   this.cdr.markForCheck();
+  // });
+
+  this.common.getDealInsallment(dealId).subscribe((res: any) => {
+    this.collectionList = res
+    this.installment$.next(res?.interestHistory || []);
+    this.totalInstallments = res?.totalInstallments;
+    this.totalPaidAmount = res?.totalPaidAmount
+
+
+    console.log('this.collectionList', this.collectionList)
+
+    this.collectionList = [...(res?.installments || [])];
+    console.log('collectionList length:', this.collectionList.length);
+     this.cdr.markForCheck();
+  });
+}
 
 
 

@@ -121,15 +121,53 @@ export class MemberAddCollection implements OnInit {
         toast.error('Deal not found ❌');
         return;
       }
-      const perInstallment = Number(this.dealData.tenureInstallment);
+      // const perInstallment = Number(this.dealData.tenureInstallment);
 
-      this.paymentForm.patchValue({
-        installment: 1,
-        collectionAmount: perInstallment,
-        collectionPercentage: this.dealData.percentage,
-      });
+      // this.paymentForm.patchValue({
+      //   installment: 1,
+      //   collectionAmount: perInstallment,
+      //   collectionPercentage: this.dealData.percentage,
+      // });
     });
   }
+ updateNextInstallment(): void {
+  if (!this.dealData) return;
+
+  const totalInstallments = Number(this.dealData.tenurePlan);
+  const paidCount = Number(this.dealData.totalInstallmentsPaid || 0);
+  const perInstallment = Number(this.dealData.tenureInstallment);
+  const totalAmount = Number(this.dealData.tenureAmount);
+  const paidAmount = Number(this.dealData.totalPaidAmount || 0);
+
+  // ✅ All installments completed
+  if (paidCount >= totalInstallments) {
+    toast.info('All installments completed 🎉');
+    this.paymentForm.disable({ emitEvent: false });
+    return;
+  }
+
+  // ✅ Next installment number
+  const nextInstallmentNumber = paidCount + 1;
+
+  // ✅ Remaining amount (important for last installment)
+  const remainingAmount = totalAmount - paidAmount;
+
+  const nextAmount =
+    nextInstallmentNumber === totalInstallments
+      ? remainingAmount
+      : perInstallment;
+
+  // ✅ Patch form
+  this.paymentForm.patchValue(
+    {
+      installment: nextInstallmentNumber,
+      collectionAmount: nextAmount,
+    },
+    { emitEvent: false }
+  );
+}
+
+
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({
@@ -182,27 +220,6 @@ export class MemberAddCollection implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
-  //  getInstallment() {
-  //   this.common.getDealCollections().subscribe({
-  //     next: (res: any) => {
-  //       const list = res|| [];
-  //       console.log('list', list)
-
-  //       const data = list.filter(
-  //         (item: any) =>
-  //           String(item.memberId?._id || item.memberId) === String(this.memberId) &&
-  //           item.dealIdNo === this.dealData?.dealIdNo,
-  //       );
-  //       this.collectionData = Array.from(new Map(data.map((d: any) => [d._id, d])).values());
-  //       this.cdr.detectChanges()
-
-  //       console.log('FINAL DATA:', this.collectionData);
-  //     },
-  //     error: () => {
-  //       this.collectionData = [];
-  //     },
-  //   });
-  // }
 
   getAllAgent() {
     this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
@@ -219,9 +236,16 @@ export class MemberAddCollection implements OnInit {
     this.common.getDealInsallment(this.id).subscribe((res: any) => {
       console.log('INSTALLMENT API FULL RESPONSE:', res);
       this.installmentList = res.installments || res.data || [];
+      if (this.dealData) {
+      this.updateNextInstallment();
+    }
       this.cdr.detectChanges();
     });
   }
+
+  // getDealCollection(){
+  //   this.common
+  // }
 
   formatDateToDDMMYYYY(date: string): string {
     if (!date) return date;
@@ -247,16 +271,37 @@ export class MemberAddCollection implements OnInit {
       upiTransactionId: formData.upiTransactionId,
       installmentNumber: formData.installment,
       installmentPaidAmount: Number(formData.collectionAmount),
-      primaryQRCode: this.primaryQR?.qrId,
+      primaryQRCode:formData.paymentMode === 'online'? this.primaryQR?.qrId: null,
     };
 
     this.common.createDealCollection(payload).subscribe({
       next: (res) => {
         console.log('res', res);
         toast.success('Collection created successfully ✅');
+        this.isSaving = false;
+        this.openSuccessModal();
         this.getInstallment();
       },
       error: (err) => toast.error(err?.message || 'Failed ❌'),
     });
+  }
+  openSuccessModal() {
+    if (isPlatformBrowser(this.platformId)) {
+      import('bootstrap').then((bootstrap) => {
+        const modalEl = document.getElementById('successModal');
+        if (!modalEl) return;
+        const modal = new bootstrap.Modal(modalEl, { backdrop: 'static' });
+        modal.show();
+      });
+    }
+  }
+
+  onSuccessOk() {
+    // Close modal manually
+    document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
+    document.body.classList.remove('modal-open');
+
+    // Redirect to member login
+    this.router.navigate(['/memberLogin']);
   }
 }

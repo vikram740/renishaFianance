@@ -132,7 +132,6 @@ export class Members implements OnInit {
       const formValue = this.generateID.getRawValue();
 
       const payload = {
-        _id: this.selectedMemberId,
         memberName: formValue.memberName,
         memberPhone: formValue.memberPhone,
         memberEmail: formValue.memberEmail,
@@ -140,7 +139,9 @@ export class Members implements OnInit {
         memberPermanentAddress: formValue.memberPermanentAddress,
       };
 
-      this.common.editMember(payload).subscribe((res: any) => {
+      this.common.editMember(this.selectedMemberId,payload).subscribe((res: any) => {
+
+        console.log('', res)
         this.editModalInstance.hide();
         document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
         document.body.classList.remove('modal-open');

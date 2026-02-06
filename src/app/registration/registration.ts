@@ -222,7 +222,7 @@ export class Registration {
       formData.append('nomineeSignature', this.nomineeSignatureFile);
       this.common.createMember(formData).subscribe((res: any) => {
         // this.isLoading = false;
-        console.log('resgistration', res.data);
+        console.log('registration', res.data);
         toast.success('Registration Successfully', { class: 'toast-success' });
         this.generateID.reset();
         this.submitted = false;

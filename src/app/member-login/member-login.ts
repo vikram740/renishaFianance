@@ -55,7 +55,7 @@ enter() {
 
   this.common.getDeal().subscribe({
     next: (res: any) => {
-      const allDeals = res?.data?.list || [];
+      const allDeals = res?.list || [];
       console.log('allDeals', allDeals)
 
 

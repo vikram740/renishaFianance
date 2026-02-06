@@ -2,7 +2,8 @@ import { get } from "http";
 
 export const environment = {
     production: false,
-    // baseUrl: 'http://192.168.1.11:3000/api',
+    // baseUrl: 'http://192.168.1.3:3000/api',
+    // uploadUrl:'http://192.168.1.3:3000/'
     baseUrl: 'http://localhost:3000/api',
     uploadUrl:'http://localhost:3000/'
 };
@@ -38,6 +39,7 @@ export const renishaFinance = {
     createQrCode:'/qrcodes/createQrCodes',
     getAllQr:'/qrcodes/getAllQrCodes',
     setPrimary:'/qrcodes/UpdateQrCodePrimary',
+    deleteQr:'/qrcodes/deleteQRcode',
     createDealCollection:'/dealsCollection/createDealsCollection',
     getDealCollection:'/dealsCollection/getDealsCollectionList',
     getDealInsallment:'/dealsCollection/getDealInstallments',
@@ -47,6 +49,8 @@ export const renishaFinance = {
     deleteUser:'/user/deleteUserById',
     userDetailsById:'/user/userDetailsById',
     uploads:'uploads',
+    dashBoard:'/deals/getDashboardSummary'
+    
 
 
 };

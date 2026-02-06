@@ -21,7 +21,7 @@
         <div class="col-12 col-md-5 col-lg-7">
           <div class="actionContainer">
             <div>
-              <button class="actionButtons" (click)="exportToExcel()">Export</button>
+              <button class="actionButtons" *ngIf="role === 'admin'" (click)="exportToExcel()">Export</button>
             </div>
           </div>
         </div>
@@ -37,12 +37,15 @@
             <th>Tenure Type</th>
             <!-- <th>Plan</th> -->
             <th>Amount</th>
-            <th>Installment</th>
+            <th>Installment Amount</th>
             <th>Percentage(%)</th>
+            <th>Paid Amount</th>
             <th>Wallet Amount</th>
             <th>From</th>
             <th>To</th>
-            <th></th>
+            <th>Balance Amount</th>
+            <th>LastPaid Amount</th>
+            <th *ngIf="role === 'admin'"></th>
           </tr>
         </thead>
         <tbody>
@@ -55,14 +58,24 @@
             <td>{{ d.tenureAmount }}</td>
             <td>{{ d.tenureInstallment }}</td>
             <td>{{ d.percentage }}%</td>
+            <td>{{d.totalPaidAmount}}</td>
             <td class="text-success">{{d.walletAmount}}</td>
             <td>{{ d.fromDate | date }}</td>
             <td>{{ d.endDate | date }}</td>
+            <td>{{d.balanceAmount}}</td>
+            <td>{{d.lastPaidDate | date }}</td>
 
-            <td class="d-flex gap-2">
-              <span class="material-symbols-outlined">visibility</span>
-              <span class="material-symbols-outlined" *ngIf="role === 'admin'">edit</span>
-              <span class="material-symbols-outlined text-danger" *ngIf="role === 'admin'" (click)="openDialog(d._id)">delete</span>
+            <td  *ngIf="role === 'admin'">
+              <span
+              class="material-symbols-outlined action-icon"
+              (click)="viewDocuments(d._id)"
+              data-bs-toggle="modal"
+              data-bs-target="#installmentViewModal"
+            >
+              visibility
+            </span>
+              <span class="material-symbols-outlined" >edit</span>
+              <span class="material-symbols-outlined text-danger"  (click)="openDialog(d._id)">delete</span>
             </td>
           </tr>
         </tbody>
@@ -183,3 +196,68 @@
     </div>
   </div>
 </div> -->
+
+<!-- MODAL -->
+<div class="modal fade" id="installmentViewModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Deal Installments</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- PAID INSTALLMENTS -->
+        <div *ngIf="collectionList.length > 0; else noPaid">
+          <h6 class="mt-3">Total Paid Installments-({{ totalInstallments }})</h6>
+          <p>Total Paid Amount {{ totalPaidAmount | currency: 'INR' : 'symbol' : '1.0-0' }}</p>
+          <table class="table table-bordered">
+            <tr>
+              <th>S.NO</th>
+              <th>Date</th>
+              <th>Paid Amount</th>
+              <th>Mode</th>
+            </tr>
+
+            <tr *ngFor="let i of collectionList; let idx = index">
+              <td>{{ idx + 1 }}</td>
+              <td>{{ i.createdAt | date: 'dd-MM-yyyy' }}</td>
+              <td>₹{{ i.installmentPaidAmount }}</td>
+              <td>{{ i.paymentMode }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <ng-template #noPaid>
+          <p class="text-muted text-center">No paid installments found</p>
+        </ng-template>
+
+        <!-- INTEREST HISTORY -->
+        <ng-container *ngIf="installment$ | async as installments">
+          <div *ngIf="installments.length > 0; else noInterest">
+            <h6>Interest History</h6>
+            <table class="table table-bordered">
+              <tr>
+                <th>S.NO</th>
+                <th>Date</th>
+                <th>Interest</th>
+                <th>Wallet After</th>
+              </tr>
+
+              <tr *ngFor="let i of installments; let idx = index">
+                <td>{{ idx + 1 }}</td>
+                <td>{{ i.date | date: 'dd-MM-yyyy' }}</td>
+                <td>₹{{ i.interest || 0 }}</td>
+                <td>₹{{ i.walletAfterInterest }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <ng-template #noInterest>
+            <p class="text-muted text-center">No interest history</p>
+          </ng-template>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

@@ -40,10 +40,13 @@
                 gap: 10px;
 
                 .button {
+                    font-size: 16px;
                     label {
                         font-family: $font-regular;
                         font-weight: 400;
                         font-size: 16px;
+                        margin-right: 10px;
+                        color: #153B62;
                     }
 
                     button {

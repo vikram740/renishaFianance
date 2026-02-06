@@ -2,54 +2,68 @@
     <mat-spinner class="custom-spinner"></mat-spinner>
 </div> -->
 <div class="memberLoginPage">
-    <div class="login">
-        <form action="" [formGroup]="memberLoginForm" (ngSubmit)="enter()">
-            <div>
-                <div class="labelInputDiv">
-                    <label for="" class="fieldLabels">Member ID</label>
-                    <div>
-                        <input type="text" placeholder="Enter Your ID" formControlName="memberId">
-                        @if(memberLoginForm.get('memberId')?.hasError('required') && submitted){
-                        <div class="errMsg">*ID is required</div>
-                        }
-                    </div>
-                </div>
-                <div class="labelInputDiv">
-                    <button type="submit" class="signinBtn">Enter</button>
-                </div>
-            </div>
-        </form>
+  <div class="login">
+    <form action="" [formGroup]="memberLoginForm" (ngSubmit)="enter()">
+      <div>
+        <div class="labelInputDiv">
+          <label for="" class="fieldLabels">Member ID</label>
+          <div>
+            <input type="text" placeholder="Enter Your ID" formControlName="memberId" />
+            @if (memberLoginForm.get('memberId')?.hasError('required') && submitted) {
+              <div class="errMsg">*ID is required</div>
+            }
+          </div>
+        </div>
+        <div class="labelInputDiv">
+          <button type="submit" class="signinBtn">Enter</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="container table-responsive" *ngIf="showTable">
+    <table class="table mt-3">
+      <thead>
+        <tr>
+          <th>Deal ID</th>
+          <th>Member ID</th>
+          <th>Name</th>
+          <th>Plan</th>
+          <th>Total Amount</th>
+          <th>From Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of membersList">
+          <td>{{ d.dealIdNo }}</td>
+          <td>{{ d.memberIdNo }}</td>
+          <td>{{ d.memberName }}</td>
+          <td>{{ d.tenureType }}</td>
+          <td>{{ d.tenureAmount }}</td>
+          <td>{{ d.fromDate | date }}</td>
 
-        
-    </div>
-   <div class="container table-responsive" *ngIf="showTable">
-  <table class="table mt-3">
-    <thead>
-      <tr>
-        <th>Deal ID</th>
-        <th>Member ID</th>
-        <th>Name</th>
-        <th>Plan</th>
-        <th>Total Amount</th>
-        <th>From Date</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let d of membersList">
-        <td>{{ d.dealIdNo }}</td>
-        <td>{{ d.memberIdNo }}</td>
-        <td>{{ d.memberName}}</td>
-        <td>{{ d.tenureType }}</td>
-        <td>{{ d.tenureAmount }}</td>
-        <td>{{ d.fromDate | date }}</td>
-        <td><button class="btn btn-primary" (click)="payNow(d)">Pay</button></td>
-      </tr>
-    </tbody>
-  </table>
+          <td>
+            <button
+              class="btn"
+              [ngClass]="{
+                'btn-primary': d.totalInstallmentsPaid < d.tenurePlan,
+                'btn-warning': d.totalInstallmentsPaid === d.tenurePlan,
+                'btn-success': d.status === 'COMPLETED',
+              }"
+              [disabled]="d.totalInstallmentsPaid >= d.tenurePlan || d.status === 'COMPLETED'"
+              (click)="d.totalInstallmentsPaid < d.tenurePlan && payNow(d)"
+            >
+              {{
+                d.status === 'COMPLETED'
+                  ? 'Completed'
+                  : d.totalInstallmentsPaid < d.tenurePlan
+                    ? 'Pay'
+                    : 'Installment Completed'
+              }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-
-     
-</div>
-
- 

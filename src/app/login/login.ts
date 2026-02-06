@@ -138,66 +138,40 @@ export class Login {
   //   }
   // });
 
-  signIn() {
-    if (this.loginForm.invalid) {
-      this.submitted.set(true);
-      toast.error('Login Failed', { class: 'toast-error' });
-      return;
-    } else {
-      // this.isLoading=true;
-      this.authService.login(this.loginForm.value).subscribe((res: any) => {
-        console.log('login', res);
-        // calling user name from the service file
-        this.fullName = res.firstName + ' ' + res.lastName;
-        this.authService.setName(this.fullName);
-        localStorage.setItem('Id', res._id);
-
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.role);
-        this.authService.getCredentials();
-
-        if (res.role === 'admin') {
-          localStorage.setItem('adminPassword', res.password);
-        }
-        if (res.role === 'agent') {
-          localStorage.setItem('agentEmail', res.email);
-          this.router.navigate(['/collection']);
-        }
-
-        // calling user role from the service file
-        this.role = res.role;
-        this.authService.setRole(this.role);
-
-        // remember me functionality
-        if (this.loginForm.value.rememberMe) {
-          this.authService.setCredentials(this.loginForm.value);
-        } else {
-          // user explicitly unchecked remember me
-          this.authService.clearCredentials();
-        }
-        // this.isLoading=false;
-        if (this.role === 'member') {
-          localStorage.setItem('memberEmail', res.email);
-          this.router.navigate(['/memberDashboard']);
-        } else if (this.role === 'agent') {
-          localStorage.setItem('agentEmail', res.email);
-          this.router.navigate(['/collection']).then(() => {
-            // NOW token exists for interceptor
-            this.common.getAllAgents().subscribe((response: any) => {
-              const agents = response.list || [];
-              const agent = agents.find((a: any) => a.agentEmail === res.email);
-
-              if (agent) {
-                localStorage.setItem('agentMongoId', agent._id);
-              }
-            });
-          });
-        } else {
-          this.router.navigate(['/dashboard']); // admin
-        }
-
-        toast.success('Login Successfully', { class: 'toast-success' });
-      });
-    }
+signIn() {
+  if (this.loginForm.invalid) {
+    this.submitted.set(true);
+    toast.error('Login Failed');
+    return;
   }
+
+this.authService.login(this.loginForm.value).subscribe({
+  next: (res: any) => {
+    // Common auth storage
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('role', res.role);
+    localStorage.setItem('Id', res._id);
+
+    if (res.role === 'agent') {
+      localStorage.setItem('agentEmail', res.email);
+       this.router.navigate(['/collection']);
+    }
+
+    if (res.role === 'member') {
+      localStorage.setItem('memberEmail', res.email);
+      localStorage.setItem('memberName',res.firstName)
+      this.router.navigate(['/memberDashboard']);
+      return;
+    }
+
+    // admin
+    this.router.navigate(['/dashboard']);
+  },
+  error: () => {
+    toast.error('Login failed');
+  },
+});
+
+}
+
 }

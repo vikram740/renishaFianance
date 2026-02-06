@@ -36,7 +36,7 @@
               </div>
 
               <div class="row mb-3">
-                <label class="col-12 col-md-5 title"> Aadhar <span>:</span> </label>
+                <label class="col-12 col-md-5 title"> Aadhar Number<span>:</span> </label>
                 <div class="col-12 col-md-7">
                   <input
                     type="text"
@@ -49,13 +49,13 @@
                     class="text-danger"
                     *ngIf="submitted && generateID.get('member.memberAdhaar')?.hasError('required')"
                   >
-                    *Aadhar is required
+                    *Aadhar Number is required
                   </div>
                   <div
                     class="text-danger"
                     *ngIf="generateID.get('member.memberAdhaar')?.hasError('minlength')"
                   >
-                    *Aadhar must be exactly 12 digits
+                    *Aadhar Number must be exactly 12 digits
                   </div>
                 </div>
               </div>
@@ -72,7 +72,7 @@
                     class="text-danger"
                     *ngIf="submitted && generateID.get('member.memberPan')?.invalid"
                   >
-                    *PAN is required
+                    *PAN Number is required
                   </div>
                 </div>
               </div>
@@ -248,7 +248,14 @@
                       </span>
                     </div>
                   </div>
+                  <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.uploadMemberAdhaar')?.invalid"
+                  >
+                    * Aadhar is required
+                  </div>
                 </div>
+                 
               </div>
               <div class="row mb-3">
                 <label class="col-12 col-md-5 title">PAN Upload<span>:</span> </label>
@@ -274,7 +281,14 @@
                       >
                     </div>
                   </div>
+                    <div
+                    class="text-danger"
+                    *ngIf="submitted && generateID.get('member.uploadMemberPan')?.invalid"
+                  >
+                    *PAN is required
+                  </div>
                 </div>
+                  
               </div>
             </div>
           </div>
@@ -312,7 +326,7 @@
               </div>
 
               <div class="row mb-3">
-                <label class="col-12 col-md-5 title"> Aadhar <span>:</span> </label>
+                <label class="col-12 col-md-5 title"> Aadhar Number<span>:</span> </label>
                 <div class="col-12 col-md-7">
                   <input
                     type="text"
@@ -327,13 +341,13 @@
                       submitted && generateID.get('nominee.nomineeAdhaar')?.hasError('required')
                     "
                   >
-                    *Aadhar is required
+                    *Aadhar Number is required
                   </div>
                   <div
                     class="text-danger"
                     *ngIf="generateID.get('nominee.nomineeAdhaar')?.hasError('minlength')"
                   >
-                    *Aadhar must be exactly 12 digits
+                    *Aadhar Number must be exactly 12 digits
                   </div>
                 </div>
               </div>
@@ -393,12 +407,12 @@
                     <option value="Daughter">Daughter</option>
                     <option value="Brother">Brother</option>
                     <option value="Sister">Sister</option>
-                    <option value="Other">Other</option>
+                    <option value="Friend">Friend</option>
                   </select>
 
                   <div
                     class="text-danger"
-                    *ngIf="submitted && generateID.get('nominee.nomineeRelation')?.invalid"
+                    *ngIf="submitted && generateID.get('nominee.nomineeRelationship')?.invalid"
                   >
                     *Relation is required
                   </div>

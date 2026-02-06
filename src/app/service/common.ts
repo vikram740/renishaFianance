@@ -47,8 +47,8 @@ export class Common {
   getsingleMember(id: any) {
     return this.http.get(environment.baseUrl + renishaFinance.getsingleMember + '/' + id);
   }
-  editMember(body: any) {
-    return this.http.put(environment.baseUrl + renishaFinance.editMember, body);
+  editMember(id:string,body: any) {
+    return this.http.put(environment.baseUrl + renishaFinance.editMember  + '/' + id, body);
   }
   deletemember(id: any) {
     return this.http.delete(environment.baseUrl + renishaFinance.deletemember + '/' + id);
@@ -119,6 +119,10 @@ export class Common {
      return this.http.get(environment.baseUrl + renishaFinance.getAllQr);
 
   }
+  deleteQr(id:string){
+     return this.http.delete(environment.baseUrl + renishaFinance.deleteQr + '/' +id );
+
+  }
   getReferralById(id: string) {
     return this.http.get(environment.baseUrl + renishaFinance.getReferralById + '/' + id);
   }
@@ -154,5 +158,10 @@ export class Common {
 userById(id:string){
     return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)
 
-  }
+}
+dashBoard(params:any){
+   return this.http.get(environment.baseUrl + renishaFinance.dashBoard ,{ params }
+  );
+  
+}
 }
