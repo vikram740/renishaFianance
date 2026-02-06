@@ -2,10 +2,17 @@ import { get } from "http";
 
 export const environment = {
     production: false,
+<<<<<<< HEAD
     // baseUrl: 'http://192.168.1.3:3000/api',
     // uploadUrl:'http://192.168.1.3:3000/'
     baseUrl: 'http://localhost:3000/api',
     uploadUrl:'http://localhost:3000/'
+=======
+    baseUrl: 'http://192.168.1.3:3000/api',
+    uploadUrl:'http://192.168.1.3:3000/'
+    // baseUrl: 'http://localhost:3000/api',
+    // uploadUrl:'http://localhost:3000/'
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
 };
 
 export const renishaFinance = {
@@ -49,7 +56,10 @@ export const renishaFinance = {
     deleteUser:'/user/deleteUserById',
     userDetailsById:'/user/userDetailsById',
     uploads:'uploads',
+<<<<<<< HEAD
     dashBoard:'/deals/getDashboardSummary'
+=======
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
     
 
 

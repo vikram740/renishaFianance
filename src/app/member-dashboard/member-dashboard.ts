@@ -67,7 +67,11 @@ export class MemberDashboard {
     'lastPaidDate',
     'wallet',
     'status',
+<<<<<<< HEAD
     'action',
+=======
+    'action'
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -151,7 +155,15 @@ dashboard$ = new BehaviorSubject<{
     });
   }
 
+<<<<<<< HEAD
   // ================== DASHBOARD ==================
+=======
+  getDeals() {
+    this.common.getDeals(this.page, this.limit).subscribe((res: any) => {
+      const list = res?.data?.list|| [];
+      console.log('list', list)
+      this.total = res?.data?.total || 0;
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
 
   loadDashboard() {
   const { fromDate, toDate } = this.dateForm.value;
@@ -199,6 +211,8 @@ dashboard$ = new BehaviorSubject<{
       this.memberDeals = list.filter(
         (d: any) => d.memberIdNo === this.memberIdNo
       );
+      
+      console.log('',memberDeals)
 
       this.total = this.memberDeals.length;
       this.updateTableData();

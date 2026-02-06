@@ -159,9 +159,12 @@ userById(id:string){
     return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)
 
 }
+<<<<<<< HEAD
 dashBoard(params:any){
    return this.http.get(environment.baseUrl + renishaFinance.dashBoard ,{ params }
   );
   
 }
+=======
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
 }

@@ -43,8 +43,11 @@
             <th>Wallet Amount</th>
             <th>From</th>
             <th>To</th>
+<<<<<<< HEAD
             <th>Balance Amount</th>
             <th>LastPaid Amount</th>
+=======
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
             <th *ngIf="role === 'admin'"></th>
           </tr>
         </thead>
@@ -65,6 +68,7 @@
             <td>{{d.balanceAmount}}</td>
             <td>{{d.lastPaidDate | date }}</td>
 
+<<<<<<< HEAD
             <td  *ngIf="role === 'admin'">
               <span
               class="material-symbols-outlined action-icon"
@@ -74,6 +78,10 @@
             >
               visibility
             </span>
+=======
+            <td class="d-flex gap-2" *ngIf="role === 'admin'">
+              <!-- <span class="material-symbols-outlined" *ngIf="role === 'admin'">visibility</span> -->
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
               <span class="material-symbols-outlined" >edit</span>
               <span class="material-symbols-outlined text-danger"  (click)="openDialog(d._id)">delete</span>
             </td>

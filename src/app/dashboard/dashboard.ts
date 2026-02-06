@@ -20,7 +20,10 @@ import { DecimalPipe } from '@angular/common';
     MatDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
+<<<<<<< HEAD
     DecimalPipe,
+=======
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',

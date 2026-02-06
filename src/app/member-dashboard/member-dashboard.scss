@@ -221,6 +221,7 @@
     font-size: 20px;
   }
   .status-badge {
+<<<<<<< HEAD
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -281,6 +282,29 @@
   .dateFilter {
   display: flex;
   gap: 10px;
+=======
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 90px;
+  text-align: center;
+}
+
+/* ACTIVE */
+.status-badge.active {
+  background-color: #0f9d58;
+  color:#fff ;
+  border: 1px solid #0f9d58;
+}
+
+/* COMPLETED */
+.status-badge.completed {
+  background-color: #153b62;
+  color: #fff;
+  border: 1px solid #153b62;
+>>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
 }
 
 }
