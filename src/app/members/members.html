@@ -24,11 +24,13 @@
               <button class="actionButtons">Edit Columns</button>
             </div>
             <div>
-              <button class="actionButtons" (click)="exportToExcel()" *ngIf="role === 'admin'">Export</button>
+              <button class="actionButtons" (click)="exportToExcel()" *ngIf="role === 'admin'">
+                Export
+              </button>
             </div>
 
             <div>
-              <button class="actionButtons">Add Member</button>
+              <button class="actionButtons" routerLink="/registration">Add Member</button>
             </div>
 
             <div>
@@ -65,7 +67,7 @@
         <thead>
           <tr>
             <th>MemberId</th>
-            <th class="d-flex"><input type="checkbox" />Name</th>
+            <th class="d-flex-lg"><input type="checkbox" />Name</th>
             <th>Phone No</th>
             <th>Email</th>
             <th>Location</th>
@@ -75,26 +77,26 @@
         <tbody>
           <tr *ngFor="let member of membersList">
             <td>{{ member.memberIdNo }}</td>
-            <td class="d-flex"><input type="checkbox" />{{ member.memberName }}</td>
+            <td class="d-flex-lg"><input type="checkbox" />{{ member.memberName }}</td>
             <td>{{ member.memberPhone }}</td>
-            <td>{{member.memberEmail}}</td>
+            <td>{{ member.memberEmail }}</td>
             <td>{{ member.memberPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
-            <td class="d-flex gap-2" *ngIf="role === 'admin'">
+            <td class="d-flex-lg gap-2" *ngIf="role === 'admin'">
               <span
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
                 data-bs-target="#documentViewModal"
-               
                 (click)="viewDocuments(member)"
               >
                 visibility
               </span>
-              <span class="material-symbols-outlined" (click)="openSignupComponent()"> person </span>
+              <span class="material-symbols-outlined" (click)="openSignupComponent(member)">
+                person
+              </span>
               <span
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
                 data-bs-target="#editMemberModal"
-               
                 (click)="editMember(member)"
               >
                 edit
@@ -265,7 +267,7 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-        (click)="closeModal()"
+          (click)="closeModal()"
         ></button>
       </div>
 
@@ -301,26 +303,24 @@
 
 <div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content signUp-content">
       <div class="modal-header">
         <h5 class="modal-title">Signup</h5>
         <button
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-         (click)="closeModal()"
+          (click)="closeModal()"
         ></button>
       </div>
 
       <div class="modal-body">
         <app-signup
           *ngIf="openSignup"
+          [prefillData]="selectedSignupData"
           (close)="closeModal()"
         ></app-signup>
       </div>
     </div>
   </div>
 </div>
-
-
-

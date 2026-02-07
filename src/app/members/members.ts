@@ -27,6 +27,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment, renishaFinance } from '../../environments/environment.development';
 import { Signup } from '../signup/signup';
 import { Auth } from '../service/auth';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-members',
@@ -37,7 +38,8 @@ import { Auth } from '../service/auth';
     FormsModule,
     MatProgressSpinnerModule,
     Signup,
-  ],
+    RouterLink
+],
   templateUrl: './members.html',
   styleUrl: './members.scss',
   standalone: true,
@@ -59,6 +61,7 @@ export class Members implements OnInit {
   allMembersList: any[] = [];
   selectedDocs: any;
   openSignup = false;
+  selectedSignupData: any = null;
   role:any;
   auth=inject(Auth)
   // isLoading: boolean = false;
@@ -78,7 +81,9 @@ export class Members implements OnInit {
     
     this.role = this.auth.getRole();
 
+     if (isPlatformBrowser(this.platformId)) {
     this.getMembersList();
+  }
   }
 
   onPageChange(event: any) {
@@ -151,24 +156,60 @@ export class Members implements OnInit {
       });
     }
   }
-  openSignupComponent() {
-    this.openSignup = true;
+  mapSignupData(name: string, email: string, role: string,password?:string) {
+  const parts = name?.trim().split(' ') || [];
+  return {
+    firstName: parts[0] || '',
+    lastName: parts.slice(1).join(' ') || '',
+    email,
+    role,
+    password: password ?? this.generatePassword(name),
+  };
+}
 
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        import('bootstrap').then((bootstrap) => {
-          const modalEl = document.getElementById('signupModal');
-          if (!modalEl) return;
+generatePassword(name: string): string {
+  const firstPart = name
+    ?.replace(/\s+/g, '')   // remove spaces
+    ?.substring(0, 4)       // first 4 chars
+    ?.toLowerCase() || 'user';
 
-          const modal = new bootstrap.Modal(modalEl, {
-            backdrop: 'static',
-            keyboard: false,
-          });
+  const year = new Date().getFullYear();
 
-          modal.show();
-        });
+  return `${firstPart}@${year}`;
+}
+
+openSignupComponent(member: any) {
+  this.selectedSignupData = this.mapSignupData(
+    member.memberName,
+    member.memberEmail,
+    'member'
+  );
+
+  this.openSignup = true;
+  this.openModal('signupModal');
+}
+
+   openModal(id: string) {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    import('bootstrap').then((bs) => {
+      const modalEl = document.getElementById(id);
+      if (!modalEl) return;
+      new bs.Modal(modalEl, { backdrop: 'static', keyboard: false }).show();
+    });
+  }
+
+   closeModal() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    import('bootstrap').then((bs) => {
+      document.querySelectorAll('.modal.show').forEach((el: any) => {
+        bs.Modal.getInstance(el)?.hide();
       });
-    }
+      document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
+      document.body.classList.remove('modal-open');
+      this.openSignup = false;
+    });
   }
 
   openDialog(memberId: string): void {
@@ -285,22 +326,5 @@ export class Members implements OnInit {
     });
   }
 
-  closeModal() {
-    this.openSignup = false;
-
-    if (isPlatformBrowser(this.platformId)) {
-      import('bootstrap').then((bootstrap) => {
-        document.querySelectorAll('.modal.show').forEach((modalEl: any) => {
-          const instance = bootstrap.Modal.getInstance(modalEl);
-          if (instance) {
-            instance.hide();
-          }
-        });
-
-        // Cleanup
-        document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
-        document.body.classList.remove('modal-open');
-      });
-    }
-  }
+ 
 }

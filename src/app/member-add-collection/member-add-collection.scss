@@ -7,6 +7,14 @@
     bottom: 0;
     right: 0;
     width: calc(100% - 300px);
+      @include mobile() {
+    width: 100%;
+    height: calc(100vh - 51px);
+  }
+  @include tablet() {
+    width: 100%;
+    height: calc(100vh - 57px);
+  }
 
     .section1 {
         display: flex;
@@ -125,6 +133,18 @@
 
                 .cashButton {
                     padding: 0 30px;
+                    @include mobile(){
+                        margin-top: 10px;
+                        padding: 5px;
+                    }
+                     @include tablet(){
+                        margin-top: 10px;
+                        padding: 5px;
+                    }
+                     @include ipad(){
+                        margin-top: 10px;
+                        padding: 5px;
+                    }
 
                     label {
                         font-family: $font-regular;

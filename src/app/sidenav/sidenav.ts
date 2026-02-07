@@ -55,7 +55,7 @@ export class Sidenav {
     { name: 'User Management', icon: this.customers, link: '/userManagement' },
     { name: 'Customer management', icon: this.customers, link: '/customerManagement' },
     // { name: 'Collection Agent management', icon: this.collectionAgent, link: '/collectionAgent' },
-    { name: 'Agent List', icon: this.collectionAgent, link: '/agentList' },
+    { name: 'Agents', icon: this.collectionAgent, link: '/agentList' },
     { name: 'Referral Agent management', icon: this.refferals, link: '/referralAgent' },
   ];
 

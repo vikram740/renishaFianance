@@ -1,77 +1,88 @@
 <div class="signupPage">
-    <div class="login">
-        <div>
-            <img src="/images/renishaLogo.jpg" alt="" class="img-fluid logo">
+  <div class="login">
+    <div>
+      <img src="/images/renishaLogo.jpg" alt="" class="img-fluid logo" />
+    </div>
+    <form action="" [formGroup]="signupForm" (ngSubmit)="signUp()">
+      <div>
+        <div class="labelInputDiv">
+          <label for="" class="fieldLabels">First name</label>
+          <div>
+            <input type="text" placeholder="Enter Your First name" formControlName="firstName" />
+            @if (signupForm.get('firstName')?.hasError('required') && submitted) {
+              <div class="errMsg">*First name is required</div>
+            }
+          </div>
         </div>
-        <form action="" [formGroup]="signupForm" (ngSubmit)="signUp()">
-            <div>
-                <div class="labelInputDiv">
-                    <label for="" class="fieldLabels">First name</label>
-                    <div>
-                        <input type="text" placeholder="Enter Your First name" formControlName="firstName">
-                        @if(signupForm.get('firstName')?.hasError('required') && submitted){
-                        <div class="errMsg">*First name is required</div>
-                        }
+        <div class="labelInputDiv">
+          <label for="" class="fieldLabels">Last name</label>
+          <div>
+            <input type="text" placeholder="Enter Your Last name" formControlName="lastName" />
+            @if (signupForm.get('lastName')?.hasError('required') && submitted) {
+              <div class="errMsg">*Last name is required</div>
+            }
+          </div>
+        </div>
+        <div class="labelInputDiv">
+          <label for="" class="fieldLabels">Email</label>
+          <div>
+            <input type="email" placeholder="Enter Your Username" formControlName="email" />
+            @if (signupForm.get('email')?.hasError('required') && submitted) {
+              <div class="errMsg">*Email is required</div>
+            }
+            @if (signupForm.get('email')?.hasError('pattern') && submitted) {
+              <div class="errMsg">*Email is invalid</div>
+            }
+          </div>
+        </div>
+        <div class="labelInputDiv">
+          <label class="fieldLabels">Password</label>
 
-                    </div>
-                </div>
-                <div class="labelInputDiv">
-                    <label for="" class="fieldLabels">Last name</label>
-                    <div>
-                        <input type="text" placeholder="Enter Your Last name" formControlName="lastName">
-                        @if(signupForm.get('lastName')?.hasError('required') && submitted){
-                        <div class="errMsg">*Last name is required</div>
-                        }
-                    </div>
-                </div>
-                <div class="labelInputDiv">
-                    <label for="" class="fieldLabels">Email</label>
-                    <div>
-                        <input type="email" placeholder="Enter Your Username" formControlName="email">
-                        @if(signupForm.get('email')?.hasError('required') && submitted){
-                        <div class="errMsg">*Email is required</div>
-                        }
-                        @if(signupForm.get('email')?.hasError('pattern') && submitted){
-                        <div class="errMsg">*Email is invalid</div>
-                        }
-                    </div>
-                </div>
-                <div class="labelInputDiv">
-                    <label for="" class="fieldLabels">Password</label>
-                    <div>
-                        <input type="password" placeholder="Enter Your Password" formControlName="password">
-                        @if(signupForm.get('password')?.hasError('required') && submitted){
-                        <div class="errMsg">*Password is required</div>
-                        }
+          <div class="passwordBox">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Enter Your Password"
+              formControlName="password"
+            />
+             <span class="material-symbols-outlined eyeIcon" (click)="togglePassword()">
+              {{ showPassword ? 'visibility_off' : 'visibility' }}
+            </span>
 
-                        @if(signupForm.get('password')?.hasError('minlength') && submitted){
-                        <div class="errMsg">*Minimum 6 characters are required</div>
-                        }
-                    </div>
-                </div>
-                <div class="labelInputDiv">
-                    <label class="fieldLabels">Role</label>
-                    <div>
-                        <select formControlName="role">
-                            <option value="" disabled selected class="selectRole">Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="agent">Agent</option>
-                            <option value="member">Member</option>
-                        </select>
+           
+          </div>
 
-                        @if(signupForm.get('role')?.hasError('required') && submitted){
-                        <div class="errMsg">*Role is required</div>
-                        }
-                    </div>
-                </div>
+          @if (signupForm.get('password')?.hasError('required') && submitted) {
+            <div class="errMsg">*Password is required</div>
+          }
 
-                <div class="labelInputDiv">
-                    <button type="submit" class="signinBtn">Sign Up</button>
-                </div>
-                <!-- <div class="signupDiv">
+          @if (signupForm.get('password')?.hasError('minlength') && submitted) {
+            <div class="errMsg">*Minimum 6 characters are required</div>
+          }
+        </div>
+
+        <div class="labelInputDiv">
+          <label class="fieldLabels">Role</label>
+          <div>
+            <select formControlName="role">
+              <option value="" disabled selected class="selectRole">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="agent">Agent</option>
+              <option value="member">Member</option>
+            </select>
+
+            @if (signupForm.get('role')?.hasError('required') && submitted) {
+              <div class="errMsg">*Role is required</div>
+            }
+          </div>
+        </div>
+
+        <div class="labelInputDiv">
+          <button type="submit" class="signinBtn">Sign Up</button>
+        </div>
+        <!-- <div class="signupDiv">
                     <label for="">Already have an account ? <a routerLink="/login">Login</a></label>
                 </div> -->
-            </div>
-        </form>
-    </div>
+      </div>
+    </form>
+  </div>
 </div>

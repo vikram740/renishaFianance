@@ -246,6 +246,12 @@
  .walletBox.summary {
   display: flex;
   justify-content: space-between;
+   @include mobile(){
+    flex-wrap: wrap;
+  }
+   @include tablet(){
+    flex-wrap: wrap;
+  }
 
 }
   .walletItem {

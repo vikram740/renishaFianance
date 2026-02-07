@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../service/auth';
@@ -19,6 +19,10 @@ export class Signup {
   authService = inject(Auth)
   @Output() close = new EventEmitter<void>();
 
+   @Input() prefillData: any;
+
+   showPassword = false;
+ 
   ngOnInit() {
     this.signupForm = this.fb.group({
       firstName: new FormControl('', [Validators.required]),
@@ -29,7 +33,28 @@ export class Signup {
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       role: new FormControl('', [Validators.required])
     })
+
+     if (this.prefillData) {
+      this.signupForm.patchValue(this.prefillData);
+
+      // lock fields if needed
+      this.signupForm.get('email')?.disable();
+      this.signupForm.get('role')?.disable();
+    }
   }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['prefillData'] && this.prefillData && this.signupForm) {
+      this.signupForm.reset(); // 🔥 reset old data
+      this.signupForm.patchValue(this.prefillData);
+
+      this.signupForm.get('email')?.disable();
+      this.signupForm.get('role')?.disable();
+    }
+  }
+
+  togglePassword() {
+  this.showPassword = !this.showPassword;
+}
 
   signUp() {
     if (this.signupForm.invalid) {
@@ -37,7 +62,7 @@ export class Signup {
       toast.error('Signup Failed', { class: 'toast-error' })
       return
     } else {
-      this.authService.signup(this.signupForm.value).subscribe((res: any) => {
+      this.authService.signup(this.signupForm.getRawValue()).subscribe((res: any) => {
         console.log('signup', res)
         toast.success('Signup Successfully', { class: 'toast-success' })
          document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());

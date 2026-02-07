@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Common } from '../service/common';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,6 +38,7 @@ export class Dashboard {
   constructor(
     private fb: FormBuilder,
     private common: Common,
+     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
  ngOnInit() {
@@ -48,17 +49,24 @@ export class Dashboard {
   });
 
   // 2️⃣ Load OVERALL dashboard (no date)
-  this.loadOverallDashboard();
+ 
+   if (isPlatformBrowser(this.platformId)) {
+    this.loadOverallDashboard();
+     }
 
   // 3️⃣ Patch today WITHOUT triggering valueChanges
   this.patchToday(false);
 
   // 4️⃣ Subscribe to date changes
+  
   this.dateForm.valueChanges.subscribe(({ fromDate, toDate }) => {
+    if (isPlatformBrowser(this.platformId)) {
     if (fromDate && toDate) {
       this.loadPaidDashboard(fromDate, toDate);
     }
+    }
   });
+
 
   // 5️⃣ Manually load TODAY paid dashboard ONCE
   const { fromDate, toDate } = this.dateForm.value;

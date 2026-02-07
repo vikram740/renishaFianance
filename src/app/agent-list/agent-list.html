@@ -17,7 +17,7 @@
         <button class="actionButtons" (click)="exportToExcel()">Export</button>
       </div>
       <div class="col-12 col-md-6 col-lg-4">
-        <button routerLink="/collectionAgent"  class="actionButtons">Create Agent</button>
+        <button routerLink="/collectionAgent" class="actionButtons">Create Agent</button>
       </div>
     </div>
 
@@ -31,21 +31,20 @@
             <th>Email</th>
             <th>Phone</th>
             <th>Location</th>
-            <th >Action</th>
+            <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let a of agents,let i = index">
-            <td>{{i+1}}</td>
+          <tr *ngFor="let a of agents; let i = index">
+            <td>{{ i + 1 }}</td>
             <td>{{ a.agentIdNo }}</td>
             <td>{{ a.agentName }}</td>
             <td>{{ a.agentEmail }}</td>
             <td>{{ a.agentPhone }}</td>
-             <td>{{ a.agentPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
+            <td>{{ a.agentPermanentAddress?.split(' ').slice(-2).join(' ') }}</td>
             <td>
-
-                <span
+              <span
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
                 data-bs-target="#documentViewModal"
@@ -53,7 +52,9 @@
               >
                 visibility
               </span>
-              <span class="material-symbols-outlined" (click)="openSignupComponent()"> person </span>
+              <span class="material-symbols-outlined" (click)="openSignupComponent(a)">
+                person
+              </span>
               <span
                 class="material-symbols-outlined"
                 data-bs-toggle="modal"
@@ -62,11 +63,7 @@
               >
                 edit
               </span>
-              <span
-                class="material-symbols-outlined text-danger"
-                (click)="openDialog(a._id)"
-               
-              >
+              <span class="material-symbols-outlined text-danger" (click)="openDialog(a._id)">
                 delete
               </span>
             </td>
@@ -79,20 +76,15 @@
       [length]="totalCount"
       [pageSize]="limit"
       [pageSizeOptions]="[5, 10, 25]"
-      (page)="onPageChange($event)">
+      (page)="onPageChange($event)"
+    >
     </mat-paginator>
   </div>
 </div>
 
-<div
-  class="modal fade"
-  id="editAgentModal"
-  tabindex="-1"
-  aria-hidden="true"
->
+<div class="modal fade" id="editAgentModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">Edit Agent</h5>
         <button type="button" class="btn-close" (click)="closeModal()"></button>
@@ -100,7 +92,6 @@
 
       <div class="modal-body">
         <form [formGroup]="agentForm" (ngSubmit)="saveEdit()">
-
           <div class="row mb-3">
             <label class="col-md-4">Name</label>
             <div class="col-md-8">
@@ -154,24 +145,16 @@
             <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button>
             <button type="submit" class="btn btn-primary">Save Changes</button>
           </div>
-
         </form>
       </div>
-
     </div>
   </div>
 </div>
 
 <!-- ================= DOCUMENT VIEW MODAL ================= -->
-<div
-  class="modal fade"
-  id="documentViewModal"
-  tabindex="-1"
-  aria-hidden="true"
->
+<div class="modal fade" id="documentViewModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">Agent Documents</h5>
         <button type="button" class="btn-close" (click)="closeModal()"></button>
@@ -179,7 +162,6 @@
 
       <div class="modal-body">
         <ng-container *ngIf="selectedDocs; else noDocs">
-
           <div *ngIf="selectedDocs.photo" class="mb-3">
             <h6>Photo</h6>
             <img [src]="selectedDocs.photo" class="img-fluid border rounded" />
@@ -189,14 +171,12 @@
             <h6>Signature</h6>
             <img [src]="selectedDocs.sign" class="img-fluid border rounded" />
           </div>
-
         </ng-container>
 
         <ng-template #noDocs>
           <p class="text-center text-muted">No documents available</p>
         </ng-template>
       </div>
-
     </div>
   </div>
 </div>
@@ -209,13 +189,14 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-         (click)="closeModal()"
+          (click)="closeModal()"
         ></button>
       </div>
 
       <div class="modal-body">
         <app-signup
           *ngIf="openSignup"
+          [prefillData]="selectedSignupData"
           (close)="closeModal()"
         ></app-signup>
       </div>

@@ -86,7 +86,10 @@ export class MemberAddCollection implements OnInit {
   }
 
   ngOnInit() {
+     if (isPlatformBrowser(this.platformId)) {
     this.id = this.route.snapshot.paramMap.get('id');
+     }
+   
     console.log('this.id', this.id);
     if (!this.id) {
       this.router.navigate(['/member-login']);

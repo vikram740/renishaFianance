@@ -10,7 +10,7 @@ import { saveAs } from 'file-saver';
 import { environment, renishaFinance } from '../../environments/environment.development';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Signup } from '../signup/signup';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-agent-list',
@@ -19,14 +19,15 @@ import { RouterLink } from "@angular/router";
   styleUrl: './agent-list.scss',
 })
 export class AgentList {
-   private common = inject(Common);
+  private common = inject(Common);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   dialog = inject(MatDialog);
 
   agents: any[] = [];
   allAgents: any[] = [];
-  selectedDocs:any
+  selectedDocs: any;
+  selectedSignupData: any = null;
 
   agentForm!: FormGroup;
   selectedAgentId: string = '';
@@ -40,14 +41,11 @@ export class AgentList {
   role: string | null = null;
 
   ngOnInit() {
-     this.agentForm = new FormGroup({
+    this.agentForm = new FormGroup({
       agentName: new FormControl('', Validators.required),
       agentBirth: new FormControl('', Validators.required),
       agentAdhaar: new FormControl('', Validators.required),
-      agentPhone: new FormControl('', [
-        Validators.required,
-        Validators.minLength(10),
-      ]),
+      agentPhone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       agentEmail: new FormControl('', Validators.required),
       agentCurrentAddress: new FormControl('', Validators.required),
       agentPermanentAddress: new FormControl('', Validators.required),
@@ -56,84 +54,85 @@ export class AgentList {
   }
 
   /* -------- GET AGENTS -------- */
- getAgents() {
-  this.common.getAllAgent(this.page, this.limit).subscribe({
-    next: (res: any) => {
-      this.agents = res.list || [];
-      this.allAgents = [...this.agents];
-      this.totalCount = res.count || 0;
-      this.cdr.detectChanges();
-    },
-    error: () => {
-      this.agents = [];
-      this.totalCount = 0;
-    }
-  });
-}
+  getAgents() {
+    this.common.getAllAgent(this.page, this.limit).subscribe({
+      next: (res: any) => {
+        this.agents = res.list || [];
+        this.allAgents = [...this.agents];
+        this.totalCount = res.count || 0;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.agents = [];
+        this.totalCount = 0;
+      },
+    });
+  }
 
   /* -------- PAGINATION -------- */
-onPageChange(event: any) {
-  this.page = event.pageIndex + 1;
-  this.limit = event.pageSize;
+  onPageChange(event: any) {
+    this.page = event.pageIndex + 1;
+    this.limit = event.pageSize;
 
-  if (this.searchText) {
-    this.common.searchAgent(this.searchText, this.page, this.limit).subscribe({
+    if (this.searchText) {
+      this.common.searchAgent(this.searchText, this.page, this.limit).subscribe({
+        next: (res: any) => {
+          this.agents = res.list || [];
+          this.totalCount = res.count || 0;
+        },
+      });
+    } else {
+      this.getAgents();
+    }
+  }
+
+  mapSignupData(name: string, email: string, role: string, password?: string) {
+    const parts = name?.trim().split(' ') || [];
+    return {
+      firstName: parts[0] || '',
+      lastName: parts.slice(1).join(' ') || '',
+      email,
+      role,
+      password: password,
+    };
+  }
+  openSignupComponent(agent: any) {
+    this.selectedSignupData = this.mapSignupData(
+      agent.agentName,
+      agent.agentEmail,
+      'agent',
+      agent.agentPassword,
+    );
+
+    this.openSignup = true;
+    this.openModal('signupModal');
+  }
+
+  /* -------- SEARCH -------- */
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value.trim();
+    this.searchText = value;
+
+    this.page = 1; // reset pagination on search
+
+    if (!value) {
+      this.getAgents(); // load normal list
+      return;
+    }
+
+    this.common.searchAgent(value, this.page, this.limit).subscribe({
       next: (res: any) => {
         this.agents = res.list || [];
         this.totalCount = res.count || 0;
       },
+      error: () => {
+        this.agents = [];
+        this.totalCount = 0;
+      },
     });
-  } else {
-    this.getAgents();
-  }
-}
-openSignupComponent() {
-    this.openSignup = true;
-
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        import('bootstrap').then((bootstrap) => {
-          const modalEl = document.getElementById('signupModal');
-          if (!modalEl) return;
-
-          const modal = new bootstrap.Modal(modalEl, {
-            backdrop: 'static',
-            keyboard: false,
-          });
-
-          modal.show();
-        });
-      });
-    }
   }
 
-
-
-  /* -------- SEARCH -------- */
- onSearch(event: Event) {
-  const value = (event.target as HTMLInputElement).value.trim();
-  this.searchText = value;
-
-  this.page = 1; // reset pagination on search
-
-  if (!value) {
-    this.getAgents(); // load normal list
-    return;
-  }
-
-  this.common.searchAgent(value, this.page, this.limit).subscribe({
-    next: (res: any) => {
-      this.agents = res.list || [];
-      this.totalCount = res.count || 0;
-    },
-    error: () => {
-      this.agents = [];
-      this.totalCount = 0;
-    },
-  });
-}
-
-editAgent(agent: any) {
+  editAgent(agent: any) {
     this.selectedAgentId = agent._id;
 
     this.agentForm.patchValue({
@@ -169,9 +168,8 @@ editAgent(agent: any) {
     });
   }
 
-
   /* -------- DELETE -------- */
- openDialog(agentId: string) {
+  openDialog(agentId: string) {
     const dialogRef = this.dialog.open(ConfirmationModal, {
       width: '400px',
       disableClose: true,
@@ -190,7 +188,6 @@ editAgent(agent: any) {
       this.getAgents();
     });
   }
-
 
   /* -------- EXPORT -------- */
   exportToExcel() {
@@ -216,11 +213,11 @@ editAgent(agent: any) {
       new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       }),
-      `Agent_List_${Date.now()}.xlsx`
+      `Agent_List_${Date.now()}.xlsx`,
     );
   }
-  
-     viewDocuments(agent: any) {
+
+  viewDocuments(agent: any) {
     const baseUrl = environment.uploadUrl + renishaFinance.uploads + '/';
 
     this.selectedDocs = {
@@ -246,13 +243,11 @@ editAgent(agent: any) {
 
     import('bootstrap').then((bs) => {
       document.querySelectorAll('.modal.show').forEach((el: any) => {
-        const instance = bs.Modal.getInstance(el);
-        instance?.hide();
+        bs.Modal.getInstance(el)?.hide();
       });
-
       document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
       document.body.classList.remove('modal-open');
+      this.openSignup = false;
     });
   }
-
 }

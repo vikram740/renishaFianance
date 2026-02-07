@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core
 import { MaterialModule } from '../../materialModule/material.module';
 import { MatIcon } from '@angular/material/icon';
 import { MatChipAvatar } from '@angular/material/chips';
-import { ActivatedRoute, Router, RouterLink, RouterLinkActive} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../service/auth';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Common } from '../service/common';
@@ -15,16 +15,15 @@ import { environment, renishaFinance } from '../../environments/environment.deve
   styleUrl: './topnav.scss',
 })
 export class Topnav {
-  route = inject(Router)
+  route = inject(Router);
   authService = inject(Auth);
   userName: any;
   userRole: any;
   role: any;
   common = inject(Common);
-  cdr=inject(ChangeDetectorRef)
-   profilePhoto: string | null = null;
-     private platformId = inject(PLATFORM_ID);
-
+  cdr = inject(ChangeDetectorRef);
+  profilePhoto: string | null = null;
+  private platformId = inject(PLATFORM_ID);
 
   menuAdminItems = [
     { name: 'Dashboard', link: '/dashboard' },
@@ -32,15 +31,20 @@ export class Topnav {
     { name: 'Registration', link: '/registration' },
     { name: 'Member Login', link: '/memberLogin' },
     { name: 'Members', link: '/members' },
+      { name: 'User Management', link: '/userManagement' },
     { name: 'Notifications', link: '/notification' },
     { name: 'Requests', link: '/request' },
     { name: 'Approvals', link: '/approvals' },
     { name: 'Documents', link: '/documents' },
     { name: 'Payments', link: '/payments' },
-    { name: 'Customer management', link: '/customer-management' },
-   { name: 'Collection Agent management', link: '/collectionAgent' },
+       { name: 'Deal Form', link: '/dealForm' },
+    { name: 'Deal List', link: '/dealList' },
+     { name: 'PrimaryQrLog', link: '/primaryQrLog' },
+    { name: 'PaymentsList', link: '/paymentList' },
+    // { name: 'Customer management', link: '/customer-management' },
     { name: 'Referral Agent management', link: '/referralAgent' },
     { name: 'profile', link: '/profile' },
+    { name: 'Agents',link: '/agentList' },
   ];
   menuMemberItems = [
     { name: 'Member Login', link: '/memberDashboard' },
@@ -49,17 +53,17 @@ export class Topnav {
 
   ngOnInit() {
     // fetching user name and user role from the service file
-    
-    console.log('this.userName', this.userName)
+
+    console.log('this.userName', this.userName);
     this.userRole = this.authService.getRole();
 
     if (isPlatformBrowser(this.platformId)) {
       if (this.userRole === 'agent') {
         this.loadAgentProfile();
-        this.userName = localStorage.getItem("agentName")
+        this.userName = localStorage.getItem('agentName');
       } else {
         this.loadMemberProfile();
-        this.userName = localStorage.getItem("memberName");
+        this.userName = localStorage.getItem('memberName');
       }
     }
   }
@@ -68,57 +72,46 @@ export class Topnav {
     return this.role === 'agent' || this.role === 'admin';
   }
 
-    loadMemberProfile() {
+  loadMemberProfile() {
     const memberEmail = localStorage.getItem('memberEmail');
     if (!memberEmail) return;
 
     this.common.getAllMember().subscribe((res: any) => {
-      const member = res.list?.find(
-        (m: any) => m.memberEmail === memberEmail
-      );
+      const member = res.list?.find((m: any) => m.memberEmail === memberEmail);
 
       if (member?.memberPhoto) {
         this.profilePhoto =
-          environment.uploadUrl +
-          renishaFinance.uploads +
-          '/' +
-          member.memberPhoto;
+          environment.uploadUrl + renishaFinance.uploads + '/' + member.memberPhoto;
       }
-      this.cdr.detectChanges()
+      this.cdr.detectChanges();
     });
   }
 
-    loadAgentProfile() {
+  loadAgentProfile() {
     const agentEmail = localStorage.getItem('agentEmail');
     if (!agentEmail) return;
 
     this.common.getAllAgents().subscribe((res: any) => {
-      const agent = res.list?.find(
-        (a: any) => a.agentEmail === agentEmail
-      );
+      const agent = res.list?.find((a: any) => a.agentEmail === agentEmail);
 
       if (agent?.agentPhoto) {
-        this.profilePhoto =
-          environment.uploadUrl +
-          renishaFinance.uploads +
-          '/' +
-          agent.agentPhoto;
+        this.profilePhoto = environment.uploadUrl + renishaFinance.uploads + '/' + agent.agentPhoto;
       }
-       this.cdr.detectChanges()
+      this.cdr.detectChanges();
     });
   }
   closeMobileMenu(navbar: HTMLElement) {
     navbar.classList.remove('show');
   }
-   logout() {
+  logout() {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
       localStorage.removeItem('adminPassword');
       localStorage.removeItem('agentEmail');
-        localStorage.removeItem('agentName');
+      localStorage.removeItem('agentName');
       localStorage.removeItem('memberEmail');
-        localStorage.removeItem('memberName');
+      localStorage.removeItem('memberName');
       localStorage.removeItem('userName');
       localStorage.removeItem('agentId');
       localStorage.removeItem('Id');

@@ -15,8 +15,6 @@ import { CommonModule, DatePipe, isPlatformBrowser, UpperCasePipe } from '@angul
     MatDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
-    DatePipe,
-    UpperCasePipe,
     CommonModule,
   ],
   templateUrl: './collection.html',
@@ -33,6 +31,8 @@ export class Collection {
   todayCollections: any[] = [];
   todayTotalAmount = 0;
   agentId: any;
+  fromdate:any;
+  toDate:any
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -54,60 +54,104 @@ export class Collection {
 
       // ✅ Store + set immediately
       this.agentId = agent._id;
+      this.agentIdNo = agent.agentIdNo
+      console.log('this.agentIdNo', this.agentIdNo)
       localStorage.setItem('agentMongoId', agent._id);
 
-      // 🔥 NOW SAFE
-      this.loadAgent();
+      this.fromdate = Date.now();
+      this.toDate = Date.now();
+
+      if(this.fromdate &&this.toDate&&this.agentIdNo){
+         this.loadPaidDashboard(this.fromdate,this.toDate,this.agentIdNo)
+
+      }
+
+
+     
+
+
     });
   }
 
-  loadAgent() {
-    this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
-      const agents = res.user || [];
-      console.log('agents', agents);
+  // loadAgent() {
+  //   this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
+  //     const agents = res.user || [];
+  //     console.log('agents', agents);
 
-      this.agentIdNo = agents._id;
-      console.log('this.agentIdNo', this.agentIdNo);
-      this.loadTodayCollections();
-    });
-  }
+  //     this.agentIdNo = agents._id;
+  //     console.log('this.agentIdNo', this.agentIdNo);
+  //     this.loadTodayCollections();
+  //   });
+  // }
 
-  loadTodayCollections() {
+  // loadTodayCollections() {
+  //   const now = new Date();
+  //   const todayLocal =
+  //     now.getFullYear() +
+  //     '-' +
+  //     String(now.getMonth() + 1).padStart(2, '0') +
+  //     '-' +
+  //     String(now.getDate()).padStart(2, '0');
+
+  //   this.common.getDealCollections().subscribe((res: any) => {
+  //     const collections = res.list || [];
+  //     console.log('collections', collections);
+
+  //     const todayAgentCollections = collections.filter((item: any) => {
+  //       if (!item.createdAt) return false;
+
+  //       const d = new Date(item.createdAt);
+  //       const createdLocal =
+  //         d.getFullYear() +
+  //         '-' +
+  //         String(d.getMonth() + 1).padStart(2, '0') +
+  //         '-' +
+  //         String(d.getDate()).padStart(2, '0');
+
+  //       return createdLocal === todayLocal && item.agentId === this.agentIdNo;
+  //     });
+
+  //     this.todayCollections = todayAgentCollections;
+
+  //     // this.todayTotalAmount = this.todayCollections.reduce(
+  //     //   (sum, item) => sum + Number(item.installmentPaidAmount || 0),
+  //     //   0,
+  //     // );
+
+  //     // ✅ Only here it is meaningful
+  //     this.cdr.detectChanges();
+  //   });
+  // }
+
+    withSystemTime(date: Date): string {
     const now = new Date();
-    const todayLocal =
-      now.getFullYear() +
-      '-' +
-      String(now.getMonth() + 1).padStart(2, '0') +
-      '-' +
-      String(now.getDate()).padStart(2, '0');
+    const d = new Date(date);
 
-    this.common.getDealCollections().subscribe((res: any) => {
-      const collections = res.list || [];
-      console.log('collections', collections);
+    d.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
 
-      const todayAgentCollections = collections.filter((item: any) => {
-        if (!item.createdAt) return false;
+    return d.toISOString();
+  }
+  withEndOfDay(date: Date): string {
+    const d = new Date(date);
+    d.setHours(23, 59, 59, 999);
+    return d.toISOString();
+  }
 
-        const d = new Date(item.createdAt);
-        const createdLocal =
-          d.getFullYear() +
-          '-' +
-          String(d.getMonth() + 1).padStart(2, '0') +
-          '-' +
-          String(d.getDate()).padStart(2, '0');
+    loadPaidDashboard(fromDate: Date, toDate: Date,agentId:string) {
+    const params = {
+      type: 'overview',
+      mode: 'custom',
+      fromDate: this.withSystemTime(fromDate),
+      toDate: this.withEndOfDay(toDate),
+      agentId: this.agentIdNo,
+    };
 
-        return createdLocal === todayLocal && item.agentId === this.agentIdNo;
-      });
-
-      this.todayCollections = todayAgentCollections;
-
-      this.todayTotalAmount = this.todayCollections.reduce(
-        (sum, item) => sum + Number(item.installmentPaidAmount || 0),
-        0,
-      );
-
-      // ✅ Only here it is meaningful
-      this.cdr.detectChanges();
+    this.common.dashBoard(params).subscribe((res: any) => {
+      const data = res?.data?.[0] || {};
+      console.log('data', data)
+      this.todayTotalAmount = data.totalPaidAmount || 0;
+      console.log('this.todayTotalAmount', this.todayTotalAmount)
+     this.cdr.detectChanges()
     });
   }
 }
