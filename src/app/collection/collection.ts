@@ -9,11 +9,16 @@ import { CommonModule, DatePipe, isPlatformBrowser, UpperCasePipe } from '@angul
 
 @Component({
   selector: 'app-collection',
-  imports: [MatFormFieldModule,
+  imports: [
+    MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     FormsModule,
-    ReactiveFormsModule,DatePipe,UpperCasePipe,CommonModule],
+    ReactiveFormsModule,
+    DatePipe,
+    UpperCasePipe,
+    CommonModule,
+  ],
   templateUrl: './collection.html',
   styleUrl: './collection.scss',
 })
@@ -23,96 +28,86 @@ export class Collection {
 
   agentEmail = '';
   agentIdNo = '';
-  cdr=inject(ChangeDetectorRef)
+  cdr = inject(ChangeDetectorRef);
 
   todayCollections: any[] = [];
   todayTotalAmount = 0;
-  agentId :any
+  agentId: any;
 
- ngOnInit() {
-  if (!isPlatformBrowser(this.platformId)) return;
+  ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
 
-  this.agentEmail = localStorage.getItem('agentEmail') || '';
-  if (!this.agentEmail) return;
-  this.agentId = localStorage.getItem('agentMongoId') || '';
-  console.log('this.agentId', this.agentId)
+    this.agentEmail = localStorage.getItem('agentEmail') || '';
+    if (!this.agentEmail) return;
 
     this.common.getAllAgents().subscribe((response: any) => {
-          const agents = response.list || [];
-  
-          const agent = agents.find(
-            (a: any) => a.agentEmail?.toLowerCase() === this.agentEmail.toLowerCase()
-          );
-  
-          if (!agent?._id) {
-            console.error('Agent Mongo ID not found');
-            return;
-          }
-  
-          // ✅ STORE MONGO ID
-          localStorage.setItem('agentMongoId', agent._id);
-  
-        });
+      const agents = response.list || [];
 
-  
-
-  this.loadAgent();
-}
-
-loadAgent() {
-  this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
-    const agents = res.user || [];
-    console.log('agents', agents)
-
-
-
-    this.agentIdNo = agents._id;
-    console.log('this.agentIdNo', this.agentIdNo)
-    this.loadTodayCollections();
-  });
-}
-
-loadTodayCollections() {
-  const now = new Date();
-  const todayLocal =
-    now.getFullYear() + '-' +
-    String(now.getMonth() + 1).padStart(2, '0') + '-' +
-    String(now.getDate()).padStart(2, '0');
-
-  this.common.getDealCollections().subscribe((res: any) => {
-    const collections = res.list || [];
-    console.log('collections', collections)
-
-    const todayAgentCollections = collections.filter((item: any) => {
-      if (!item.createdAt) return false;
-
-      const d = new Date(item.createdAt);
-      const createdLocal =
-        d.getFullYear() + '-' +
-        String(d.getMonth() + 1).padStart(2, '0') + '-' +
-        String(d.getDate()).padStart(2, '0');
-
-      return (
-        createdLocal === todayLocal &&
-        item.agentId === this.agentIdNo
+      const agent = agents.find(
+        (a: any) => a.agentEmail?.toLowerCase() === this.agentEmail.toLowerCase(),
       );
+
+      if (!agent?._id) {
+        console.error('Agent Mongo ID not found');
+        return;
+      }
+
+      // ✅ Store + set immediately
+      this.agentId = agent._id;
+      localStorage.setItem('agentMongoId', agent._id);
+
+      // 🔥 NOW SAFE
+      this.loadAgent();
     });
+  }
 
-    this.todayCollections = todayAgentCollections;
+  loadAgent() {
+    this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
+      const agents = res.user || [];
+      console.log('agents', agents);
 
-    this.todayTotalAmount = this.todayCollections.reduce(
-      (sum, item) => sum + Number(item.installmentPaidAmount
-|| 0),
-      0
-    );
+      this.agentIdNo = agents._id;
+      console.log('this.agentIdNo', this.agentIdNo);
+      this.loadTodayCollections();
+    });
+  }
 
-    // ✅ Only here it is meaningful
-    this.cdr.detectChanges();
-  });
-}
+  loadTodayCollections() {
+    const now = new Date();
+    const todayLocal =
+      now.getFullYear() +
+      '-' +
+      String(now.getMonth() + 1).padStart(2, '0') +
+      '-' +
+      String(now.getDate()).padStart(2, '0');
 
+    this.common.getDealCollections().subscribe((res: any) => {
+      const collections = res.list || [];
+      console.log('collections', collections);
 
+      const todayAgentCollections = collections.filter((item: any) => {
+        if (!item.createdAt) return false;
 
+        const d = new Date(item.createdAt);
+        const createdLocal =
+          d.getFullYear() +
+          '-' +
+          String(d.getMonth() + 1).padStart(2, '0') +
+          '-' +
+          String(d.getDate()).padStart(2, '0');
 
+        return createdLocal === todayLocal && item.agentId === this.agentIdNo;
+      });
 
+      this.todayCollections = todayAgentCollections;
+
+      this.todayTotalAmount = this.todayCollections.reduce(
+        (sum, item) => sum + Number(item.installmentPaidAmount || 0),
+        0,
+      );
+
+      // ✅ Only here it is meaningful
+      this.cdr.detectChanges();
+    });
+  }
 }

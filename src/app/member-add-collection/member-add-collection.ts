@@ -130,7 +130,6 @@ export class MemberAddCollection implements OnInit {
       // });
     });
   }
-<<<<<<< HEAD
  updateNextInstallment(): void {
   if (!this.dealData) return;
 
@@ -151,31 +150,6 @@ export class MemberAddCollection implements OnInit {
   const nextInstallmentNumber = paidCount + 1;
 
   // ✅ Remaining amount (important for last installment)
-=======
-  updateNextInstallment() {
-  const paidCount = this.installmentList.length;
-
-  const totalInstallments = Number(this.dealData.tenurePlan);
-  const perInstallment = Number(this.dealData.tenureInstallment);
-  const totalAmount = Number(this.dealData.tenureAmount);
-
-  // If all installments paid → stop
-  if (paidCount >= totalInstallments) {
-    toast.info('All installments completed 🎉');
-    this.paymentForm.disable();
-    return;
-  }
-
-  const nextInstallmentNumber = paidCount + 1;
-
-  // Calculate paid so far
-  const paidAmount = this.installmentList.reduce(
-    (sum, i) => sum + Number(i.installmentPaidAmount || 0),
-    0
-  );
-
-  // Remaining amount (important for last installment)
->>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
   const remainingAmount = totalAmount - paidAmount;
 
   const nextAmount =
@@ -183,7 +157,6 @@ export class MemberAddCollection implements OnInit {
       ? remainingAmount
       : perInstallment;
 
-<<<<<<< HEAD
   // ✅ Patch form
   this.paymentForm.patchValue(
     {
@@ -195,14 +168,6 @@ export class MemberAddCollection implements OnInit {
 }
 
 
-=======
-  this.paymentForm.patchValue({
-    installment: nextInstallmentNumber,
-    collectionAmount: nextAmount,
-  });
-}
-
->>>>>>> c4007492c7363b2c0fc45a954b3fb161b5460c31
 
   getPrimaryQr() {
     this.common.getAllQr().subscribe({

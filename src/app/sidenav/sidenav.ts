@@ -60,7 +60,6 @@ export class Sidenav {
   ];
 
   menuAgentItems = [
-    // { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
     { name: 'Collection', icon: this.collection, link: '/collection' },
     { name: 'Members', icon: this.members, link: '/members' },
     { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
@@ -81,11 +80,6 @@ export class Sidenav {
 
   ngOnInit() {
     this.role = this.authService.getRole();
-
-    if (isPlatformBrowser(this.platformId)) {
-      this.agentEmail = localStorage.getItem('agentEmail');
-    }
-    this.getAllAgent();
   }
 
   get menuItems() {
@@ -103,23 +97,6 @@ export class Sidenav {
     return this.menuMemberItems;
   }
 
-  getAllAgent() {
-    this.common.getAllAgents().subscribe((res: any) => {
-      this.agentList = res.list || [];
-      console.log('this.agentList', this.agentList);
-      const agentEmail = this.agentEmail;
-      if (!agentEmail) return;
-
-      const selectedAgent = this.agentList.find((agent: any) => agent.agentEmail === agentEmail);
-      // if (selectedAgent) {
-      //   const bsaeUrl = environment.uploadUrl + renishaFinance.uploads + '/';
-      //   this.agentPhoto = {
-      //     agentPhoto: selectedAgent.agentPhoto ? bsaeUrl + selectedAgent.agentPhoto : null,
-      //   };
-      //   console.log('this.agentPhoto', this.agentPhoto);
-      // }
-    });
-  }
 
   logout() {
     if (typeof localStorage !== 'undefined') {

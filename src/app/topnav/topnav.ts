@@ -49,15 +49,17 @@ export class Topnav {
 
   ngOnInit() {
     // fetching user name and user role from the service file
-    this.userName = localStorage.getItem("memberName");
+    
     console.log('this.userName', this.userName)
     this.userRole = this.authService.getRole();
 
     if (isPlatformBrowser(this.platformId)) {
       if (this.userRole === 'agent') {
         this.loadAgentProfile();
+        this.userName = localStorage.getItem("agentName")
       } else {
         this.loadMemberProfile();
+        this.userName = localStorage.getItem("memberName");
       }
     }
   }

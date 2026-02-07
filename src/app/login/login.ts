@@ -145,33 +145,37 @@ signIn() {
     return;
   }
 
-this.authService.login(this.loginForm.value).subscribe({
-  next: (res: any) => {
-    // Common auth storage
-    localStorage.setItem('token', res.token);
-    localStorage.setItem('role', res.role);
-    localStorage.setItem('Id', res._id);
+  this.authService.login(this.loginForm.value).subscribe({
+    next: (res: any) => {
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('role', res.role);
+      localStorage.setItem('Id', res._id);
 
-    if (res.role === 'agent') {
-      localStorage.setItem('agentEmail', res.email);
-       this.router.navigate(['/collection']);
-    }
+      // ✅ AGENT
+      if (res.role === 'agent') {
+        localStorage.setItem('agentEmail', res.email);
+        localStorage.setItem('agentName', res.firstName);
+        this.router.navigate(['/collection']);
+        return; // 🔥 IMPORTANT
+      }
 
-    if (res.role === 'member') {
-      localStorage.setItem('memberEmail', res.email);
-      localStorage.setItem('memberName',res.firstName)
-      this.router.navigate(['/memberDashboard']);
-      return;
-    }
+      // ✅ MEMBER
+      if (res.role === 'member') {
+        localStorage.setItem('memberEmail', res.email);
+        localStorage.setItem('memberName', res.firstName);
+        this.router.navigate(['/memberDashboard']);
+        return;
+      }
 
-    // admin
-    this.router.navigate(['/dashboard']);
-  },
-  error: () => {
-    toast.error('Login failed');
-  },
-});
-
+      // ✅ ADMIN
+      this.router.navigate(['/dashboard']);
+    },
+    error: () => {
+      toast.error('Login failed');
+    },
+  });
 }
+
+
 
 }
