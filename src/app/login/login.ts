@@ -68,6 +68,7 @@ export class Login {
 
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
+    const password = localStorage.getItem('adminPassword')
 
     if (token && role) {
       if (role === 'member') {
@@ -141,9 +142,11 @@ export class Login {
 signIn() {
   if (this.loginForm.invalid) {
     this.submitted.set(true);
-    toast.error('Login Failed');
+    toast.error('Please enter valid credentials');
     return;
   }
+
+  const { rememberMe, email, password } = this.loginForm.value;
 
   this.authService.login(this.loginForm.value).subscribe({
     next: (res: any) => {
@@ -151,15 +154,21 @@ signIn() {
       localStorage.setItem('role', res.role);
       localStorage.setItem('Id', res._id);
 
-      // ✅ AGENT
+      // localStorage.setItem('rememberMe', JSON.stringify(rememberMe));
+
+      // if (rememberMe) {
+      //   this.authService.setCredentials(res);
+      // } else {
+      //   this.authService.clearCredentials();
+      // }
+
       if (res.role === 'agent') {
         localStorage.setItem('agentEmail', res.email);
         localStorage.setItem('agentName', res.firstName);
         this.router.navigate(['/collection']);
-        return; // 🔥 IMPORTANT
+        return;
       }
 
-      // ✅ MEMBER
       if (res.role === 'member') {
         localStorage.setItem('memberEmail', res.email);
         localStorage.setItem('memberName', res.firstName);
@@ -167,14 +176,18 @@ signIn() {
         return;
       }
 
-      // ✅ ADMIN
-      this.router.navigate(['/dashboard']);
+      if (res.role === 'admin') {
+        this.router.navigate(['/dashboard']);
+        localStorage.setItem('adminPassword', res.password);
+        return;
+      }
     },
     error: () => {
-      toast.error('Login failed');
+      toast.error('Login failed. Check credentials');
     },
   });
 }
+
 
 
 

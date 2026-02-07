@@ -220,19 +220,30 @@ export class Registration {
       formData.append('memberSignature', this.memberSignatureFile);
       formData.append('nomineePhoto', this.nomineePhotoFile);
       formData.append('nomineeSignature', this.nomineeSignatureFile);
-      this.common.createMember(formData).subscribe((res: any) => {
-        // this.isLoading = false;
-        console.log('registration', res.data);
-        toast.success('Registration Successfully', { class: 'toast-success' });
-        this.generateID.reset();
-        this.submitted = false;
-        this.memberSignatureName = '';
-        this.memberPhotoName = '';
-        this.memberPanName = '';
-        this.memberAdhaarName = '';
-        this.nomineePhotoName = '';
-        this.nomineeSignatureName = '';
+      this.common.createMember(formData).subscribe({
+        next: (res: any) => {
+          toast.success('Registration Successfully', { class: 'toast-success' });
+          this.generateID.reset();
+          this.submitted = false;
+
+          this.memberSignatureName = '';
+          this.memberPhotoName = '';
+          this.memberPanName = '';
+          this.memberAdhaarName = '';
+          this.nomineePhotoName = '';
+          this.nomineeSignatureName = '';
+        },
+
+        error: (err) => {
+          console.error('Registration error:', err);
+
+          const backendMessage =
+            err?.error?.message || err?.error?.error || err?.message || 'Registration failed';
+
+          toast.error(backendMessage, { class: 'toast-error' });
+        },
       });
+
       // this.isLoading = false;
     }
   }

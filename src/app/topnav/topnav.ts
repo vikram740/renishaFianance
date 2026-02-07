@@ -110,13 +110,15 @@ export class Topnav {
   closeMobileMenu(navbar: HTMLElement) {
     navbar.classList.remove('show');
   }
-  logout() {
+   logout() {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
       localStorage.removeItem('adminPassword');
       localStorage.removeItem('agentEmail');
+        localStorage.removeItem('agentName');
       localStorage.removeItem('memberEmail');
+        localStorage.removeItem('memberName');
       localStorage.removeItem('userName');
       localStorage.removeItem('agentId');
       localStorage.removeItem('Id');
