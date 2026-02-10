@@ -1,0 +1,25 @@
+@use '../../variable.scss' as *;
+.ManualDiv{
+    padding: 35px 30px;
+    height: calc(100vh - 120px);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: calc(100% - 300px);
+      @include mobile() {
+    width: 100%;
+    height: calc(100vh - 51px);
+  }
+  @include tablet() {
+    width: 100%;
+    height: calc(100vh - 57px);
+  }
+
+  h3 {
+    color: #153b62;
+    font-size: 25px;
+    font-weight: 500;
+  }
+
+    
+}

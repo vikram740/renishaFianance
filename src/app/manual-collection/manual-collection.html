@@ -1,0 +1,118 @@
+<div class="manualCollection">
+  <div class="section1">
+    <div class="row">
+      <div class="col-12 col-md-12 col-lg-6 memberProfile">
+        <div class="eachField"><label>Member ID :</label> {{ dealData.memberIdNo }}</div>
+        <div class="eachField"><label>Deal ID :</label> {{ dealData?.dealIdNo }}</div>
+        <div class="eachField" *ngIf="role === 'agent'">
+          <label>Agent Name :</label> {{ agentName }} - {{ logedAgentId }}
+        </div>
+        <div class="eachField"><label>Name :</label> {{ dealData?.memberName }}</div>
+        <div class="eachField"><label>Selected Plan :</label> {{ dealData?.tenureType }}</div>
+        <div class="eachField"><label>Start Date :</label> {{ dealData?.fromDate | date }}</div>
+        <div class="eachField"><label>End Date :</label> {{ dealData?.endDate | date }}</div>
+      </div>
+
+      <div class="col-12 col-md-12 col-lg-6 paymentDetails">
+        <form [formGroup]="paymentForm" (ngSubmit)="save()">
+          <div class="buttonsDiv">
+            <div class="button">
+              <label>Installment:</label>{{ paymentForm.get('installment')?.value }}
+              <label>Amount:</label>{{ paymentForm.get('collectionAmount')?.value }}
+              <!-- <input type="text" formControlName="installment" class="form-control" readonly/> -->
+              <!-- <p>{{ paymentForm.get('installment')?.value }}</p> -->
+            </div>
+          </div>
+<!-- 
+          <div class="buttonsDiv2">
+            <div class="row">
+              <div class="button col-12 col-md-12 col-lg-6 mb-2-md">
+                <label
+                  ><input type="radio" formControlName="paymentMode" value="online" /> Online
+                  Payment</label
+                >
+                <div *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
+                  <button type="button" (click)="openQr()">Generate QR</button>
+                </div>
+              </div>
+              <div class="cashButton col-12 col-md-12 col-lg-6">
+                <label
+                  ><input type="radio" formControlName="paymentMode" value="cash" /> Cash</label
+                >
+              </div>
+            </div>
+          </div> -->
+
+          <!-- <div class="buttonsDiv3" *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
+            <div class="button">
+              <label>Transaction ID (TXID)</label>
+              <input type="text" formControlName="upiTransactionId" class="form-control" />
+            </div>
+          </div> -->
+          <div class="buttonsDiv3">
+            <div class="row">
+
+
+              <div class="button col-12 col-md-12">
+                <label>Interest Amount</label>
+                <input
+                  type="number"
+                  formControlName="interestAmount"
+                  class="form-control"
+                  placeholder="Enter interest amount"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="buttonsDiv3">
+            <div class="button">
+              <label>Transaction Date</label>
+              <input type="date" formControlName="transactionDate" class="form-control" />
+            </div>
+          </div>
+
+          <div class="buttonsDiv3">
+            <div class="button">
+              <button type="submit" [disabled]="!isMemberLoaded || !dealData">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="section2">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>SNo</th>
+            <th>Deal ID</th>
+            <th>Transaction ID</th>
+            <th>Amount</th>
+            <th>Member Id</th>
+            <th>Agent Id</th>
+            <th>QR</th>
+            <th>Payment Mode</th>
+            <th>UPI TxID</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="installmentList.length > 0">
+          <tr *ngFor="let item of installmentList; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.dealIdNo}}</td>
+            <td>{{ item.transactionId }}</td>
+           <td>{{ item.installmentPaidAmount}}</td>
+            <td>{{ item.memberIdNo }}</td>
+            <td>{{ item.agentIdNo}}</td>
+            <td>{{ item.primaryQRCode || 'N/A' }}</td>
+            <td>{{ item.paymentMode }}</td>
+            <td>{{ item.upiTransactionId }}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="installmentList.length === 0">
+          <tr><td colspan="9" class="text-center">No collections found</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

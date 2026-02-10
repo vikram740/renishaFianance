@@ -164,4 +164,11 @@ dashBoard(params:any){
   );
   
 }
+createManualForm(body:any){
+     return this.http.post(environment.baseUrl + renishaFinance.createManualForm ,body)
+}
+createManualCollection(body:any){
+     return this.http.post(environment.baseUrl + renishaFinance.manualCollection ,body)
+}
+
 }

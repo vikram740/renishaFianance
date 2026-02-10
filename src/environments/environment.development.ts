@@ -49,7 +49,9 @@ export const renishaFinance = {
     deleteUser:'/user/deleteUserById',
     userDetailsById:'/user/userDetailsById',
     uploads:'uploads',
-    dashBoard:'/deals/getDashboardSummary'
+    dashBoard:'/deals/getDashboardSummary',
+    createManualForm:'/manualForm/createManualForm',
+    manualCollection:'/manualForm/addDealTransaction',
     
 
 

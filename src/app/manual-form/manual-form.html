@@ -1,0 +1,355 @@
+<div class="ManualDiv">
+  <h3>Manual Form</h3>
+
+  <form [formGroup]="manualForm" (ngSubmit)="submit()" class="container my-4">
+
+    <!-- ================= MEMBER DETAILS ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Member Details</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Member Name</label>
+          <input class="form-control" formControlName="memberName">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="memberEmail">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Phone</label>
+          <input class="form-control" formControlName="memberPhone">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Member ID No</label>
+          <input class="form-control" formControlName="memberIdNo">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" formControlName="memberBirth">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Adhaar</label>
+          <input class="form-control" formControlName="memberAdhaar">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">PAN</label>
+          <input class="form-control" formControlName="memberPan">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Joining Date</label>
+          <input type="date" class="form-control" formControlName="memberJoiningDate">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Member Photo</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'memberPhoto')">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Member Signature</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'memberSignature')">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Upload Aadhaar</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'uploadMemberAdhaar')">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Upload PAN</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'uploadMemberPan')">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Current Address</label>
+          <textarea class="form-control" formControlName="memberCurrentAddress"></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Permanent Address</label>
+          <textarea class="form-control" formControlName="memberPermanentAddress"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= NOMINEE DETAILS ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Nominee Details</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Nominee Name</label>
+          <input class="form-control" formControlName="nomineeName">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Relationship</label>
+          <input class="form-control" formControlName="nomineeRelationship">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" formControlName="nomineeBirth">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Adhaar</label>
+          <input class="form-control" formControlName="nomineeAdhaar">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Phone</label>
+          <input class="form-control" formControlName="nomineePhone">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="nomineeEmail">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Nominee Photo</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'nomineePhoto')">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Nominee Signature</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'nomineeSignature')">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Current Address</label>
+          <textarea class="form-control" formControlName="nomineeCurrentAddress"></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Permanent Address</label>
+          <textarea class="form-control" formControlName="nomineePermanentAddress"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= AGENT DETAILS ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Agent Details</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Agent ID No</label>
+          <input class="form-control" formControlName="agentIdNo">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Agent Name</label>
+          <input class="form-control" formControlName="agentName">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" formControlName="agentBirth">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="agentEmail">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Phone</label>
+          <input class="form-control" formControlName="agentPhone">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Adhaar</label>
+          <input class="form-control" formControlName="agentAdhaar">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">PAN</label>
+          <input class="form-control" formControlName="agentPan">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Username</label>
+          <input class="form-control" formControlName="agentuserName">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Password</label>
+          <input class="form-control" formControlName="agentPassword">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Agent Photo</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'agentPhoto')">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Agent Signature</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event,'agentSignature')">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Current Address</label>
+          <textarea class="form-control" formControlName="agentCurrentAddress"></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Permanent Address</label>
+          <textarea class="form-control" formControlName="agentPermanentAddress"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= DEAL DETAILS ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Deal Details</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Deal ID</label>
+          <input class="form-control" formControlName="dealIdNo">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Tenure Type</label>
+          <input class="form-control" formControlName="tenureType">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Tenure Plan</label>
+          <input class="form-control" formControlName="tenurePlan">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Tenure Amount</label>
+          <input class="form-control" formControlName="tenureAmount">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Percentage</label>
+          <input class="form-control" formControlName="percentage">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Installment Amount</label>
+          <input class="form-control" formControlName="tenureInstallment">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">From Date</label>
+          <input type="date" class="form-control" formControlName="fromDate">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">End Date</label>
+          <input type="date" class="form-control" formControlName="endDate">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= PAYMENT DETAILS ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Payment Details</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Payment Date</label>
+          <input type="date" class="form-control" formControlName="paymentDate">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Payment Mode</label>
+          <input class="form-control" formControlName="paymentMode">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">UPI / Transaction Mode</label>
+          <input class="form-control" formControlName="upiTransactionId">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Transaction ID</label>
+          <input class="form-control" formControlName="transactionId">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Installment No</label>
+          <input class="form-control" formControlName="installmentNumber">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Installment Paid Amount</label>
+          <input class="form-control" formControlName="installmentPaidAmount">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= AMOUNT SUMMARY ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Amount Summary</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Wallet Amount</label>
+          <input class="form-control" formControlName="walletAmount">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Balance Amount</label>
+          <input class="form-control" formControlName="balanceAmount">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Total Paid Amount</label>
+          <input class="form-control" formControlName="totalPaidAmount">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Total Installments Paid</label>
+          <input class="form-control" formControlName="totalInstallmentsPaid">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= LAST ACTIVITY ================= -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold">Last Activity</div>
+      <div class="card-body row g-3">
+
+        <div class="col-lg-6">
+          <label class="form-label">Last Paid Date</label>
+          <input type="date" class="form-control" formControlName="lastPaidDate">
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label">Last Interest Date</label>
+          <input type="date" class="form-control" formControlName="lastInterestDate">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= ACTION ================= -->
+    <div class="text-end mb-5">
+      <button class="btn btn-success px-5" [disabled]="submitting">
+        {{ submitting ? 'Submitting...' : 'Submit' }}
+      </button>
+    </div>
+
+  </form>
+</div>

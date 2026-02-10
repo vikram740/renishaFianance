@@ -27,7 +27,11 @@ export const routes: Routes = [
     { path: 'primaryQrLog', canActivate: [authGuard], loadComponent: () => import('./primar-qr-log/primar-qr-log').then(m => m.PrimarQrLog) },
     { path: 'payments', canActivate: [authGuard], loadComponent: () => import('./payments/payments').then(m => m.Payments) },
     { path: 'paymentList', canActivate: [authGuard], loadComponent: () => import('./payments-list/payments-list').then(m => m.PaymentsList) },
+    { path: 'manual-form', canActivate: [], loadComponent: () => import('./manual-form/manual-form').then(m => m.ManualForm) },
+    { path: 'manual-collection/:id', canActivate: [], loadComponent: () => import('./manual-collection/manual-collection').then(m => m.ManualCollection) },
+    { path: 'manual-login', canActivate: [], loadComponent: () => import('./manual-login/manual-login').then(m => m.ManualLogin) },
     { path: 'notification', canActivate: [authGuard], loadComponent: () => import('./notification/notification').then(m => m.Notification) },
     { path: '**', redirectTo: 'login' }
 ];
 
+      
