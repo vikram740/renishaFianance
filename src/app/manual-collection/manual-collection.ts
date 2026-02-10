@@ -105,7 +105,7 @@ export class ManualCollection {
     }
 
     this.getDealById(this.id);
-    // this.getPrimaryQr();
+    this.getPrimaryQr();
     this.getAllAgent();
     this.getInstallment();
   }
@@ -168,56 +168,56 @@ export class ManualCollection {
     );
   }
 
-  // getPrimaryQr() {
-  //   this.common.getAllQr().subscribe({
-  //     next: (res: any) => {
-  //       const list = res.list || [];
-  //       const primary = list.find((q: any) => q.isPrimary === true || q.isPrimary === 'true');
+  getPrimaryQr() {
+    this.common.getAllQr().subscribe({
+      next: (res: any) => {
+        const list = res.list || [];
+        const primary = list.find((q: any) => q.isPrimary === true || q.isPrimary === 'true');
 
-  //       this.primaryQR = primary
-  //         ? {
-  //             name: primary.qrCodeFileName,
-  //             url: primary.qrCodeFile
-  //               ? `${environment.uploadUrl.replace(/\/$/, '')}/uploads/${primary.qrCodeFile}`
-  //               : null,
-  //             qrId: primary.qrCodeIdNo,
-  //           }
-  //         : null;
+        this.primaryQR = primary
+          ? {
+              name: primary.qrCodeFileName,
+              url: primary.qrCodeFile
+                ? `${environment.uploadUrl.replace(/\/$/, '')}/uploads/${primary.qrCodeFile}`
+                : null,
+              qrId: primary.qrCodeIdNo,
+            }
+          : null;
 
-  //       this.isQrLoaded = true;
-  //       this.primaryQR?.qrId;
+        this.isQrLoaded = true;
+        this.primaryQR?.qrId;
 
-  //       this.cdr.detectChanges();
-  //     },
-  //     error: () => {
-  //       this.primaryQR = null;
-  //       this.isQrLoaded = true;
-  //       this.cdr.detectChanges(); // ✅ here also
-  //     },
-  //   });
-  // }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.primaryQR = null;
+        this.isQrLoaded = true;
+        this.cdr.detectChanges(); // ✅ here also
+      },
+    });
+  }
 
-  // openQr() {
-  //   this.showTxId = false;
-  //   if (!this.primaryQR?.url) {
-  //     toast.error('QR Image not available ❌');
-  //     return;
-  //   }
-  //   if (isPlatformBrowser(this.platformId)) {
-  //     import('bootstrap').then((bootstrap) => {
-  //       const modalEl = document.getElementById('qrModal');
-  //       if (!modalEl) return;
-  //       const modal = new bootstrap.Modal(modalEl);
-  //       modal.show();
-  //     });
-  //   }
-  // }
+  openQr() {
+    this.showTxId = false;
+    if (!this.primaryQR?.url) {
+      toast.error('QR Image not available ❌');
+      return;
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      import('bootstrap').then((bootstrap) => {
+        const modalEl = document.getElementById('qrModal');
+        if (!modalEl) return;
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      });
+    }
+  }
 
-  // onQrClosed() {
-  //   this.showTxId = true;
-  //   document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
-  //   document.body.classList.remove('modal-open');
-  // }
+  onQrClosed() {
+    this.showTxId = true;
+    document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
+    document.body.classList.remove('modal-open');
+  }
 
   getAllAgent() {
     this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
@@ -268,12 +268,12 @@ export class ManualCollection {
       dealId: this.id,
       agentId: this.agentById,
 
-      transactionType,
+      transactionType, // ✅ REQUIRED
 
       amount: Number(formData.collectionAmount),
       installmentNumber: Number(formData.installment),
 
-      paymentMode: "CASH",
+      paymentMode: formData.paymentMode,
       upiTransactionId: formData.paymentMode === 'online' ? formData.upiTransactionId : 'CASH',
 
       transactionDate: formData.transactionDate,
@@ -282,7 +282,7 @@ export class ManualCollection {
       interestAmount: Number(formData.interestAmount) || 0,
       interestDate: formData.transactionDate,
 
-      // primaryQRCode: formData.paymentMode === 'online' ? this.primaryQR?.qrId : null,
+      primaryQRCode: formData.paymentMode === 'online' ? this.primaryQR?.qrId : null,
     };
 
     this.common.createManualCollection(payload).subscribe({

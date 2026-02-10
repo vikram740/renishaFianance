@@ -23,7 +23,7 @@
               <!-- <p>{{ paymentForm.get('installment')?.value }}</p> -->
             </div>
           </div>
-<!-- 
+
           <div class="buttonsDiv2">
             <div class="row">
               <div class="button col-12 col-md-12 col-lg-6 mb-2-md">
@@ -41,19 +41,19 @@
                 >
               </div>
             </div>
-          </div> -->
+          </div>
 
-          <!-- <div class="buttonsDiv3" *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
+          <div class="buttonsDiv3" *ngIf="paymentForm.get('paymentMode')?.value === 'online'">
             <div class="button">
               <label>Transaction ID (TXID)</label>
               <input type="text" formControlName="upiTransactionId" class="form-control" />
             </div>
-          </div> -->
+          </div>
           <div class="buttonsDiv3">
             <div class="row">
 
 
-              <div class="button col-12 col-md-12">
+              <div class="button col-12 col-md-6">
                 <label>Interest Amount</label>
                 <input
                   type="number"
@@ -89,7 +89,7 @@
             <th>Deal ID</th>
             <th>Transaction ID</th>
             <th>Amount</th>
-            <th>Member Id</th>
+            <!-- <th>Member Id</th> -->
             <th>Agent Id</th>
             <th>QR</th>
             <th>Payment Mode</th>
@@ -102,7 +102,7 @@
             <td>{{ item.dealIdNo}}</td>
             <td>{{ item.transactionId }}</td>
            <td>{{ item.installmentPaidAmount}}</td>
-            <td>{{ item.memberIdNo }}</td>
+            <!-- <td>{{ item.memberIdNo }}</td> -->
             <td>{{ item.agentIdNo}}</td>
             <td>{{ item.primaryQRCode || 'N/A' }}</td>
             <td>{{ item.paymentMode }}</td>
