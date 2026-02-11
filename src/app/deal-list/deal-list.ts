@@ -164,16 +164,17 @@ openDialog(dealId: string): void {
   //   this.cdr.markForCheck();
   // });
 
-  this.common.getDealInsallment(dealId).subscribe((res: any) => {
+  this.common.getSingleDeal(dealId).subscribe((res: any) => {
     this.collectionList = res
-    this.installment$.next(res?.interestHistory || []);
-    this.totalInstallments = res?.totalInstallments;
-    this.totalPaidAmount = res?.totalPaidAmount
+    this.installment$.next(res?.data?.interestHistory || []);
+    this.totalInstallments = res?.data?.totalInstallmentsPaid || 0;
+    this.totalPaidAmount = res?.data?.totalPaidAmount || 0;
+
 
 
     console.log('this.collectionList', this.collectionList)
 
-    this.collectionList = [...(res?.installments || [])];
+    this.collectionList = [...(res?.data?.paidInstallments || [])];
     console.log('collectionList length:', this.collectionList.length);
      this.cdr.markForCheck();
   });

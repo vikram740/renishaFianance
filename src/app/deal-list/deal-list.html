@@ -221,7 +221,7 @@
 
             <tr *ngFor="let i of collectionList; let idx = index">
               <td>{{ idx + 1 }}</td>
-              <td>{{ i.createdAt | date: 'dd-MM-yyyy' }}</td>
+              <td>{{ i.paidDate | date: 'dd-MM-yyyy' }}</td>
               <td>₹{{ i.installmentPaidAmount }}</td>
               <td>{{ i.paymentMode }}</td>
             </tr>

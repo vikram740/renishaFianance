@@ -144,7 +144,7 @@ export class ManualCollection {
     const walletAmount = Number(this.dealData.walletAmount || 0);
   const percentage = Number(this.dealData.percentage || 0);
 
-  const calculatedAmount = (walletAmount * percentage) / 100;
+  const calculatedAmount = Number(((walletAmount * percentage) / 100).toFixed(2));
 
     // ✅ All installments completed
     if (paidCount >= totalInstallments) {
