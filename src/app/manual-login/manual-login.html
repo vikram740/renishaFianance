@@ -1,6 +1,5 @@
-
 <div class="manualDiv">
-     <div class="login">
+  <div class="login">
     <form action="" [formGroup]="memberLoginForm" (ngSubmit)="enter()">
       <div>
         <div class="labelInputDiv">
@@ -8,7 +7,7 @@
           <div>
             <input type="text" placeholder="Enter Your ID" formControlName="memberId" />
             @if (memberLoginForm.get('memberId')?.hasError('required') && submitted) {
-              <div class="errMsg">*ID is required</div>
+            <div class="errMsg">*ID is required</div>
             }
           </div>
         </div>
@@ -41,24 +40,16 @@
           <td>{{ d.fromDate | date }}</td>
 
           <td>
-            <button
-              class="btn"
-              [ngClass]="{
+            <button class="btn" [ngClass]="{
                 'btn-primary': d.totalInstallmentsPaid < d.tenurePlan,
                 'btn-warning': d.totalInstallmentsPaid === d.tenurePlan,
                 'btn-success': d.status === 'COMPLETED',
-              }"
-              [disabled]="d.totalInstallmentsPaid >= d.tenurePlan || d.status === 'COMPLETED'"
-              (click)="d.totalInstallmentsPaid < d.tenurePlan && payNow(d)"
-            >
+              }" [disabled]="d.totalInstallmentsPaid >= d.tenurePlan || d.status === 'COMPLETED'"
+              (click)="d.totalInstallmentsPaid < d.tenurePlan && payNow(d)">
               {{
-                d.status === 'COMPLETED'
-                  ? 'Completed'
-                  : d.totalInstallmentsPaid < d.tenurePlan
-                    ? 'Pay'
-                    : 'Installment Completed'
-              }}
-            </button>
+              d.status === 'COMPLETED'
+              ? 'Completed'
+              : d.totalInstallmentsPaid < d.tenurePlan ? 'Pay' : 'Installment Completed' }} </button>
           </td>
         </tr>
       </tbody>

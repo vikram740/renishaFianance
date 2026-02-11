@@ -141,6 +141,10 @@ export class ManualCollection {
     const perInstallment = Number(this.dealData.tenureInstallment);
     const totalAmount = Number(this.dealData.tenureAmount);
     const paidAmount = Number(this.dealData.totalPaidAmount || 0);
+    const walletAmount = Number(this.dealData.walletAmount || 0);
+  const percentage = Number(this.dealData.percentage || 0);
+
+  const calculatedAmount = (walletAmount * percentage) / 100;
 
     // ✅ All installments completed
     if (paidCount >= totalInstallments) {
@@ -163,6 +167,7 @@ export class ManualCollection {
       {
         installment: nextInstallmentNumber,
         collectionAmount: nextAmount,
+        interestAmount:calculatedAmount
       },
       { emitEvent: false },
     );

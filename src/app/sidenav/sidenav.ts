@@ -65,6 +65,7 @@ export class Sidenav {
     { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
     // { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
     { name: 'Deal List', icon: this.members, link: '/dealList' },
+    { name: 'ManualLogin', icon: this.memberLogin, link: '/manualLogin' },
   ];
 
   menuMemberItems = [
