@@ -177,6 +177,7 @@ signIn() {
       }
 
       if (res.role === 'admin') {
+        localStorage.setItem('adminName', res.firstName);
         this.router.navigate(['/dashboard']);
         localStorage.setItem('adminPassword', res.password);
         return;

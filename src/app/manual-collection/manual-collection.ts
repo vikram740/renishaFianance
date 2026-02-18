@@ -21,29 +21,19 @@ import { Auth } from '../service/auth';
   styleUrl: './manual-collection.scss',
 })
 export class ManualCollection {
-  memberData: any;
-  paymentForm: FormGroup;
-  memberId = '';
-  collectionData: any[] = [];
-  role: any;
-  selectedPercentage: any;
-  showTxId = false;
-  primaryQR: any = null;
   dealData: any;
-  agentList: any;
-  agentEmail: any;
-  logedAgentId: any;
-  agentName: any;
-  isMemberLoaded = false;
-  isQrLoaded = false;
-  qrId: any;
-  agentById: any;
-  id: any;
-  agentId: any;
   installmentList: any[] = [];
-  isSaving = false;
 
-  authService = inject(Auth);
+  memberId = '';
+  agentMongoId: any;
+  agentName: any;
+  agentIdNo: any;
+  role: any;
+
+  isMemberLoaded = false;
+  isSaving = false;
+  id: any;
+
   route = inject(ActivatedRoute);
 
   constructor(
@@ -54,85 +44,147 @@ export class ManualCollection {
   ) {
     this.paymentForm = new FormGroup({
       collectionAmount: new FormControl('', Validators.required),
-      paymentMode: new FormControl('online', Validators.required),
-      upiTransactionId: new FormControl('', Validators.required),
+      transactionType: new FormControl('PAYMENT', Validators.required),
       installment: new FormControl('', Validators.required),
-
-      // ✅ ADD THESE
-      interestAmount: new FormControl(0),
+      interestAmount: new FormControl({ value: 0, disabled: true }), // 🔥 auto
       transactionDate: new FormControl('', Validators.required),
     });
-
-    // Adjust TXID validators for payment mode
-    this.paymentForm.get('paymentMode')?.valueChanges.subscribe((mode) => {
-      const txCtrl = this.paymentForm.get('upiTransactionId'); // ✅ FIXED
-
-      if (!txCtrl) return;
-
-      if (mode === 'cash') {
-        txCtrl.clearValidators();
-
-        // optional: auto-generate a readable CASH id
-        const dealId = this.dealData?._id || 'DEAL';
-        const memberId = this.memberId || 'MEM';
-        txCtrl.setValue(`CASH-${dealId}-${memberId}-${Date.now()}`);
-      } else {
-        txCtrl.setValidators(Validators.required);
-        txCtrl.setValue('');
-      }
-
-      txCtrl.updateValueAndValidity();
-    });
   }
+
+  paymentForm!: FormGroup;
+
+  /* -------------------- INIT -------------------- */
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.id = this.route.snapshot.paramMap.get('id');
+      this.agentMongoId = localStorage.getItem('agentMongoId');
+      this.role = localStorage.getItem('role');
     }
 
-    console.log('this.id', this.id);
     if (!this.id) {
       this.router.navigate(['/member-login']);
       return;
     }
+    this.paymentForm.get('transactionType')?.valueChanges.subscribe((type) => {
+      const amountCtrl = this.paymentForm.get('collectionAmount');
+      const installmentCtrl = this.paymentForm.get('installment');
+      const interestCtrl = this.paymentForm.get('interestAmount');
 
-    if (isPlatformBrowser(this.platformId)) {
-      this.agentEmail = localStorage.getItem('agentEmail');
-      this.role = localStorage.getItem('role');
-      console.log('this.role', this.role);
-      this.agentId = localStorage.getItem('agentMongoId');
-      console.log('this.agentId', this.agentId);
-    }
+      if (type === 'PAYMENT') {
+        amountCtrl?.enable();
+        installmentCtrl?.enable();
+        interestCtrl?.disable();
 
+        amountCtrl?.setValidators([Validators.required]);
+        installmentCtrl?.setValidators([Validators.required]);
+        interestCtrl?.clearValidators();
+      }
+
+      if (type === 'INTEREST') {
+        amountCtrl?.disable();
+        installmentCtrl?.disable();
+        interestCtrl?.enable();
+
+        interestCtrl?.setValidators([Validators.required, Validators.min(1)]);
+        amountCtrl?.clearValidators();
+        installmentCtrl?.clearValidators();
+      }
+
+      if (type === 'BOTH') {
+        amountCtrl?.enable();
+        installmentCtrl?.enable();
+        interestCtrl?.enable();
+
+        amountCtrl?.setValidators([Validators.required]);
+        installmentCtrl?.setValidators([Validators.required]);
+        interestCtrl?.setValidators([Validators.required, Validators.min(1)]);
+      }
+
+      amountCtrl?.updateValueAndValidity();
+      installmentCtrl?.updateValueAndValidity();
+      interestCtrl?.updateValueAndValidity();
+    });
+
+    this.getAgentDetails();
     this.getDealById(this.id);
-    this.getPrimaryQr();
-    this.getAllAgent();
     this.getInstallment();
   }
 
-  // Fetch deal by ID
+  /* -------------------- GET AGENT -------------------- */
+
+  getAgentDetails() {
+    if (!this.agentMongoId) return;
+
+    this.common.getSingleAgent(this.agentMongoId).subscribe((res: any) => {
+      const agent = res.user;
+      this.agentName = agent?.agentName;
+      this.agentIdNo = agent?.agentIdNo;
+      this.cdr.detectChanges();
+    });
+  }
+
+  /* -------------------- GET DEAL -------------------- */
+
   getDealById(id: string) {
     this.common.getSingleDeal(id).subscribe((res: any) => {
       this.dealData = res.data;
-      console.log('this.dealData', this.dealData);
       this.memberId = this.dealData.memberId;
-      console.log('this.memberId', this.memberId);
       this.isMemberLoaded = true;
-      this.getInstallment();
-      this.cdr.detectChanges();
-      if (!this.dealData) {
-        toast.error('Deal not found ❌');
-        return;
-      }
-      // const perInstallment = Number(this.dealData.tenureInstallment);
 
-      // this.paymentForm.patchValue({
-      //   installment: 1,
-      //   collectionAmount: perInstallment,
-      //   collectionPercentage: this.dealData.percentage,
-      // });
+      // if (!this.paymentForm.get('transactionDate')?.value) {
+      //   this.paymentForm.patchValue({
+      //     transactionDate: this.formatDateInput(this.dealData.fromDate),
+      //   });
+      // }
+
+      this.updateNextInstallment();
+      this.cdr.detectChanges();
     });
   }
+
+  /* -------------------- FORMAT DATE -------------------- */
+
+  formatDateInput(date: string): string {
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
+  }
+
+  /* -------------------- INTEREST CALCULATION -------------------- */
+
+  calculateInterest(): number {
+    if (!this.dealData) return 0;
+
+    const walletAmount = Number(this.dealData.walletAmount || 0);
+    const percentage = Number(this.dealData.percentage || 0);
+
+    return Number(((walletAmount * percentage) / 100).toFixed(2));
+  }
+
+  /* -------------------- DATE INCREMENT -------------------- */
+
+  // calculateNextDate(currentDate: string): string {
+  //   const date = new Date(currentDate);
+  //   const type = this.dealData.tenureType?.toLowerCase();
+
+  //   const daysMap: any = {
+  //     daily: 1,
+  //     weekly: 7,
+  //     monthly: 28,
+  //     quarterly: 90,
+  //     halfyearly: 180,
+  //     yearly: 365,
+  //   };
+
+  //   const addDays = daysMap[type] || 0;
+
+  //   date.setDate(date.getDate() + addDays);
+
+  //   return date.toISOString().split('T')[0];
+  // }
+
+  /* -------------------- NEXT INSTALLMENT -------------------- */
+
   updateNextInstallment(): void {
     if (!this.dealData) return;
 
@@ -141,183 +193,82 @@ export class ManualCollection {
     const perInstallment = Number(this.dealData.tenureInstallment);
     const totalAmount = Number(this.dealData.tenureAmount);
     const paidAmount = Number(this.dealData.totalPaidAmount || 0);
-    const walletAmount = Number(this.dealData.walletAmount || 0);
-  const percentage = Number(this.dealData.percentage || 0);
 
-  const calculatedAmount = Number(((walletAmount * percentage) / 100).toFixed(2));
+    if (paidCount >= totalInstallments || paidAmount >= totalAmount) {
+      toast.success('All installments completed 🎉');
 
-    // ✅ All installments completed
-    if (paidCount >= totalInstallments) {
-      toast.info('All installments completed 🎉');
       this.paymentForm.disable({ emitEvent: false });
+
+      // 🔥 Redirect after 2 seconds
+      setTimeout(() => {
+        this.router.navigate(['/member-login']);
+      }, 2000);
+
       return;
     }
 
-    // ✅ Next installment number
     const nextInstallmentNumber = paidCount + 1;
-
-    // ✅ Remaining amount (important for last installment)
     const remainingAmount = totalAmount - paidAmount;
 
     const nextAmount =
       nextInstallmentNumber === totalInstallments ? remainingAmount : perInstallment;
 
-    // ✅ Patch form
     this.paymentForm.patchValue(
       {
         installment: nextInstallmentNumber,
         collectionAmount: nextAmount,
-        interestAmount:calculatedAmount
+        interestAmount: this.calculateInterest(),
       },
       { emitEvent: false },
     );
   }
 
-  getPrimaryQr() {
-    this.common.getAllQr().subscribe({
-      next: (res: any) => {
-        const list = res.list || [];
-        const primary = list.find((q: any) => q.isPrimary === true || q.isPrimary === 'true');
-
-        this.primaryQR = primary
-          ? {
-              name: primary.qrCodeFileName,
-              url: primary.qrCodeFile
-                ? `${environment.uploadUrl.replace(/\/$/, '')}/uploads/${primary.qrCodeFile}`
-                : null,
-              qrId: primary.qrCodeIdNo,
-            }
-          : null;
-
-        this.isQrLoaded = true;
-        this.primaryQR?.qrId;
-
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.primaryQR = null;
-        this.isQrLoaded = true;
-        this.cdr.detectChanges(); // ✅ here also
-      },
-    });
-  }
-
-  openQr() {
-    this.showTxId = false;
-    if (!this.primaryQR?.url) {
-      toast.error('QR Image not available ❌');
-      return;
-    }
-    if (isPlatformBrowser(this.platformId)) {
-      import('bootstrap').then((bootstrap) => {
-        const modalEl = document.getElementById('qrModal');
-        if (!modalEl) return;
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
-      });
-    }
-  }
-
-  onQrClosed() {
-    this.showTxId = true;
-    document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
-    document.body.classList.remove('modal-open');
-  }
-
-  getAllAgent() {
-    this.common.getSingleAgent(this.agentId).subscribe((res: any) => {
-      this.agentList = res.user || [];
-      console.log('this.agentList', this.agentList);
-      this.logedAgentId = res.user.agentIdNo;
-      this.agentName = res.user.agentName;
-      this.agentById = res.user._id;
-      console.log('this.agentById', this.agentById);
-    });
-  }
+  /* -------------------- INSTALLMENT HISTORY -------------------- */
 
   getInstallment() {
     this.common.getDealInsallment(this.id).subscribe((res: any) => {
-      console.log('INSTALLMENT API FULL RESPONSE:', res);
-      this.installmentList = res.installments || res.data || [];
-      if (this.dealData) {
-        this.updateNextInstallment();
-      }
+      this.installmentList = res.installments || [];
+      console.log('this.installmentList', this.installmentList);
       this.cdr.detectChanges();
     });
   }
 
-  // getDealCollection(){
-  //   this.common
-  // }
-
-  formatDateToDDMMYYYY(date: string): string {
-    if (!date) return date;
-    const [year, month, day] = date.split('-');
-    return `${day}-${month}-${year}`;
-  }
-
   /* -------------------- SAVE -------------------- */
 
-  save() {
-    if (this.isSaving || this.paymentForm.invalid || !this.isMemberLoaded || !this.dealData?._id) {
-      this.paymentForm.markAllAsTouched();
-      return;
-    }
-    this.isSaving = true;
-
-    const formData = this.paymentForm.getRawValue();
-    const hasInterest = Number(formData.interestAmount) > 0;
-
-    const transactionType = hasInterest ? 'BOTH' : 'PAYMENT';
-    const payload = {
-      dealId: this.id,
-      agentId: this.agentById,
-
-      transactionType, // ✅ REQUIRED
-
-      amount: Number(formData.collectionAmount),
-      installmentNumber: Number(formData.installment),
-
-      paymentMode: formData.paymentMode,
-      upiTransactionId: formData.paymentMode === 'online' ? formData.upiTransactionId : 'CASH',
-
-      transactionDate: formData.transactionDate,
-
-      // ✅ INTEREST
-      interestAmount: Number(formData.interestAmount) || 0,
-      interestDate: formData.transactionDate,
-
-      primaryQRCode: formData.paymentMode === 'online' ? this.primaryQR?.qrId : null,
-    };
-
-    this.common.createManualCollection(payload).subscribe({
-      next: (res) => {
-        console.log('res', res);
-        toast.success('Collection created successfully ✅');
-        this.isSaving = false;
-        this.openSuccessModal();
-        this.getInstallment();
-      },
-      error: (err) => toast.error(err?.message || 'Failed ❌'),
-    });
-  }
-  openSuccessModal() {
-    if (isPlatformBrowser(this.platformId)) {
-      import('bootstrap').then((bootstrap) => {
-        const modalEl = document.getElementById('successModal');
-        if (!modalEl) return;
-        const modal = new bootstrap.Modal(modalEl, { backdrop: 'static' });
-        modal.show();
-      });
-    }
+ save() {
+  if (this.isSaving || this.paymentForm.invalid) {
+    this.paymentForm.markAllAsTouched();
+    return;
   }
 
-  onSuccessOk() {
-    // Close modal manually
-    document.querySelectorAll('.modal-backdrop').forEach((b) => b.remove());
-    document.body.classList.remove('modal-open');
+  this.isSaving = true;
 
-    // Redirect to member login
-    this.router.navigate(['/memberLogin']);
-  }
+  const formData = this.paymentForm.getRawValue();
+
+  const payload = {
+    dealId: this.id,
+    agentId: this.agentMongoId,
+    transactionType: formData.transactionType,
+    amount: Number(formData.collectionAmount || 0),
+    installmentNumber: Number(formData.installment || 0),
+    transactionDate: formData.transactionDate,
+    interestAmount: Number(formData.interestAmount || 0),
+    lastInterestDate: formData.transactionDate,
+  };
+
+  this.common.createManualCollection(payload).subscribe({
+    next: () => {
+      toast.success('Collection created successfully ✅');
+      this.isSaving = false;
+
+      this.getDealById(this.id);
+      this.getInstallment();
+    },
+    error: (err) => {
+      toast.error(err?.message || 'Failed ❌');
+      this.isSaving = false;
+    },
+  });
+}
+
 }

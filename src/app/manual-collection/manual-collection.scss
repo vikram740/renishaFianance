@@ -1,12 +1,12 @@
 @use '../../variable.scss' as *;
-.manualCollection{
-     padding: 35px 30px;
-    height: calc(100vh - 120px);
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: calc(100% - 300px);
-      @include mobile() {
+.manualCollection {
+  padding: 35px 30px;
+  height: calc(100vh - 120px);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: calc(100% - 300px);
+  @include mobile() {
     width: 100%;
     height: calc(100vh - 51px);
   }
@@ -15,214 +15,234 @@
     height: calc(100vh - 57px);
   }
 
-    .section1 {
+  .section1 {
+    display: flex;
+
+    .eachField {
+      display: grid;
+      grid-template-columns: 125px auto;
+      column-gap: 10px;
+      align-items: center;
+      white-space: nowrap;
+      padding: 12px 0;
+
+      .valueColor {
+        color: #ff0000;
+      }
+    }
+
+    .labels {
+      text-align: left;
+      font-weight: 500;
+      padding-right: 5px;
+    }
+
+    .eachField label:last-child {
+      text-align: left;
+    }
+
+    .paymentDetails {
+      .buttonsDiv {
         display: flex;
+        gap: 10px;
 
-        .eachField {
-            display: grid;
-            grid-template-columns: 125px auto;
-            column-gap: 10px;
-            align-items: center;
-            white-space: nowrap;
-            padding: 12px 0;
+        .button {
+          font-size: 16px;
+          label {
+            font-family: $font-regular;
+            font-weight: 400;
+            font-size: 16px;
+            margin-right: 10px;
+            color: #153b62;
+          }
 
-            .valueColor {
-                color: #FF0000;
-            }
+          button {
+            width: 300px;
+            border: none;
+            padding: 12px;
+            background-color: #153b62;
+            border-radius: 4px;
+            color: white;
+            font-family: $font-regular;
+          }
         }
 
-        .labels {
-            text-align: left;
-            font-weight: 500;
-            padding-right: 5px;
+        .dateButton {
+          padding: 0 30px;
+
+          label {
+            font-family: $font-regular;
+            font-weight: 400;
+            font-size: 16px;
+          }
+
+          button {
+            width: 135px;
+            border: none;
+            padding: 12px;
+            background-color: #153b62;
+            border-radius: 4px;
+            color: white;
+            font-family: $font-regular;
+          }
         }
 
-        .eachField label:last-child {
-            text-align: left;
+        .dateButton2 {
+          //   padding: 0 30px;
+
+          label {
+            font-family: $font-regular;
+            font-weight: 400;
+            font-size: 16px;
+          }
+
+          button {
+            width: 135px;
+            border: none;
+            padding: 12px;
+            background-color: #d0d8e0;
+            border-radius: 4px;
+            color: white;
+            font-family: $font-regular;
+          }
         }
+      }
 
-        .paymentDetails {
-            .buttonsDiv {
-                display: flex;
-                gap: 10px;
-
-                .button {
-                    font-size: 16px;
-                    label {
-                        font-family: $font-regular;
-                        font-weight: 400;
-                        font-size: 16px;
-                        margin-right: 10px;
-                        color: #153B62;
-                    }
-
-                    button {
-                        width: 300px;
-                        border: none;
-                        padding: 12px;
-                        background-color: #153B62;
-                        border-radius: 4px;
-                        color: white;
-                        font-family: $font-regular;
-                    }
-                }
-
-                .dateButton {
-                    padding: 0 30px;
-
-                    label {
-                        font-family: $font-regular;
-                        font-weight: 400;
-                        font-size: 16px;
-                    }
-
-                    button {
-                        width: 135px;
-                        border: none;
-                        padding: 12px;
-                        background-color: #153B62;
-                        border-radius: 4px;
-                        color: white;
-                        font-family: $font-regular;
-                    }
-                }
-
-                .dateButton2 {
-                    //   padding: 0 30px;
-
-                    label {
-                        font-family: $font-regular;
-                        font-weight: 400;
-                        font-size: 16px;
-                    }
-
-                    button {
-                        width: 135px;
-                        border: none;
-                        padding: 12px;
-                        background-color: #D0D8E0;
-                        border-radius: 4px;
-                        color: white;
-                        font-family: $font-regular;
-                    }
-                }
-            }
-
-            .buttonsDiv2 {
-                display: flex;
-                padding: 30px 0;
-
-                .button {
-                    label {
-                        font-family: $font-regular;
-                        font-weight: 400;
-                        font-size: 16px;
-                    }
-
-                    button {
-                        width: 300px;
-                        border: none;
-                        padding: 12px;
-                        background-color: #153B62;
-                        border-radius: 4px;
-                        color: white;
-                        font-family: $font-regular;
-                    }
-                }
-
-                .cashButton {
-                    padding: 0 30px;
-                    @include mobile(){
-                        margin-top: 10px;
-                        padding: 5px;
-                    }
-                     @include tablet(){
-                        margin-top: 10px;
-                        padding: 5px;
-                    }
-                     @include ipad(){
-                        margin-top: 10px;
-                        padding: 5px;
-                    }
-
-                    label {
-                        font-family: $font-regular;
-                        font-weight: 400;
-                        font-size: 16px;
-                    }
-
-                    button {
-                        width: 300px;
-                        border: none;
-                        padding: 12px;
-                        background-color: #153B62;
-                        border-radius: 4px;
-                        color: white;
-                        font-family: $font-regular;
-                    }
-                }
-            }
-
-            .buttonsDiv3 {
-                padding: 10px 0;
-
-                .button {
-                    button {
-                        width: 300px;
-                        border: none;
-                        padding: 12px;
-                        background-color: #153B62;
-                        border-radius: 4px;
-                        color: white;
-                        font-family: $font-regular;
-                    }
-                }
-            }
-        }
-    }
-
-    .section2 {
+      .buttonsDiv2 {
+        display: flex;
         padding: 30px 0;
-        margin-top: 30px;
 
-        .progressLabelDiv {
-            padding: 20px 0;
+        .button {
+          label {
+            font-family: $font-regular;
+            font-weight: 400;
+            font-size: 16px;
+          }
 
-            label {
-                color: #153B62;
-                font-family: $font-regular;
-                font-weight: 600;
-                font-size: 18px;
-            }
+          button {
+            width: 300px;
+            border: none;
+            padding: 12px;
+            background-color: #153b62;
+            border-radius: 4px;
+            color: white;
+            font-family: $font-regular;
+          }
         }
 
-        .table-responsive {
+        .cashButton {
+          padding: 0 30px;
+          @include mobile() {
+            margin-top: 10px;
+            padding: 5px;
+          }
+          @include tablet() {
+            margin-top: 10px;
+            padding: 5px;
+          }
+          @include ipad() {
+            margin-top: 10px;
+            padding: 5px;
+          }
 
-            thead {
-                tr {
-                    th {
-                        background-color: #153B62;
-                        padding: 15px;
-                        color: white;
-                        font-weight: normal;
-                        font-family: $font-regular;
-                        font-size: 16px;
-                    }
-                }
-            }
+          label {
+            font-family: $font-regular;
+            font-weight: 400;
+            font-size: 16px;
+          }
 
-            tbody {
-                tr {
-                    td {
-                        padding: 15px;
-                        font-family: $font-regular;
-                        background-color: #D9D9D9;
-                        font-size: 16px;
-                        border-bottom: 1px solid white !important;
-                    }
-                }
-            }
+          button {
+            width: 300px;
+            border: none;
+            padding: 12px;
+            background-color: #153b62;
+            border-radius: 4px;
+            color: white;
+            font-family: $font-regular;
+          }
         }
+      }
+
+      .buttonsDiv3 {
+        padding: 10px 0;
+
+        .button {
+          button {
+            width: 300px;
+            border: none;
+            padding: 12px;
+            background-color: #153b62;
+            border-radius: 4px;
+            color: white;
+            font-family: $font-regular;
+          }
+        }
+      }
+    }
+    .btn-primary {
+      width: 300px;
+      border: none;
+      padding: 12px;
+      background-color: #153b62;
+      border-radius: 4px;
+      color: white;
+      font-family: $font-regular;
+    }
+    .summaryBox{
+        display: flex;
+        gap: 15px;
+        strong{
+            color: #153b62;
+            font-family: $font-regular;
+            font-weight: 400;
+            font-size: 16px;
+            margin-right: 10px;
+
+        }
+
+    }
+  }
+
+  .section2 {
+    padding: 30px 0;
+    margin-top: 30px;
+
+    .progressLabelDiv {
+      padding: 20px 0;
+
+      label {
+        color: #153b62;
+        font-family: $font-regular;
+        font-weight: 600;
+        font-size: 18px;
+      }
     }
 
+    .table-responsive {
+      thead {
+        tr {
+          th {
+            background-color: #153b62;
+            padding: 15px;
+            color: white;
+            font-weight: normal;
+            font-family: $font-regular;
+            font-size: 16px;
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            padding: 15px;
+            font-family: $font-regular;
+            background-color: #d9d9d9;
+            font-size: 16px;
+            border-bottom: 1px solid white !important;
+          }
+        }
+      }
+    }
+  }
 }

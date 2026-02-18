@@ -65,6 +65,7 @@ export class Collection {
          this.loadPaidDashboard(this.fromdate,this.toDate,this.agentIdNo)
 
       }
+      this.collection()
 
 
      
@@ -122,6 +123,14 @@ export class Collection {
   //     this.cdr.detectChanges();
   //   });
   // }
+
+  collection(){
+    this.common.getDealCollections().subscribe((res:any)=>{
+      this.todayCollections = res;
+      console.log('this.todayCollections', this.todayCollections)
+
+    })
+  }
 
     withSystemTime(date: Date): string {
     const now = new Date();

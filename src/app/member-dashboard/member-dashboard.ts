@@ -53,6 +53,7 @@ export class MemberDashboard {
   page = 1;
   limit = 10;
   total = 0;
+  cdr=inject(ChangeDetectorRef)
 
   installment$ = new BehaviorSubject<any[] | null>(null);
   collectionList: any[] = [];
@@ -197,8 +198,10 @@ dashboard$ = new BehaviorSubject<{
       const list = res?.list || [];
 
       this.memberDeals = list.filter(
+       
         (d: any) => d.memberIdNo === this.memberIdNo
       );
+       console.log('this.memberDeals', this.memberDeals)
       
       // console.log('',memberDeals)
 
@@ -237,12 +240,20 @@ dashboard$ = new BehaviorSubject<{
   viewDocuments(dealId: string) {
     this.installment$.next([]);
 
-    this.common.getDealInsallment(dealId).subscribe((res: any) => {
-      this.collectionList = res?.installments || [];
-      this.installment$.next(res?.interestHistory || []);
-      this.totalInstallments = res?.totalInstallments;
-      this.totalPaidAmount = res?.totalPaidAmount;
-    });
+    this.common.getSingleDeal(dealId).subscribe((res: any) => {
+    this.collectionList = res
+    this.installment$.next(res?.data?.interestHistory || []);
+    this.totalInstallments = res?.data?.totalInstallmentsPaid || 0;
+    this.totalPaidAmount = res?.data?.totalPaidAmount || 0;
+
+
+
+    console.log('this.collectionList', this.collectionList)
+
+    this.collectionList = [...(res?.data?.paidInstallments || [])];
+    console.log('collectionList length:', this.collectionList.length);
+     this.cdr.markForCheck();
+  });
   }
 
   resetValues() {

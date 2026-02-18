@@ -9,12 +9,10 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   const platformId = inject(PLATFORM_ID);
   let token: string | null = null;
-  console.log('Interceptor hit:', req.url);
 
 
   if (isPlatformBrowser(platformId)) {
     token = localStorage.getItem('token');
-    console.log('Token:', localStorage.getItem('token'));
   }
 
 

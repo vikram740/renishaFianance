@@ -11,27 +11,29 @@ export class Common {
   // createAgent(body:any){
   //   return this.http.post(environment.baseUrl + renishaFinance.createAgent,body)
   // }
-  getAllAgent(page: number, limit: number){
-    return this.http.get(environment.baseUrl+renishaFinance.getAllAgents + '?page=' + page + '&limit=' + limit)
+  getAllAgent(page: number, limit: number) {
+    return this.http.get(
+      environment.baseUrl + renishaFinance.getAllAgents + '?page=' + page + '&limit=' + limit,
+    );
   }
-  getSingleAgent(id:any){
-    return this.http.get(environment.baseUrl+renishaFinance.getSingleAgent +'/'+id)
+  getSingleAgent(id: any) {
+    return this.http.get(environment.baseUrl + renishaFinance.getSingleAgent + '/' + id);
   }
-  editAgent(body:any){
-      return this.http.put(environment.baseUrl+renishaFinance.editAgent,body)
+  editAgent(body: any) {
+    return this.http.put(environment.baseUrl + renishaFinance.editAgent, body);
   }
-  deleteAgent(id:any){
-    return this.http.delete(environment.baseUrl+renishaFinance.deleteAgent +'/'+id)
+  deleteAgent(id: any) {
+    return this.http.delete(environment.baseUrl + renishaFinance.deleteAgent + '/' + id);
   }
   searchAgent(searchString: string, page: number, limit: number) {
-  const body = { searchString };
-  const params = {
-    page: page.toString(),
-    limit: limit.toString(),
-  };
+    const body = { searchString };
+    const params = {
+      page: page.toString(),
+      limit: limit.toString(),
+    };
 
-  return this.http.post( environment.baseUrl + renishaFinance.searchAgent,body, { params });
-}
+    return this.http.post(environment.baseUrl + renishaFinance.searchAgent, body, { params });
+  }
 
   createMember(body: any) {
     return this.http.post(environment.baseUrl + renishaFinance.createMember, body);
@@ -47,8 +49,8 @@ export class Common {
   getsingleMember(id: any) {
     return this.http.get(environment.baseUrl + renishaFinance.getsingleMember + '/' + id);
   }
-  editMember(id:string,body: any) {
-    return this.http.put(environment.baseUrl + renishaFinance.editMember  + '/' + id, body);
+  editMember(id: string, body: any) {
+    return this.http.put(environment.baseUrl + renishaFinance.editMember + '/' + id, body);
   }
   deletemember(id: any) {
     return this.http.delete(environment.baseUrl + renishaFinance.deletemember + '/' + id);
@@ -64,11 +66,11 @@ export class Common {
   //    return this.http.post(environment.baseUrl + renishaFinance.createMember,body)
 
   // }
-  getAllNominees(){
-     return this.http.get(environment.baseUrl+renishaFinance.getAllNominees)
+  getAllNominees() {
+    return this.http.get(environment.baseUrl + renishaFinance.getAllNominees);
   }
-  getSingleNominee(id:any){
-     return this.http.get(environment.baseUrl+renishaFinance.getSingleNominee + '/' + id )
+  getSingleNominee(id: any) {
+    return this.http.get(environment.baseUrl + renishaFinance.getSingleNominee + '/' + id);
   }
 
   // editNominee(body:any, id:any){
@@ -77,9 +79,6 @@ export class Common {
   // deleteNominee(id:any){
   //   return this.http.delete(environment.baseUrl + renishaFinance.deleteNominee + '/' +id)
   // }
-
-  
-
 
   createCollectionAgent(body: any) {
     return this.http.post(environment.baseUrl + renishaFinance.createCollectionAgent, body);
@@ -100,8 +99,9 @@ export class Common {
       environment.baseUrl + renishaFinance.getAllDeals + '?page=' + page + '&limit=' + limit,
     );
   }
-  getDeal(){
-      return this.http.get( environment.baseUrl + renishaFinance.getAllDeals); }
+  getDeal() {
+    return this.http.get(environment.baseUrl + renishaFinance.getAllDeals);
+  }
 
   deleteDeal(id: any) {
     return this.http.delete(environment.baseUrl + renishaFinance.deleteDeal + '/' + id);
@@ -115,13 +115,11 @@ export class Common {
     formData.append('qrCodeFile', file);
     return this.http.post(environment.baseUrl + renishaFinance.createQrCode, formData);
   }
-  getAllQr(){
-     return this.http.get(environment.baseUrl + renishaFinance.getAllQr);
-
+  getAllQr() {
+    return this.http.get(environment.baseUrl + renishaFinance.getAllQr);
   }
-  deleteQr(id:string){
-     return this.http.delete(environment.baseUrl + renishaFinance.deleteQr + '/' +id );
-
+  deleteQr(id: string) {
+    return this.http.delete(environment.baseUrl + renishaFinance.deleteQr + '/' + id);
   }
   getReferralById(id: string) {
     return this.http.get(environment.baseUrl + renishaFinance.getReferralById + '/' + id);
@@ -129,46 +127,59 @@ export class Common {
   getAgentById(id: string) {
     return this.http.get(environment.baseUrl + renishaFinance.getSingleAgent + '/' + id);
   }
-  setPrimary(id:string,){
-    return this.http.put(environment.baseUrl + renishaFinance.setPrimary +'/'+ id,{_id: id,isPrimary: true});
-
+  setPrimary(id: string) {
+    return this.http.put(environment.baseUrl + renishaFinance.setPrimary + '/' + id, {
+      _id: id,
+      isPrimary: true,
+    });
   }
-  createDealCollection(body:any){
+  createDealCollection(body: any) {
     return this.http.post(environment.baseUrl + renishaFinance.createDealCollection, body);
-
   }
-  
+
   getDealCollections() {
-    return this.http.get(environment.baseUrl + renishaFinance.getDealCollection );
+    return this.http.get(environment.baseUrl + renishaFinance.getDealCollection);
   }
 
   getDealCollection(page: number, limit: number) {
-    return this.http.get(environment.baseUrl + renishaFinance.getDealCollection  + '?page=' + page + '&limit=' + limit);
+    return this.http.get(
+      environment.baseUrl + renishaFinance.getDealCollection + '?page=' + page + '&limit=' + limit,
+    );
   }
 
-  getDealInsallment(id:string){
-     return this.http.get(environment.baseUrl + renishaFinance.getDealInsallment + '/' +id );
-
+  getDealInsallment(id: string) {
+    return this.http.get(environment.baseUrl + renishaFinance.getDealInsallment + '/' + id);
   }
- deleteCollection(id: string) {
-  return this.http.delete(
-    environment.baseUrl + renishaFinance.deleteDealCollection + '/' + id
-  );
-}
-userById(id:string){
-    return this.http.get(environment.baseUrl + renishaFinance.userDetailsById +'/'+id)
-
-}
-dashBoard(params:any){
-   return this.http.get(environment.baseUrl + renishaFinance.dashBoard ,{ params }
-  );
-  
-}
-createManualForm(body:any){
-     return this.http.post(environment.baseUrl + renishaFinance.createManualForm ,body)
-}
-createManualCollection(body:any){
-     return this.http.post(environment.baseUrl + renishaFinance.manualCollection ,body)
-}
-
+  deleteCollection(id: string) {
+    return this.http.delete(environment.baseUrl + renishaFinance.deleteDealCollection + '/' + id);
+  }
+  userById(id: string) {
+    return this.http.get(environment.baseUrl + renishaFinance.userDetailsById + '/' + id);
+  }
+  dashBoard(params: any) {
+    return this.http.get(environment.baseUrl + renishaFinance.dashBoard, { params });
+  }
+  createManualForm(body: any) {
+    return this.http.post(environment.baseUrl + renishaFinance.createManualForm, body);
+  }
+  createManualCollection(body: any) {
+    return this.http.post(environment.baseUrl + renishaFinance.manualCollection, body);
+  }
+  document() {
+    return this.http.get(environment.baseUrl + renishaFinance.getDealInsallment);
+  }
+  manualDeals(page: number, limit: number) {
+    return this.http.get(
+      environment.baseUrl + renishaFinance.manualDeals + '?page=' + page + '&limit=' + limit,
+    );
+  }
+  manualDealById(id: string) {
+    return this.http.get(environment.baseUrl + renishaFinance.manualDealById + '/' + id);
+  }
+  updateIntrest(body: any) {
+    return this.http.put(environment.baseUrl + renishaFinance.updateIntrest, body);
+  }
+  manualDashboard(params: any) {
+    return this.http.get(environment.baseUrl + renishaFinance.manualDashboard, { params });
+  }
 }

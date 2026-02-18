@@ -19,7 +19,7 @@
   @include tablet() {
     width: 100%;
     padding: 5px;
-     display: none;
+    display: none;
   }
 
   .logoHeading {
@@ -35,7 +35,8 @@
     .logoPng {
       // width: 50px;
       height: 50px;
-      padding: 0 30px;
+      // padding: 0 30px;
+      border-radius: 4px;
       @include mobile() {
         height: 36px;
         padding: 0 2px;
@@ -71,49 +72,62 @@
 
     .avatarSection {
       display: flex;
+      justify-content: center;
       align-items: center;
-      margin: 0 30px;
-
-      .avatar {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        object-fit: cover;
-        cursor: pointer;
-        border: 2px solid #ddd;
-        display: flex;
-        align-items: center;
-      }
     }
-    .eachTabsection{
+
+    .avatar,
+    .letter-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+
+    .avatar {
+      object-fit: cover;
+    }
+
+    .letter-avatar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1159a6; // choose your color
+      color: white;
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .eachTabsection {
       cursor: pointer;
 
-        .custom-icon{
-                height:20px;
-                width: 20px;
-                // cursor: pointer;
-            }
-             label {
-                    font-size: 20px;
-                    padding: 0 10px;
-                    font-family: $font-regular;
-                    font-size: 16px;
-                    font-weight: 400;
-                    cursor: pointer;
-
-                }
+      .custom-icon {
+        height: 20px;
+        width: 20px;
+        // cursor: pointer;
+      }
+      label {
+        font-size: 20px;
+        padding: 0 10px;
+        font-family: $font-regular;
+        font-size: 16px;
+        font-weight: 400;
+        cursor: pointer;
+      }
     }
-    
   }
 }
 
 .logoPng {
   // width: 50px;
   height: 50px;
-  padding: 0 30px;
-  @include mobile() {
-    padding: 0;
-  }
+  // padding: 0 30px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+.logoName {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 5px;
 }
 
 .mobileTopNav {
@@ -160,7 +174,7 @@
   .navbar-toggler-icon {
     filter: invert(98%) sepia(2%) saturate(30%) hue-rotate(190deg) brightness(110%) contrast(97%);
   }
-  .navbar-collapse{
+  .navbar-collapse {
     margin-top: 6px;
   }
   .nav-item {

@@ -91,24 +91,27 @@
         </ng-container>
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let e">
-            <span
-              class="status-badge"
-              [ngClass]="{
-                completed: e.status === 'COMPLETED',
-                'installment-completed': e.totalInstallmentsPaid === e.tenurePlan,
-                active: e.status !== 'COMPLETED' && e.totalInstallmentsPaid !== e.tenurePlan,
-              }"
-            >
-              {{
-                e.status === 'COMPLETED'
-                  ? 'Completed'
-                  : e.totalInstallmentsPaid === e.tenurePlan
-                    ? 'Installment Completed'
-                    : 'Active'
-              }}
-            </span>
-          </td>
+         <td mat-cell *matCellDef="let e">
+  <span
+    class="status-badge"
+    [ngClass]="
+      e.status === 'COMPLETED'
+        ? 'completed'
+        : e.totalInstallmentsPaid === e.tenurePlan
+        ? 'installment-completed'
+        : 'active'
+    "
+  >
+    {{
+      e.status === 'COMPLETED'
+        ? 'Completed'
+        : e.totalInstallmentsPaid === e.tenurePlan
+        ? 'Installment Completed'
+        : 'Active'
+    }}
+  </span>
+</td>
+
         </ng-container>
 
         <ng-container matColumnDef="action">
@@ -163,7 +166,7 @@
 
             <tr *ngFor="let i of collectionList; let idx = index">
               <td>{{ idx + 1 }}</td>
-              <td>{{ i.createdAt | date: 'dd-MM-yyyy' }}</td>
+              <td>{{ i.paidDate| date: 'dd-MM-yyyy' }}</td>
               <td>₹{{ i.installmentPaidAmount }}</td>
               <td>{{ i.paymentMode }}</td>
             </tr>
@@ -190,7 +193,7 @@
                 <td>{{ idx + 1 }}</td>
                 <td>{{ i.date | date: 'dd-MM-yyyy' }}</td>
                 <td>₹{{ i.interest || 0 }}</td>
-                <td>₹{{ i.walletAfterInterest }}</td>
+                <td>₹{{ i.walletAfterInterest.toFixed(2) }}</td>
               </tr>
             </table>
           </div>

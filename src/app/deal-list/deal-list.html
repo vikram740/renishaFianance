@@ -21,7 +21,9 @@
         <div class="col-12 col-md-5 col-lg-7">
           <div class="actionContainer">
             <div>
-              <button class="actionButtons" *ngIf="role === 'admin'" (click)="exportToExcel()">Export</button>
+              <button class="actionButtons" *ngIf="role === 'admin'" (click)="exportToExcel()">
+                Export
+              </button>
             </div>
           </div>
         </div>
@@ -58,24 +60,26 @@
             <td>{{ d.tenureAmount }}</td>
             <td>{{ d.tenureInstallment }}</td>
             <td>{{ d.percentage }}%</td>
-            <td>{{d.totalPaidAmount}}</td>
-            <td class="text-success">{{d.walletAmount}}</td>
+            <td>{{ d.totalPaidAmount}}</td>
+            <td class="text-success">{{ d.walletAmount.toFixed(2) }}</td>
             <td>{{ d.fromDate | date }}</td>
             <td>{{ d.endDate | date }}</td>
-            <td>{{d.balanceAmount}}</td>
-            <td>{{d.lastPaidDate | date }}</td>
+            <td>{{ d.balanceAmount }}</td>
+            <td>{{ d.lastPaidDate| date}}</td>
 
-            <td  *ngIf="role === 'admin'">
+            <td *ngIf="role === 'admin'">
               <span
-              class="material-symbols-outlined action-icon"
-              (click)="viewDocuments(d._id)"
-              data-bs-toggle="modal"
-              data-bs-target="#installmentViewModal"
-            >
-              visibility
-            </span>
-              <span class="material-symbols-outlined" >edit</span>
-              <span class="material-symbols-outlined text-danger"  (click)="openDialog(d._id)">delete</span>
+                class="material-symbols-outlined action-icon"
+                (click)="viewDocuments(d._id)"
+                data-bs-toggle="modal"
+                data-bs-target="#installmentViewModal"
+              >
+                visibility
+              </span>
+              <span class="material-symbols-outlined">edit</span>
+              <span class="material-symbols-outlined text-danger" (click)="openDialog(d._id)"
+                >delete</span
+              >
             </td>
           </tr>
         </tbody>
@@ -221,7 +225,7 @@
 
             <tr *ngFor="let i of collectionList; let idx = index">
               <td>{{ idx + 1 }}</td>
-              <td>{{ i.paidDate | date: 'dd-MM-yyyy' }}</td>
+              <td>{{ i.paidOn | date: 'dd-MM-yyyy' }}</td>
               <td>₹{{ i.installmentPaidAmount }}</td>
               <td>{{ i.paymentMode }}</td>
             </tr>

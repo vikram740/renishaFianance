@@ -52,6 +52,11 @@ export const renishaFinance = {
     dashBoard:'/deals/getDashboardSummary',
     createManualForm:'/manualForm/createManualForm',
     manualCollection:'/manualForm/addDealTransaction',
+    document:"/investmentPdf",
+    manualDeals:'/deals/draft/getAllDealsDrafts',
+    manualDealById:'/deals/draft/getDraftDealById',
+    updateIntrest:'/deals/draft/updateDraftPayment',
+    manualDashboard:'/deals/getDraftDashboardSummary',
     
 
 

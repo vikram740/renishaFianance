@@ -1,20 +1,36 @@
 <div class="topNav">
   <div class="logoHeading">
     <img src="/images/renishaLogo.png" alt="" class="img-fluid logoPng" />
-    <h5>RENISHA FINANCE</h5>
+    <div class="logoName">
+       <h5>RENISHA FINANCE</h5>
+
+    </div>
+   
   </div>
   <div class="profileSection">
     <div>
       <h6>{{ userName | uppercase }}</h6>
       <label for="">{{ userRole | titlecase }}</label>
     </div>
-    <div class="avatarSection">
-       <img
-      [src]="profilePhoto || '/icons/avatar.png'"
-      class="avatar"
-      alt="Profile"
-    />
+   <div class="avatarSection">
+
+  <!-- If photo exists -->
+  <img
+    *ngIf="profilePhoto; else letterAvatar"
+    [src]="profilePhoto"
+    class="avatar"
+    alt="Profile"
+  />
+
+  <!-- If no photo → show first letter -->
+  <ng-template #letterAvatar>
+    <div class="letter-avatar">
+      {{ userName?.charAt(0) | uppercase }}
     </div>
+  </ng-template>
+
+</div>
+>
       <div (click)="logout() " class="eachTabsection">
         <img src="/icons/Logout.png" class="custom-icon" />
         <label>Log Out</label>

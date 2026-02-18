@@ -27,6 +27,7 @@ export class Topnav {
 
   menuAdminItems = [
     { name: 'Dashboard', link: '/dashboard' },
+     { name: 'Manual Dashboard', link: '/manualDashboard' },
     { name: 'Collection', link: '/collection' },
     { name: 'Registration', link: '/registration' },
     { name: 'Member Login', link: '/memberLogin' },
@@ -39,6 +40,7 @@ export class Topnav {
     { name: 'Payments', link: '/payments' },
        { name: 'Deal Form', link: '/dealForm' },
     { name: 'Deal List', link: '/dealList' },
+    { name: 'Manual Deal List',link: '/manualDealList' },
      { name: 'PrimaryQrLog', link: '/primaryQrLog' },
     { name: 'PaymentsList', link: '/paymentList' },
     // { name: 'Customer management', link: '/customer-management' },
@@ -61,9 +63,12 @@ export class Topnav {
       if (this.userRole === 'agent') {
         this.loadAgentProfile();
         this.userName = localStorage.getItem('agentName');
-      } else {
+      } else if(this.userRole === 'member'){
         this.loadMemberProfile();
         this.userName = localStorage.getItem('memberName');
+      }
+      else{
+        this.userName = localStorage.getItem('adminName')
       }
     }
   }
@@ -80,8 +85,10 @@ export class Topnav {
       const member = res.list?.find((m: any) => m.memberEmail === memberEmail);
 
       if (member?.memberPhoto) {
-        this.profilePhoto =
-          environment.uploadUrl + renishaFinance.uploads + '/' + member.memberPhoto;
+       
+           this.profilePhoto =  environment.uploadUrl + renishaFinance.uploads + '/' + member.memberPhoto;
+        
+        console.log('this.profilePhoto', this.profilePhoto)
       }
       this.cdr.detectChanges();
     });
@@ -96,6 +103,7 @@ export class Topnav {
 
       if (agent?.agentPhoto) {
         this.profilePhoto = environment.uploadUrl + renishaFinance.uploads + '/' + agent.agentPhoto;
+        console.log('this.profilePhoto', this.profilePhoto)
       }
       this.cdr.detectChanges();
     });

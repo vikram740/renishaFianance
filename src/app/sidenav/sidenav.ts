@@ -39,6 +39,7 @@ export class Sidenav {
   agentPhoto: any;
   menuAdminItems = [
     { name: 'Dashboard', icon: this.dashboard, link: '/dashboard' },
+    { name: 'Manual Dashboard', icon: this.dashboard, link: '/manualDashboard' },
     // { name: 'Collection', icon: this.collection, link: '/collection' },
     { name: 'Registration', icon: this.registration, link: '/registration' },
     { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
@@ -50,6 +51,7 @@ export class Sidenav {
     { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
     { name: 'Deal List', icon: this.members, link: '/dealList' },
     { name: 'Payments', icon: this.payments, link: '/payments' },
+    { name: 'Manual Deal List', icon: this.members, link: '/manualDealList' },
     { name: 'PrimaryQrLog', icon: this.payments, link: '/primaryQrLog' },
     { name: 'PaymentsList', icon: this.payments, link: '/paymentList' },
     { name: 'User Management', icon: this.customers, link: '/userManagement' },
@@ -65,7 +67,7 @@ export class Sidenav {
     { name: 'Member Login', icon: this.memberLogin, link: '/memberLogin' },
     // { name: 'Deal Form', icon: this.registration, link: '/dealForm' },
     { name: 'Deal List', icon: this.members, link: '/dealList' },
-    { name: 'ManualLogin', icon: this.memberLogin, link: '/manualLogin' },
+    { name: 'Manual Login', icon: this.memberLogin, link: '/manualLogin' },
   ];
 
   menuMemberItems = [

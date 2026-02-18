@@ -1,0 +1,176 @@
+<div class="interestDiv">
+  <!-- ================= PROFILE ================= -->
+  <div class="profile-wrapper" *ngIf="memberDetails">
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="avatar">
+          <img
+            *ngIf="memberDetails?.memberPhoto; else textAvatar"
+            [src]="profilePhoto"
+            alt="Profile Photo"
+          />
+
+          <ng-template #textAvatar>
+            {{ memberDetails.memberName?.charAt(0) | uppercase }}
+          </ng-template>
+        </div>
+
+        <div>
+          <h2>{{ memberDetails.memberName }}</h2>
+          <p class="member-id">ID: {{ memberDetails.memberIdNo }}</p>
+        </div>
+      </div>
+
+      <div class="profile-details">
+        <div><span>Phone</span>{{ memberDetails.memberPhone }}</div>
+        <div><span>Email</span>{{ memberDetails.memberEmail }}</div>
+        <div><span>DOB</span>{{ memberDetails.memberBirth | date }}</div>
+        <div><span>Joining</span>{{ memberDetails.memberJoiningDate | date }}</div>
+        <div><span>Aadhaar</span>{{ memberDetails.memberAdhaar }}</div>
+        <div><span>PAN</span>{{ memberDetails.memberPan }}</div>
+        <div class="full-width">
+          <span>Address</span>
+          {{ memberDetails.memberCurrentAddress }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PAYMENT HISTORY ================= -->
+  <div class="data-card" *ngIf="collectionList?.length">
+    <h3>Payment History</h3>
+
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>S.NO</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Mode</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          *ngFor="let item of collectionList; let i = index"
+          [class.editing-row]="editingPaymentIndex === i"
+        >
+          <td>{{ i + 1 }}</td>
+          <td>
+            <span *ngIf="editingPaymentIndex !== i">
+              {{ item.paidOn | date: 'dd-MM-yyyy' }}
+            </span>
+
+            <input *ngIf="editingPaymentIndex === i" type="date" [(ngModel)]="item.paidOn" />
+          </td>
+          <td>
+            <span *ngIf="editingPaymentIndex !== i"> ₹{{ item.installmentPaidAmount }} </span>
+
+            <input
+              *ngIf="editingPaymentIndex === i"
+              type="number"
+              [(ngModel)]="item.installmentPaidAmount"
+            />
+          </td>
+          <td>
+            {{ item.paymentMode }}
+          </td>
+
+          <td>
+            <button
+              class="btn edit-btn"
+              *ngIf="editingPaymentIndex !== i"
+              (click)="editingPaymentIndex = i"
+            >
+              Edit
+            </button>
+
+            <button class="btn save-btn" *ngIf="editingPaymentIndex === i" (click)="savePayment(i)">
+              Save
+            </button>
+
+            <button
+              class="btn cancel-btn"
+              *ngIf="editingPaymentIndex === i"
+              (click)="cancelPayment()"
+            >
+              Cancel
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!collectionList?.length" class="empty-msg">No payments found</div>
+
+  <!-- ================= INTEREST HISTORY ================= -->
+  <div class="data-card" *ngIf="installments?.length">
+    <h3>Interest History</h3>
+
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>S.NO</th>
+          <th>Date</th>
+          <th>Interest</th>
+          <th>Wallet After</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          *ngFor="let item of installments; let i = index"
+          [class.editing-row]="editingInterestIndex === i"
+        >
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.date | date: 'dd-MM-yyyy' }}</td>
+
+          <td>
+            <span *ngIf="editingInterestIndex !== i"> ₹{{ item.interest || 0 }} </span>
+            <input *ngIf="editingInterestIndex === i" type="number" [(ngModel)]="item.interest" />
+          </td>
+
+          <td>
+            <span *ngIf="editingInterestIndex !== i"> ₹{{ item.walletAfterInterest }} </span>
+            <input
+              *ngIf="editingInterestIndex === i"
+              type="number"
+              [(ngModel)]="item.walletAfterInterest"
+            />
+          </td>
+
+          <td>
+            <button
+              class="btn edit-btn"
+              *ngIf="editingInterestIndex !== i"
+              (click)="editingInterestIndex = i"
+            >
+              Edit
+            </button>
+
+            <button
+              class="btn save-btn"
+              *ngIf="editingInterestIndex === i"
+              (click)="saveInterest(i)"
+            >
+              Save
+            </button>
+
+            <button
+              class="btn cancel-btn"
+              *ngIf="editingInterestIndex === i"
+              (click)="cancelInterest()"
+            >
+              Cancel
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!installments?.length" class="empty-msg">No interest history</div>
+</div>

@@ -29,7 +29,10 @@ export const routes: Routes = [
     { path: 'paymentList', canActivate: [authGuard], loadComponent: () => import('./payments-list/payments-list').then(m => m.PaymentsList) },
     { path: 'manual-form',canActivate: [authGuard], loadComponent: () => import('./manual-form/manual-form').then(m => m.ManualForm) },
     { path: 'manual-collection/:id',canActivate: [authGuard], loadComponent: () => import('./manual-collection/manual-collection').then(m => m.ManualCollection) },
+    { path: 'manualDashboard', canActivate: [authGuard], loadComponent: () => import('./manual-dashboard/manual-dashboard').then(m => m.ManualDashboard) },
     { path: 'manualLogin', canActivate: [authGuard], loadComponent: () => import('./manual-login/manual-login').then(m => m.ManualLogin) },
+    { path: 'manualDealList', canActivate: [authGuard], loadComponent: () => import('./manual-deal-list/manual-deal-list').then(m => m.ManualDealList) },
+    { path: 'IntrestPage/:dealId', canActivate: [authGuard], loadComponent: () => import('./intrest-page/intrest-page').then(m => m.IntrestPage) },
     { path: 'notification', canActivate: [authGuard], loadComponent: () => import('./notification/notification').then(m => m.Notification) },
     { path: '**', redirectTo: 'login' }
 ];

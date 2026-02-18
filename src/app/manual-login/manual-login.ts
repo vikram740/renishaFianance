@@ -52,7 +52,7 @@ enter() {
       );
 
       if (memberDeals.length === 0) {
-        toast.error('Invalid Member ID or No Deals Found');
+        toast.error('No Deals Found', { class: 'toast-error' });
         this.membersList = [];
         this.showTable = false;
         this.cdr.detectChanges();
