@@ -168,7 +168,7 @@ dashboard$ = new BehaviorSubject<{
     params.toDate = this.withEndOfDay(toDate);
   }
 
-  this.common.dashBoard(params).subscribe({
+  this.common.manualDashboard(params).subscribe({
     next: (res: any) => {
       const d = res?.data?.[0] || {};
 
@@ -194,7 +194,7 @@ dashboard$ = new BehaviorSubject<{
   // ================== DEALS ==================
 
   getDeals() {
-    this.common.getDeals(1, 1000).subscribe((res: any) => {
+    this.common.manualDeals(1, 1000).subscribe((res: any) => {
       const list = res?.list || [];
 
       this.memberDeals = list.filter(
@@ -208,10 +208,7 @@ dashboard$ = new BehaviorSubject<{
       this.total = this.memberDeals.length;
       this.updateTableData();
 
-      this.walletAmount = this.memberDeals.reduce(
-        (sum, d) => sum + Number(d.walletAmount || 0),
-        0
-      );
+        this.cdr.detectChanges()
     });
   }
 
@@ -240,7 +237,7 @@ dashboard$ = new BehaviorSubject<{
   viewDocuments(dealId: string) {
     this.installment$.next([]);
 
-    this.common.getSingleDeal(dealId).subscribe((res: any) => {
+    this.common.manualDealById(dealId).subscribe((res: any) => {
     this.collectionList = res
     this.installment$.next(res?.data?.interestHistory || []);
     this.totalInstallments = res?.data?.totalInstallmentsPaid || 0;

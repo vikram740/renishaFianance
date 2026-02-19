@@ -4,11 +4,7 @@
     <div class="profile-card">
       <div class="profile-top">
         <div class="avatar">
-          <img
-            *ngIf="memberDetails?.memberPhoto; else textAvatar"
-            [src]="profilePhoto"
-            alt="Profile Photo"
-          />
+          <img *ngIf="memberDetails?.memberPhoto; else textAvatar" [src]="profilePhoto" alt="Profile Photo" />
 
           <ng-template #textAvatar>
             {{ memberDetails.memberName?.charAt(0) | uppercase }}
@@ -52,10 +48,7 @@
       </thead>
 
       <tbody>
-        <tr
-          *ngFor="let item of collectionList; let i = index"
-          [class.editing-row]="editingPaymentIndex === i"
-        >
+        <tr *ngFor="let item of collectionList; let i = index" [class.editing-row]="editingPaymentIndex === i">
           <td>{{ i + 1 }}</td>
           <td>
             <span *ngIf="editingPaymentIndex !== i">
@@ -67,22 +60,14 @@
           <td>
             <span *ngIf="editingPaymentIndex !== i"> ₹{{ item.installmentPaidAmount }} </span>
 
-            <input
-              *ngIf="editingPaymentIndex === i"
-              type="number"
-              [(ngModel)]="item.installmentPaidAmount"
-            />
+            <input *ngIf="editingPaymentIndex === i" type="number" [(ngModel)]="item.installmentPaidAmount" />
           </td>
           <td>
             {{ item.paymentMode }}
           </td>
 
           <td>
-            <button
-              class="btn edit-btn"
-              *ngIf="editingPaymentIndex !== i"
-              (click)="editingPaymentIndex = i"
-            >
+            <button class="btn edit-btn" *ngIf="editingPaymentIndex !== i" (click)="editingPaymentIndex = i">
               Edit
             </button>
 
@@ -90,11 +75,7 @@
               Save
             </button>
 
-            <button
-              class="btn cancel-btn"
-              *ngIf="editingPaymentIndex === i"
-              (click)="cancelPayment()"
-            >
+            <button class="btn cancel-btn" *ngIf="editingPaymentIndex === i" (click)="cancelPayment()">
               Cancel
             </button>
           </td>
@@ -121,49 +102,35 @@
       </thead>
 
       <tbody>
-        <tr
-          *ngFor="let item of installments; let i = index"
-          [class.editing-row]="editingInterestIndex === i"
-        >
+        <tr *ngFor="let item of installments; let i = index" [class.editing-row]="editingInterestIndex === i">
           <td>{{ i + 1 }}</td>
           <td>{{ item.date | date: 'dd-MM-yyyy' }}</td>
 
           <td>
-            <span *ngIf="editingInterestIndex !== i"> ₹{{ item.interest || 0 }} </span>
+            <span *ngIf="editingInterestIndex !== i">
+              ₹{{ item.interest | number:'1.2-2' }}
+            </span>
             <input *ngIf="editingInterestIndex === i" type="number" [(ngModel)]="item.interest" />
           </td>
 
           <td>
-            <span *ngIf="editingInterestIndex !== i"> ₹{{ item.walletAfterInterest }} </span>
-            <input
-              *ngIf="editingInterestIndex === i"
-              type="number"
-              [(ngModel)]="item.walletAfterInterest"
-            />
+            <span *ngIf="editingInterestIndex !== i">
+              ₹{{ item.walletAfterInterest | number:'1.2-2' }}
+            </span>
+            <input *ngIf="editingInterestIndex === i" type="number" [(ngModel)]="item.walletAfterInterest" />
           </td>
 
+
           <td>
-            <button
-              class="btn edit-btn"
-              *ngIf="editingInterestIndex !== i"
-              (click)="editingInterestIndex = i"
-            >
+            <button class="btn edit-btn" *ngIf="editingInterestIndex !== i" (click)="editingInterestIndex = i">
               Edit
             </button>
 
-            <button
-              class="btn save-btn"
-              *ngIf="editingInterestIndex === i"
-              (click)="saveInterest(i)"
-            >
+            <button class="btn save-btn" *ngIf="editingInterestIndex === i" (click)="saveInterest(i)">
               Save
             </button>
 
-            <button
-              class="btn cancel-btn"
-              *ngIf="editingInterestIndex === i"
-              (click)="cancelInterest()"
-            >
+            <button class="btn cancel-btn" *ngIf="editingInterestIndex === i" (click)="cancelInterest()">
               Cancel
             </button>
           </td>

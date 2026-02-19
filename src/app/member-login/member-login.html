@@ -11,7 +11,7 @@
           <input type="text" placeholder="Enter Your ID" formControlName="memberId" />
 
           @if (memberLoginForm.get('memberId')?.hasError('required') && submitted) {
-            <div class="errMsg">*ID is required</div>
+          <div class="errMsg">*ID is required</div>
           }
         </div>
       </div>
@@ -29,11 +29,7 @@
     <div class="profile-card">
       <div class="profile-top">
         <div class="avatar">
-          <img
-            *ngIf="memberDetails?.memberPhoto; else textAvatar"
-            [src]="profilePhoto"
-            alt="Profile Photo"
-          />
+          <img *ngIf="memberDetails?.memberPhoto; else textAvatar" [src]="profilePhoto" alt="Profile Photo" />
 
           <!-- If No Image -->
           <ng-template #textAvatar>
@@ -66,7 +62,7 @@
 
       <div class="nominee-grid">
         <div><span>Name</span>{{ memberNominee.nomineeName }}</div>
-          <div><span>DOB</span>{{ memberNominee.nomineeBirth| date }}</div>
+        <div><span>DOB</span>{{ memberNominee.nomineeBirth| date }}</div>
         <div><span>Relation</span>{{ memberNominee.nomineeRelationship }}</div>
         <div><span>Phone</span>{{ memberNominee.nomineePhone }}</div>
         <div><span> Email</span>{{ memberNominee.nomineeEmail }}</div>
@@ -80,103 +76,95 @@
   </div>
 
   <!-- 🔹 DEALS TABLE -->
-   <div class="table-responsive">
-     <div class="table-container" [hidden]="!showTable">
-     <h3 class="mt-3">Deals List</h3>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
-      <!-- Deal ID -->
-      <ng-container matColumnDef="dealIdNo">
-        <th mat-header-cell *matHeaderCellDef>Deal ID</th>
-        <td mat-cell *matCellDef="let d">{{ d.dealIdNo }}</td>
-      </ng-container>
+  <div class="table-responsive">
+    <div class="table-container" [hidden]="!showTable">
+      <h3 class="mt-3">Deals List</h3>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+        <!-- Deal ID -->
+        <ng-container matColumnDef="dealIdNo">
+          <th mat-header-cell *matHeaderCellDef>Deal ID</th>
+          <td mat-cell *matCellDef="let d">{{ d.dealIdNo }}</td>
+        </ng-container>
 
-      <!-- Member ID -->
-      <ng-container matColumnDef="memberIdNo">
-        <th mat-header-cell *matHeaderCellDef>Member ID</th>
-        <td mat-cell *matCellDef="let d">{{ d.memberIdNo }}</td>
-      </ng-container>
+        <!-- Member ID -->
+        <ng-container matColumnDef="memberIdNo">
+          <th mat-header-cell *matHeaderCellDef>Member ID</th>
+          <td mat-cell *matCellDef="let d">{{ d.memberIdNo }}</td>
+        </ng-container>
 
-      <!-- Name -->
-      <ng-container matColumnDef="memberName">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let d">{{ d.memberName }}</td>
-      </ng-container>
+        <!-- Name -->
+        <ng-container matColumnDef="memberName">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let d">{{ d.memberName }}</td>
+        </ng-container>
 
-      <!-- Plan -->
-      <ng-container matColumnDef="tenureType">
-        <th mat-header-cell *matHeaderCellDef>Tenure Type</th>
-        <td mat-cell *matCellDef="let d">{{ d.tenureType }}</td>
-      </ng-container>
-      <!-- Plan -->
-      <ng-container matColumnDef="tenurePlan">
-        <th mat-header-cell *matHeaderCellDef>Tenure Plan</th>
-        <td mat-cell *matCellDef="let d">{{ d.tenurePlan}}</td>
-      </ng-container>
+        <!-- Plan -->
+        <ng-container matColumnDef="tenureType">
+          <th mat-header-cell *matHeaderCellDef>Tenure Type</th>
+          <td mat-cell *matCellDef="let d">{{ d.tenureType }}</td>
+        </ng-container>
+        <!-- Plan -->
+        <ng-container matColumnDef="tenurePlan">
+          <th mat-header-cell *matHeaderCellDef>Tenure Plan</th>
+          <td mat-cell *matCellDef="let d">{{ d.tenurePlan}}</td>
+        </ng-container>
 
-      <!-- Plan -->
-      <ng-container matColumnDef="percentage">
-        <th mat-header-cell *matHeaderCellDef>Percentage(%)</th>
-        <td mat-cell *matCellDef="let d">{{ d.percentage }}</td>
-      </ng-container>
+        <!-- Plan -->
+        <ng-container matColumnDef="percentage">
+          <th mat-header-cell *matHeaderCellDef>Percentage(%)</th>
+          <td mat-cell *matCellDef="let d">{{ d.percentage }}</td>
+        </ng-container>
 
-      <!-- Amount -->
-      <ng-container matColumnDef="tenureAmount">
-        <th mat-header-cell *matHeaderCellDef>Total Amount</th>
-        <td mat-cell *matCellDef="let d">{{ d.tenureAmount }}</td>
-      </ng-container>
+        <!-- Amount -->
+        <ng-container matColumnDef="tenureAmount">
+          <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+          <td mat-cell *matCellDef="let d">{{ d.tenureAmount }}</td>
+        </ng-container>
 
-       <!-- Amount -->
-      <ng-container matColumnDef="walletAmount">
-        <th mat-header-cell *matHeaderCellDef>Wallet Amount</th>
-        <td mat-cell *matCellDef="let d"  class="text-success">{{ d.walletAmount.toFixed(2) }}</td>
-      </ng-container>
+        <!-- Amount -->
+        <ng-container matColumnDef="walletAmount">
+          <th mat-header-cell *matHeaderCellDef>Wallet Amount</th>
+          <td mat-cell *matCellDef="let d" class="text-success">{{ d.walletAmount.toFixed(2) }}</td>
+        </ng-container>
 
-      <!-- Date -->
-      <ng-container matColumnDef="fromDate">
-        <th mat-header-cell *matHeaderCellDef>From Date</th>
-        <td mat-cell *matCellDef="let d">{{ d.fromDate | date }}</td>
-      </ng-container>
-      
-      <!-- Date -->
-      <ng-container matColumnDef="endDate">
-        <th mat-header-cell *matHeaderCellDef>End Date</th>
-        <td mat-cell *matCellDef="let d">{{ d.endDate | date }}</td>
-      </ng-container>
+        <!-- Date -->
+        <ng-container matColumnDef="fromDate">
+          <th mat-header-cell *matHeaderCellDef>From Date</th>
+          <td mat-cell *matCellDef="let d">{{ d.fromDate | date }}</td>
+        </ng-container>
 
-      <!-- Action -->
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let d">
-           <button
-              class="btn"
-              [ngClass]="{
+        <!-- Date -->
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef>End Date</th>
+          <td mat-cell *matCellDef="let d">{{ d.endDate | date }}</td>
+        </ng-container>
+
+        <!-- Action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let d">
+            <button class="btn" [ngClass]="{
                 'btn-primary': d.totalInstallmentsPaid < d.tenurePlan,
                 'btn-warning': d.totalInstallmentsPaid === d.tenurePlan,
                 'btn-success': d.status === 'COMPLETED',
-              }"
-              [disabled]="d.totalInstallmentsPaid >= d.tenurePlan || d.status === 'COMPLETED'"
-              (click)="d.totalInstallmentsPaid < d.tenurePlan && payNow(d)"
-            >
+              }" [disabled]="d.totalInstallmentsPaid >= d.tenurePlan || d.status === 'COMPLETED'"
+              (click)="d.totalInstallmentsPaid < d.tenurePlan && payNow(d)">
               {{
-                d.status === 'COMPLETED'
-                  ? 'Completed'
-                  : d.totalInstallmentsPaid < d.tenurePlan
-                    ? 'Pay'
-                    : 'Installment Completed'
-              }}
-            </button>
-        </td>
-      </ng-container>
+              d.status === 'COMPLETED'
+              ? 'Completed'
+              : d.totalInstallmentsPaid < d.tenurePlan ? 'Pay' : 'Installment Completed' }} </button>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
 
-    <!-- 🔹 Paginator -->
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> </mat-paginator>
+      <!-- 🔹 Paginator -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons> </mat-paginator>
+    </div>
+
   </div>
 
-   </div>
- 
- 
+
 </div>

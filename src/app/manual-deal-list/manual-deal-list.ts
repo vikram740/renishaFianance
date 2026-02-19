@@ -72,13 +72,13 @@ export class ManualDealList {
     this.common.manualDeals(this.page, this.limit).subscribe((res: any) => {
       this.allDealList = res;
       console.log('this.allDealList', this.allDealList);
-      // this.dealList = res.list;
       this.dealList = res.list;
       console.log('this.dealList', this.dealList);
       this.totalCount = res.count;
       this.cdr.detectChanges();
     });
   }
+
   exportToExcel() {
     if (!this.dealList || this.dealList.length === 0) {
       toast.error('No data to export');
@@ -109,6 +109,7 @@ export class ManualDealList {
 
     saveAs(blob, `Deals_List_${Date.now()}.xlsx`);
   }
+
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value.toLowerCase().trim();
     this.searchText = value;
@@ -157,9 +158,9 @@ export class ManualDealList {
     });
   }
 
-  viewDocuments(Id: string) {
 
+  viewDocuments(Id: string) {
     console.log('', Id)
-    this.router.navigate(['/IntrestPage',Id]);
+    this.router.navigate(['/IntrestPage', Id]);
   }
 }

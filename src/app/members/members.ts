@@ -39,7 +39,7 @@ import { RouterLink } from "@angular/router";
     MatProgressSpinnerModule,
     Signup,
     RouterLink
-],
+  ],
   templateUrl: './members.html',
   styleUrl: './members.scss',
   standalone: true,
@@ -62,8 +62,8 @@ export class Members implements OnInit {
   selectedDocs: any;
   openSignup = false;
   selectedSignupData: any = null;
-  role:any;
-  auth=inject(Auth)
+  role: any;
+  auth = inject(Auth)
   // isLoading: boolean = false;
 
   @ViewChild('editModal') editModal!: ElementRef;
@@ -72,18 +72,18 @@ export class Members implements OnInit {
     this.generateID = new FormGroup({
       memberName: new FormControl('', Validators.required),
       memberBirth: new FormControl('', Validators.required),
-      memberAdhaar: new FormControl('',[Validators.required]),
+      memberAdhaar: new FormControl('', [Validators.required]),
       memberPhone: new FormControl('', [Validators.required, Validators.minLength(10)]),
       memberEmail: new FormControl('', [Validators.required]),
       memberCurrentAddress: new FormControl('', Validators.required),
       memberPermanentAddress: new FormControl('', Validators.required),
     });
-    
+
     this.role = this.auth.getRole();
 
-     if (isPlatformBrowser(this.platformId)) {
-    this.getMembersList();
-  }
+    if (isPlatformBrowser(this.platformId)) {
+      this.getMembersList();
+    }
   }
 
   onPageChange(event: any) {
@@ -144,7 +144,7 @@ export class Members implements OnInit {
         memberPermanentAddress: formValue.memberPermanentAddress,
       };
 
-      this.common.editMember(this.selectedMemberId,payload).subscribe((res: any) => {
+      this.common.editMember(this.selectedMemberId, payload).subscribe((res: any) => {
 
         console.log('', res)
         this.editModalInstance.hide();
@@ -156,40 +156,41 @@ export class Members implements OnInit {
       });
     }
   }
-  mapSignupData(name: string, email: string, role: string,password?:string) {
-  const parts = name?.trim().split(' ') || [];
-  return {
-    firstName: parts[0] || '',
-    lastName: parts.slice(1).join(' ') || '',
-    email,
-    role,
-    password: password ?? this.generatePassword(name),
-  };
-}
 
-generatePassword(name: string): string {
-  const firstPart = name
-    ?.replace(/\s+/g, '')   // remove spaces
-    ?.substring(0, 4)       // first 4 chars
-    ?.toLowerCase() || 'user';
+  mapSignupData(name: string, email: string, role: string, password?: string) {
+    const parts = name?.trim().split(' ') || [];
+    return {
+      firstName: parts[0] || '',
+      lastName: parts.slice(1).join(' ') || '',
+      email,
+      role,
+      password: password ?? this.generatePassword(name),
+    };
+  }
 
-  const year = new Date().getFullYear();
+  generatePassword(name: string): string {
+    const firstPart = name
+      ?.replace(/\s+/g, '')   // remove spaces
+      ?.substring(0, 4)       // first 4 chars
+      ?.toLowerCase() || 'user';
 
-  return `${firstPart}@${year}`;
-}
+    const year = new Date().getFullYear();
 
-openSignupComponent(member: any) {
-  this.selectedSignupData = this.mapSignupData(
-    member.memberName,
-    member.memberEmail,
-    'member'
-  );
+    return `${firstPart}@${year}`;
+  }
 
-  this.openSignup = true;
-  this.openModal('signupModal');
-}
+  openSignupComponent(member: any) {
+    this.selectedSignupData = this.mapSignupData(
+      member.memberName,
+      member.memberEmail,
+      'member'
+    );
 
-   openModal(id: string) {
+    this.openSignup = true;
+    this.openModal('signupModal');
+  }
+
+  openModal(id: string) {
     if (!isPlatformBrowser(this.platformId)) return;
 
     import('bootstrap').then((bs) => {
@@ -199,7 +200,7 @@ openSignupComponent(member: any) {
     });
   }
 
-   closeModal() {
+  closeModal() {
     if (!isPlatformBrowser(this.platformId)) return;
 
     import('bootstrap').then((bs) => {
@@ -233,6 +234,7 @@ openSignupComponent(member: any) {
     });
   }
 
+
   onSearch(event: Event) {
     const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
     this.searchText = searchValue;
@@ -255,6 +257,7 @@ openSignupComponent(member: any) {
       },
     });
   }
+
 
   viewDocuments(member: any) {
     const bsaeUrl = environment.uploadUrl + renishaFinance.uploads + '/';
@@ -280,6 +283,7 @@ openSignupComponent(member: any) {
       });
     }
   }
+
 
   exportToExcel() {
     if (!this.membersList || this.membersList.length === 0) {
@@ -326,5 +330,5 @@ openSignupComponent(member: any) {
     });
   }
 
- 
+
 }
